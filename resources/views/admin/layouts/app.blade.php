@@ -215,6 +215,11 @@
                 <span class="font-medium">Packages</span>
                 <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">5</span>
             </a>
+            <a href="{{ route('admin.categories.index') }}" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.categories.*') ? 'bg-primary-50 text-primary-600' : '' }}">
+                <i class="fas fa-tags mr-3 text-lg"></i>
+                <span class="font-medium">Categories</span>
+                <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">{{ \App\Models\Category::count() }}</span>
+            </a>
             <a href="{{ route('admin.hotels.index') }}" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.hotels.*') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-hotel mr-3 text-lg"></i>
                 <span class="font-medium">Hotels</span>
@@ -225,10 +230,10 @@
         <!-- Additional menu items for a more complete dashboard -->
         <div class="pt-4 mt-4 border-t border-gray-100">
             <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Management</p>
-            <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 construction-link">
+            <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.users.*') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-users mr-3 text-lg"></i>
                 <span class="font-medium">Users</span>
-                <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Soon</span>
+                <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">{{ \App\Models\User::count() }}</span>
             </a>
             <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 construction-link">
                 <i class="fas fa-calendar-alt mr-3 text-lg"></i>
