@@ -436,7 +436,8 @@
             <p>Enter your credentials to access your account</p>
         </div>
 
-        <form method="POST" action="#">
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
             <!-- Email Address -->
             <div class="form-group">
                 <label for="email" class="form-label">Email Address</label>
