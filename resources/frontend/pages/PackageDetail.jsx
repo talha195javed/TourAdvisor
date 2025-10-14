@@ -60,31 +60,141 @@ function PackageDetail() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Breadcrumb */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm text-gray-600">
-            <Link to="/" className="hover:text-blue-600">{t('home')}</Link>
-            <span>/</span>
-            <Link to="/packages" className="hover:text-blue-600">{t('packages')}</Link>
-            <span>/</span>
-            <span className="text-gray-900">{pkg.title}</span>
+      {/* Premium Hero Section */}
+      <section className="relative min-h-[500px] lg:min-h-[600px] flex items-center overflow-hidden">
+        {/* Background Image Layer */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${pkg.main_image || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&q=80'})`,
+          }}
+        >
+          {/* Dark Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-blue-900/85 to-purple-900/90"></div>
+        </div>
+
+        {/* Floating Animated Blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-10 -left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute top-1/3 -right-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          {/* Breadcrumb */}
+          <div className="mb-8">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
+              <Link to="/" className="text-blue-200 hover:text-white transition-colors">{t('home')}</Link>
+              <span className="text-blue-300">/</span>
+              <Link to="/packages" className="text-blue-200 hover:text-white transition-colors">{t('packages')}</Link>
+              <span className="text-blue-300">/</span>
+              <span className="text-white font-medium">{pkg.title}</span>
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8 items-end">
+            {/* Left Column - Package Info */}
+            <div className="lg:col-span-2 text-white space-y-6">
+              {/* Category Badge */}
+              {pkg.category && (
+                <div className="inline-flex items-center space-x-2 rtl:space-x-reverse bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md border border-white/30 rounded-full px-5 py-2 shadow-lg">
+                  <svg className="h-5 w-5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  <span className="text-white font-semibold text-sm">{pkg.category.name}</span>
+                </div>
+              )}
+
+              {/* Package Title */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
+                {pkg.title}
+              </h1>
+
+              {/* Quick Info Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {pkg.location && (
+                  <div className="flex items-center space-x-3 rtl:space-x-reverse bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500/30 rounded-lg flex items-center justify-center">
+                      <svg className="h-5 w-5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-xs text-blue-200">{t('location')}</p>
+                      <p className="font-semibold text-white">{pkg.location}</p>
+                    </div>
+                  </div>
+                )}
+
+                {pkg.duration_days && (
+                  <div className="flex items-center space-x-3 rtl:space-x-reverse bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20">
+                    <div className="flex-shrink-0 w-10 h-10 bg-purple-500/30 rounded-lg flex items-center justify-center">
+                      <svg className="h-5 w-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-xs text-purple-200">{t('duration')}</p>
+                      <p className="font-semibold text-white">{pkg.duration_days} {t('days')}</p>
+                    </div>
+                  </div>
+                )}
+
+                {pkg.transfer_type && (
+                  <div className="flex items-center space-x-3 rtl:space-x-reverse bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20">
+                    <div className="flex-shrink-0 w-10 h-10 bg-pink-500/30 rounded-lg flex items-center justify-center">
+                      <svg className="h-5 w-5 text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-xs text-pink-200">{t('transfer')}</p>
+                      <p className="font-semibold text-white">{pkg.transfer_type}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Column - Price Card */}
+            <div className="lg:col-span-1">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-2xl">
+                <p className="text-sm text-blue-200 mb-2">{t('startingFrom')}</p>
+                <p className="text-5xl font-black text-white mb-1">
+                  ${parseFloat(pkg.price).toFixed(2)}
+                </p>
+                <p className="text-sm text-blue-200 mb-6">{t('perPerson')}</p>
+                
+                <button
+                  onClick={handleWhatsAppClick}
+                  className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-4 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 rtl:space-x-reverse shadow-lg hover:shadow-2xl hover:scale-105"
+                >
+                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                  </svg>
+                  <span>{t('knowMore')}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Decorative Wave Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 z-0">
+          <svg className="w-full h-16 md:h-20" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path
+              d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
+              fill="#F9FAFB"
+            />
+          </svg>
+        </div>
+      </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Hero Image */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-              <img
-                src={pkg.main_image || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200'}
-                alt={pkg.title}
-                className="w-full h-96 object-cover"
-              />
-            </div>
 
             {/* Package Info */}
             <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
