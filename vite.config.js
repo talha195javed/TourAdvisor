@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     plugins: [
@@ -8,17 +7,7 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js', 'resources/frontend/main.jsx'],
             refresh: true,
         }),
-        react({
-            jsxRuntime: 'automatic',
-            babel: {
-                plugins: [],
-            },
-        }),
     ],
-    server: {
-        host: 'localhost',
-        port: 5173,
-    },
     esbuild: {
         loader: 'jsx',
         include: /resources\/frontend\/.*\.jsx?$/,
@@ -28,7 +17,18 @@ export default defineConfig({
         esbuildOptions: {
             loader: {
                 '.js': 'jsx',
+                '.jsx': 'jsx',
             },
         },
+    },
+    server: {
+        host: 'localhost',
+        port: 5173,
+        hmr: {
+            overlay: true,
+        },
+    },
+    resolve: {
+        extensions: ['.js', '.jsx', '.json'],
     },
 });
