@@ -86,6 +86,30 @@ const resources = {
       // Common
       loading: 'Loading...',
       error: 'Error loading data',
+      
+      // Why Choose Us Section
+      whyChooseUs: 'Why Choose Us',
+      yourJourneyOurPriority: 'Your Journey, Our Priority',
+      support247Title: '24/7 Support',
+      support247Desc: 'Round-the-clock customer service to ensure your journey is smooth and worry-free',
+      bestPricesTitle: 'Best Prices',
+      bestPricesDesc: 'Competitive rates and exclusive deals to make your dream vacation affordable',
+      curatedExperiencesTitle: 'Curated Experiences',
+      curatedExperiencesDesc: 'Handpicked destinations and unique adventures tailored to create unforgettable memories',
+      
+      // CTA Section
+      readyToStart: 'Ready to Start Your Adventure?',
+      joinThousands: 'Join thousands of happy travelers who have discovered their dream destinations with us',
+      chatOnWhatsApp: 'Chat on WhatsApp',
+      
+      // Reviews Section
+      customerReviews: 'Customer Reviews',
+      whatCustomersSay: 'What Our Customers Say',
+      reviewsSubtitle: 'Real experiences from real travelers who trusted us with their dream vacations',
+      reviews: 'Reviews',
+      satisfaction: 'Satisfaction',
+      joinHappyCustomers: 'Join thousands of satisfied customers',
+      bookYourTrip: 'Book Your Trip Now',
     }
   },
   ar: {
@@ -172,6 +196,30 @@ const resources = {
       // Common
       loading: 'جاري التحميل...',
       error: 'خطأ في تحميل البيانات',
+      
+      // Why Choose Us Section
+      whyChooseUs: 'لماذا تختارنا',
+      yourJourneyOurPriority: 'رحلتك، أولويتنا',
+      support247Title: 'دعم على مدار الساعة',
+      support247Desc: 'خدمة عملاء على مدار الساعة لضمان رحلة سلسة وخالية من القلق',
+      bestPricesTitle: 'أفضل الأسعار',
+      bestPricesDesc: 'أسعار تنافسية وعروض حصرية لجعل عطلة أحلامك في متناول يدك',
+      curatedExperiencesTitle: 'تجارب منتقاة',
+      curatedExperiencesDesc: 'وجهات مختارة بعناية ومغامرات فريدة مصممة لخلق ذكريات لا تُنسى',
+      
+      // CTA Section
+      readyToStart: 'هل أنت مستعد لبدء مغامرتك؟',
+      joinThousands: 'انضم إلى آلاف المسافرين السعداء الذين اكتشفوا وجهات أحلامهم معنا',
+      chatOnWhatsApp: 'تحدث على واتساب',
+      
+      // Reviews Section
+      customerReviews: 'آراء العملاء',
+      whatCustomersSay: 'ماذا يقول عملاؤنا',
+      reviewsSubtitle: 'تجارب حقيقية من مسافرين حقيقيين وثقوا بنا في عطلات أحلامهم',
+      reviews: 'التقييمات',
+      satisfaction: 'الرضا',
+      joinHappyCustomers: 'انضم إلى آلاف العملاء الراضين',
+      bookYourTrip: 'احجز رحلتك الآن',
     }
   }
 };
