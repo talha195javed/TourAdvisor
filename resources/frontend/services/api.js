@@ -1,4 +1,5 @@
 import axios from 'axios';
+import i18n from '../i18n';
 
 const API_BASE_URL = '/api';
 
@@ -8,6 +9,16 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
+});
+
+// Add language parameter to all requests
+api.interceptors.request.use((config) => {
+  const lang = i18n.language || 'en';
+  config.params = {
+    ...config.params,
+    lang: lang,
+  };
+  return config;
 });
 
 export const packagesAPI = {

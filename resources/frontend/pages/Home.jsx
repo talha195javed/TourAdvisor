@@ -5,14 +5,14 @@ import PackageCard from '../components/PackageCard';
 import { packagesAPI } from '../services/api';
 
 function Home() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [featuredPackages, setFeaturedPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchFeaturedPackages();
-  }, []);
+  }, [i18n.language]);
 
   const fetchFeaturedPackages = async () => {
     try {

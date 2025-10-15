@@ -5,7 +5,7 @@ import PackageCard from '../components/PackageCard';
 import { packagesAPI, categoriesAPI } from '../services/api';
 
 function Packages() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [packages, setPackages] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,11 +20,11 @@ function Packages() {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [i18n.language]);
 
   useEffect(() => {
     fetchPackages();
-  }, [searchQuery, selectedCategory, sortBy, sortOrder]);
+  }, [searchQuery, selectedCategory, sortBy, sortOrder, i18n.language]);
 
   const fetchCategories = async () => {
     try {
