@@ -6,14 +6,14 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 function PackageDetail() {
   const { id } = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [pkg, setPkg] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchPackage();
-  }, [id]);
+  }, [id, i18n.language]);
 
   const fetchPackage = async () => {
     try {
