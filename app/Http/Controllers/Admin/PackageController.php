@@ -90,6 +90,14 @@ class PackageController extends Controller
     }
 
     /**
+     * Display the specified package.
+     */
+    public function show(Package $package)
+    {
+        return view('admin.packages.show', compact('package'));
+    }
+
+    /**
      * Show the form for editing a package.
      */
     public function edit(Package $package)
