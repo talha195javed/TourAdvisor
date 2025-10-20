@@ -102,18 +102,30 @@
         }
 
         @keyframes bounceGentle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+            }
         }
 
         @keyframes pulseSoft {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
         }
 
         .construction-gradient {
@@ -130,18 +142,23 @@
 <body class="bg-gray-50 flex h-screen overflow-hidden font-sans">
 
 <!-- Under Construction Alert Modal -->
-<div id="constructionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 construction-alert hidden">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-500 scale-95 opacity-0">
+<div id="constructionModal"
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 construction-alert hidden">
+    <div
+        class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-500 scale-95 opacity-0">
         <div class="construction-gradient rounded-t-2xl p-6 text-white text-center relative overflow-hidden">
             <!-- Animated Background Elements -->
             <div class="absolute top-0 left-0 w-full h-full opacity-10">
                 <div class="absolute top-4 left-4 w-8 h-8 bg-white rounded-full animate-float"></div>
-                <div class="absolute top-12 right-8 w-6 h-6 bg-white rounded-full animate-float" style="animation-delay: 0.5s;"></div>
-                <div class="absolute bottom-8 left-12 w-4 h-4 bg-white rounded-full animate-float" style="animation-delay: 1s;"></div>
+                <div class="absolute top-12 right-8 w-6 h-6 bg-white rounded-full animate-float"
+                     style="animation-delay: 0.5s;"></div>
+                <div class="absolute bottom-8 left-12 w-4 h-4 bg-white rounded-full animate-float"
+                     style="animation-delay: 1s;"></div>
             </div>
 
             <div class="relative z-10">
-                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-soft">
+                <div
+                    class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-soft">
                     <i class="fas fa-tools text-3xl text-white"></i>
                 </div>
                 <h3 class="text-2xl font-bold mb-2">Coming Soon!</h3>
@@ -150,13 +167,15 @@
         </div>
 
         <div class="p-6 text-center">
-            <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce-gentle">
+            <div
+                class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce-gentle">
                 <i class="fas fa-hammer text-white text-xl"></i>
             </div>
 
             <h4 class="text-xl font-semibold text-gray-800 mb-3">Module Under Construction</h4>
             <p class="text-gray-600 mb-6 leading-relaxed">
-                This feature is currently being developed with care and attention. Our team is working hard to bring you an exceptional experience.
+                This feature is currently being developed with care and attention. Our team is working hard to bring you
+                an exceptional experience.
             </p>
 
             <div class="space-y-3 mb-6">
@@ -177,7 +196,8 @@
                 </div>
             </div>
 
-            <button onclick="closeConstructionModal()" class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 glow-effect">
+            <button onclick="closeConstructionModal()"
+                    class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 glow-effect">
                 <i class="fas fa-thumbs-up mr-2"></i>
                 Got It - Can't Wait!
             </button>
@@ -189,14 +209,16 @@
 <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden sidebar-overlay"></div>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="w-64 bg-white shadow-soft flex-shrink-0 flex flex-col fixed md:relative h-full z-50 sidebar-transition transform -translate-x-full md:translate-x-0">
+<aside id="sidebar"
+       class="w-64 bg-white shadow-soft flex-shrink-0 flex flex-col fixed md:relative h-full z-50 sidebar-transition transform -translate-x-full md:translate-x-0">
     <!-- Logo Section -->
     <div class="p-6 border-b border-gray-100 flex items-center">
-        <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">
-            A
+        <div
+            class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">
+            TA
         </div>
         <div>
-            <h1 class="text-xl font-bold text-gray-800">Admin Panel</h1>
+            <h1 class="text-xl font-bold text-gray-800">TourAdvisor</h1>
             <p class="text-xs text-gray-500">Management System</p>
         </div>
     </div>
@@ -204,23 +226,26 @@
     <!-- Navigation -->
     <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
         <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Dashboard</p>
-        <a href="/dashboard" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+        <a href="/dashboard"
+           class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600">
             <i class="fas fa-chart-pie mr-3 text-lg"></i>
             <span class="font-medium">Dashboard</span>
         </a>
-
         <div class="pt-4 mt-4 border-t border-gray-100">
-            <a href="{{ route('admin.packages.index') }}" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.packages.*') ? 'bg-primary-50 text-primary-600' : '' }}">
+            <a href="{{ route('admin.packages.index') }}"
+               class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.packages.*') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-boxes mr-3 text-lg"></i>
                 <span class="font-medium">Packages</span>
                 <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">5</span>
             </a>
-            <a href="{{ route('admin.categories.index') }}" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.categories.*') ? 'bg-primary-50 text-primary-600' : '' }}">
+            <a href="{{ route('admin.categories.index') }}"
+               class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.categories.*') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-tags mr-3 text-lg"></i>
                 <span class="font-medium">Categories</span>
                 <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">{{ \App\Models\Category::count() }}</span>
             </a>
-            <a href="{{ route('admin.hotels.index') }}" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.hotels.*') ? 'bg-primary-50 text-primary-600' : '' }}">
+            <a href="{{ route('admin.hotels.index') }}"
+               class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.hotels.*') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-hotel mr-3 text-lg"></i>
                 <span class="font-medium">Hotels</span>
                 <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">12</span>
@@ -230,34 +255,31 @@
         <!-- Additional menu items for a more complete dashboard -->
         <div class="pt-4 mt-4 border-t border-gray-100">
             <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Management</p>
-            <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.users.*') ? 'bg-primary-50 text-primary-600' : '' }}">
+            <a href="{{ route('admin.bookings.index') }}"
+               class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.bookings.*') ? 'bg-primary-50 text-primary-600' : '' }}">
+                <i class="fas fa-calendar-check mr-3 text-lg"></i>
+                <span class="font-medium">Bookings</span>
+                <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">{{ \App\Models\Booking::count() }}</span>
+            </a>
+            <a href="{{ route('admin.users.index') }}"
+               class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.users.*') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-users mr-3 text-lg"></i>
                 <span class="font-medium">Users</span>
                 <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">{{ \App\Models\User::count() }}</span>
             </a>
-            <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 construction-link">
-                <i class="fas fa-calendar-alt mr-3 text-lg"></i>
-                <span class="font-medium">Bookings</span>
-                <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Soon</span>
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 construction-link">
+            <a href="/dashboard"
+               class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 ">
                 <i class="fas fa-chart-bar mr-3 text-lg"></i>
                 <span class="font-medium">Analytics</span>
-                <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Soon</span>
             </a>
         </div>
 
         <div class="pt-4 mt-4 border-t border-gray-100">
             <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">System</p>
-            <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 construction-link">
-                <i class="fas fa-cog mr-3 text-lg"></i>
-                <span class="font-medium">Settings</span>
-                <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Soon</span>
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 construction-link">
+            <a href="{{ route('admin.support') }}"
+               class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.support') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-question-circle mr-3 text-lg"></i>
                 <span class="font-medium">Help & Support</span>
-                <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Soon</span>
             </a>
         </div>
     </nav>
@@ -265,7 +287,8 @@
     <!-- User Section -->
     <div class="p-4 border-t border-gray-100">
         <div class="flex items-center mb-4">
-            <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-800 font-semibold mr-3">
+            <div
+                class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-800 font-semibold mr-3">
                 {{ substr(auth()->user()->name, 0, 1) }}
             </div>
             <div class="flex-1 min-w-0">
@@ -275,7 +298,8 @@
         </div>
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="w-full flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors">
+            <button type="submit"
+                    class="w-full flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors">
                 <i class="fas fa-sign-out-alt mr-2"></i> Logout
             </button>
         </form>
@@ -283,15 +307,16 @@
 </aside>
 
 <!-- Mobile header -->
-<div class="md:hidden flex items-center justify-between bg-white shadow p-4 text-gray-800 w-full fixed top-0 left-0 z-30">
+<div
+    class="md:hidden flex items-center justify-between bg-white shadow p-4 text-gray-800 w-full fixed top-0 left-0 z-30">
     <button id="mobile-menu-btn" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
         <i class="fas fa-bars text-xl"></i>
     </button>
     <div class="flex items-center">
         <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-sm mr-2">
-            A
+            TA
         </div>
-        <span class="font-bold text-gray-800">Admin Panel</span>
+        <span class="font-bold text-gray-800">TourAdvisor</span>
     </div>
     <div class="relative">
         <button id="notification-btn" class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
@@ -316,18 +341,21 @@
         <div class="flex items-center space-x-4">
             <div class="hidden md:flex items-center space-x-3 bg-gray-50 rounded-lg px-4 py-2">
                 <i class="fas fa-search text-gray-400"></i>
-                <input type="text" placeholder="Search..." class="bg-transparent border-none focus:outline-none focus:ring-0 text-sm">
+                <input type="text" placeholder="Search..."
+                       class="bg-transparent border-none focus:outline-none focus:ring-0 text-sm">
             </div>
 
             <div class="relative hidden md:block">
-                <button id="desktop-notification-btn" class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+                <button id="desktop-notification-btn"
+                        class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
                     <i class="fas fa-bell text-xl text-gray-600"></i>
                     <span class="notification-dot"></span>
                 </button>
             </div>
 
             <div class="hidden md:flex items-center text-gray-700 border-l border-gray-200 pl-4">
-                <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-800 font-semibold mr-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-800 font-semibold mr-2">
                     {{ substr(auth()->user()->name, 0, 1) }}
                 </div>
                 <div>
