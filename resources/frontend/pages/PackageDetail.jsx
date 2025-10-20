@@ -10,10 +10,30 @@ function PackageDetail() {
   const [pkg, setPkg] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   useEffect(() => {
     fetchPackage();
   }, [id, i18n.language]);
+
+  // Keyboard navigation for image slider
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (!pkg || galleryImages.length <= 1) return;
+      
+      if (e.key === 'ArrowLeft') {
+        prevImage();
+      } else if (e.key === 'ArrowRight') {
+        nextImage();
+      } else if (e.key === 'Escape' && isImageModalOpen) {
+        setIsImageModalOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [pkg, currentImageIndex, isImageModalOpen]);
 
   const fetchPackage = async () => {
     try {
@@ -35,6 +55,20 @@ function PackageDetail() {
     const message = `Hi, I want to know more about this package:\n${packageUrl}`;
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const galleryImages = pkg?.images && pkg.images.length > 0 ? pkg.images : (pkg?.main_image ? [pkg.main_image] : []);
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
+
+  const goToImage = (index) => {
+    setCurrentImageIndex(index);
   };
 
   if (loading) {
@@ -192,6 +226,89 @@ function PackageDetail() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Image Gallery Slider */}
+        {galleryImages.length > 0 && (
+          <div className="mb-8 bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                <svg className="h-6 w-6 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {t('packageGallery') || 'Package Gallery'} ({galleryImages.length} {galleryImages.length === 1 ? (t('image') || 'image') : (t('images') || 'images')})
+              </h3>
+            </div>
+
+            <div className="relative">
+              {/* Main Image Display */}
+              <div className="relative h-96 md:h-[500px] bg-gray-900">
+                <img
+                  src={galleryImages[currentImageIndex]}
+                  alt={`${pkg.title} - Image ${currentImageIndex + 1}`}
+                  className="w-full h-full object-cover cursor-pointer"
+                  onClick={() => setIsImageModalOpen(true)}
+                />
+                
+                {/* Image Counter */}
+                <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
+                  {currentImageIndex + 1} / {galleryImages.length}
+                </div>
+
+                {/* Navigation Arrows */}
+                {galleryImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                      aria-label="Previous image"
+                    >
+                      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                      aria-label="Next image"
+                    >
+                      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Thumbnail Navigation */}
+              {galleryImages.length > 1 && (
+                <div className="p-6 bg-gray-50">
+                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    {galleryImages.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => goToImage(index)}
+                        className={`flex-shrink-0 relative rounded-lg overflow-hidden transition-all ${
+                          currentImageIndex === index
+                            ? 'ring-4 ring-indigo-500 scale-105'
+                            : 'ring-2 ring-gray-200 hover:ring-indigo-300 opacity-70 hover:opacity-100'
+                        }`}
+                      >
+                        <img
+                          src={image}
+                          alt={`Thumbnail ${index + 1}`}
+                          className="w-24 h-20 object-cover"
+                        />
+                        {currentImageIndex === index && (
+                          <div className="absolute inset-0 bg-indigo-500/20"></div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
@@ -334,6 +451,81 @@ function PackageDetail() {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Image Modal */}
+      {isImageModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <button
+            onClick={() => setIsImageModalOpen(false)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-all"
+            aria-label="Close modal"
+          >
+            <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <div className="relative max-w-7xl w-full" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={galleryImages[currentImageIndex]}
+              alt={`${pkg.title} - Image ${currentImageIndex + 1}`}
+              className="w-full h-auto max-h-[90vh] object-contain rounded-lg"
+            />
+
+            {galleryImages.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-4 rounded-full shadow-2xl transition-all hover:scale-110"
+                  aria-label="Previous image"
+                >
+                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-4 rounded-full shadow-2xl transition-all hover:scale-110"
+                  aria-label="Next image"
+                >
+                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur-sm text-white px-6 py-3 rounded-full text-lg font-medium">
+                  {currentImageIndex + 1} / {galleryImages.length}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        @keyframes blob {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          25% { transform: translate(20px, -50px) scale(1.1); }
+          50% { transform: translate(-20px, 20px) scale(0.9); }
+          75% { transform: translate(50px, 50px) scale(1.05); }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+      `}</style>
     </div>
   );
 }
