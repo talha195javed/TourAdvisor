@@ -291,6 +291,77 @@
                     </div>
                 </div>
 
+                <!-- Multiple Images Gallery Section -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-images text-indigo-500 mr-2"></i>
+                        Package Gallery (Up to 25 Images)
+                    </h4>
+
+                    <!-- Existing Images -->
+                    @if($package->images && count($package->images) > 0)
+                    <div class="mb-6">
+                        <p class="text-sm text-gray-600 mb-3 font-medium">Current Gallery Images ({{ count($package->images) }}):</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" id="existingImagesContainer">
+                            @foreach($package->images as $index => $image)
+                            <div class="relative group" data-image="{{ $image }}">
+                                <img src="{{ $image }}" alt="Gallery Image {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg shadow-sm border border-gray-200">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
+                                    <button type="button" onclick="deleteImage('{{ $image }}')" class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-red-600 transition-all">
+                                        <i class="fas fa-trash mr-1"></i> Delete
+                                    </button>
+                                </div>
+                                <div class="absolute top-1 left-1">
+                                    <span class="bg-blue-500 text-white text-xs px-2 py-0.5 rounded">{{ $index + 1 }}</span>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Upload New Images -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Additional Images
+                        </label>
+                        <div class="relative">
+                            <input
+                                type="file"
+                                name="package_images[]"
+                                class="hidden"
+                                id="package_images"
+                                accept="image/*"
+                                multiple
+                                max="25"
+                            >
+                            <label for="package_images" class="cursor-pointer">
+                                <div class="border-2 border-dashed border-indigo-300 rounded-xl p-8 text-center hover:border-indigo-500 hover:bg-indigo-50 transition-colors group">
+                                    <i class="fas fa-images text-4xl text-indigo-400 group-hover:text-indigo-600 mb-3"></i>
+                                    <p class="text-sm text-gray-700 font-medium group-hover:text-gray-900">Click to upload more images</p>
+                                    <p class="text-xs text-gray-500 mt-2">You can select up to 25 images at once</p>
+                                    <p class="text-xs text-gray-500">PNG, JPG, JPEG up to 5MB each</p>
+                                </div>
+                            </label>
+                        </div>
+                        @error('package_images')
+                        <p class="mt-1 text-sm text-red-600 flex items-center">
+                            <i class="fas fa-exclamation-circle mr-1"></i>
+                            {{ $message }}
+                        </p>
+                        @enderror
+                    </div>
+
+                    <!-- New Images Preview -->
+                    <div id="multipleImagesPreview" class="mt-4 hidden">
+                        <p class="text-sm text-gray-600 mb-3 font-medium">New Images to Upload (<span id="imageCount">0</span>):</p>
+                        <div id="previewContainer" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+                    </div>
+
+                    <!-- Hidden input for images to delete -->
+                    <input type="hidden" name="delete_images[]" id="deleteImagesInput">
+                </div>
+
                 <!-- Features Section -->
                 <div class="border-b border-gray-200 pb-6">
                     <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -499,12 +570,148 @@
         }
 
         // Toggle switch label update
-        const statusToggle = document.querySelector('input[name="is_active"]');
-        const statusLabel = statusToggle.closest('label').querySelector('span');
+        const statusToggle = document.querySelector('input[name="is_active"][type="checkbox"]');
+        if (statusToggle) {
+            const statusLabel = statusToggle.closest('label')?.querySelector('span');
+            if (statusLabel) {
+                statusToggle.addEventListener('change', function() {
+                    statusLabel.textContent = this.checked ? 'Active' : 'Inactive';
+                });
+            }
+        }
 
-        statusToggle.addEventListener('change', function() {
-            statusLabel.textContent = this.checked ? 'Active' : 'Inactive';
+        // Multiple images preview functionality
+        console.log('Initializing multiple images preview...');
+        const multipleImagesInput = document.getElementById('package_images');
+        const multipleImagesPreview = document.getElementById('multipleImagesPreview');
+        const previewContainer = document.getElementById('previewContainer');
+        const imageCount = document.getElementById('imageCount');
+        
+        console.log('Elements found:', {
+            input: !!multipleImagesInput,
+            preview: !!multipleImagesPreview,
+            container: !!previewContainer,
+            count: !!imageCount
         });
+        
+        let selectedFiles = [];
+
+        if (multipleImagesInput) {
+            console.log('Adding change event listener to package_images input');
+            multipleImagesInput.addEventListener('change', function(e) {
+                console.log('Change event triggered!');
+                const files = Array.from(e.target.files);
+                console.log('Files selected:', files.length, files);
+                
+                if (files.length > 25) {
+                    alert('You can only upload up to 25 images at once.');
+                    this.value = '';
+                    return;
+                }
+
+                selectedFiles = files;
+                console.log('Updating preview for', selectedFiles.length, 'files');
+                updateNewImagesPreview();
+            });
+            
+            // Also add a click listener to verify the input is being clicked
+            multipleImagesInput.addEventListener('click', function() {
+                console.log('File input clicked!');
+            });
+        } else {
+            console.error('Multiple images input not found!');
+        }
+
+        function updateNewImagesPreview() {
+            console.log('updateNewImagesPreview called with', selectedFiles.length, 'files');
+            if (selectedFiles.length > 0) {
+                console.log('Clearing preview container and showing preview');
+                previewContainer.innerHTML = '';
+                imageCount.textContent = selectedFiles.length;
+                multipleImagesPreview.classList.remove('hidden');
+
+                selectedFiles.forEach((file, index) => {
+                    // Create container first
+                    const div = document.createElement('div');
+                    div.className = 'relative group';
+                    div.setAttribute('data-index', index);
+                    
+                    // Add loading placeholder
+                    div.innerHTML = `
+                        <div class="w-full h-24 bg-gray-200 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-spinner fa-spin text-gray-400"></i>
+                        </div>
+                    `;
+                    previewContainer.appendChild(div);
+
+                    // Load image
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        div.innerHTML = `
+                            <img src="${e.target.result}" class="w-full h-24 object-cover rounded-lg shadow-sm border border-gray-200">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
+                                <button type="button" onclick="removeNewSelectedImage(${index})" class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-all">
+                                    <i class="fas fa-times mr-1"></i> Remove
+                                </button>
+                            </div>
+                            <div class="absolute top-1 left-1">
+                                <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded">New ${index + 1}</span>
+                            </div>
+                        `;
+                    }
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                multipleImagesPreview.classList.add('hidden');
+            }
+        }
+
+        window.removeNewSelectedImage = function(index) {
+            console.log('Removing image at index:', index);
+            selectedFiles.splice(index, 1);
+            
+            // Update the file input
+            try {
+                const dt = new DataTransfer();
+                selectedFiles.forEach(file => dt.items.add(file));
+                multipleImagesInput.files = dt.files;
+                console.log('Updated file input, remaining files:', selectedFiles.length);
+            } catch (e) {
+                console.log('DataTransfer not supported, using alternative method');
+                // Alternative: just clear and let user know
+                if (selectedFiles.length === 0) {
+                    multipleImagesInput.value = '';
+                }
+            }
+            
+            updateNewImagesPreview();
+        }
     });
+
+    // Delete image functionality
+    let imagesToDelete = [];
+    
+    function deleteImage(imageUrl) {
+        if (confirm('Are you sure you want to delete this image?')) {
+            imagesToDelete.push(imageUrl);
+            
+            // Update hidden input
+            const deleteInput = document.getElementById('deleteImagesInput');
+            deleteInput.value = JSON.stringify(imagesToDelete);
+            
+            // Remove from DOM
+            const imageElement = document.querySelector(`[data-image="${imageUrl}"]`);
+            if (imageElement) {
+                imageElement.remove();
+            }
+            
+            // Update count
+            const container = document.getElementById('existingImagesContainer');
+            const remainingImages = container.querySelectorAll('.relative.group').length;
+            if (remainingImages === 0) {
+                container.closest('.mb-6').remove();
+            }
+        }
+    }
 </script>
 @endsection
