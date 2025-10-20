@@ -71,12 +71,30 @@ class PackageController extends Controller
             $data['main_image'] = $data['main_image_url'];
         }
 
+        // Handle multiple images upload
+        $imagesPaths = [];
+        if ($request->hasFile('package_images')) {
+            foreach ($request->file('package_images') as $image) {
+                $path = $image->store('packages/gallery', 'public');
+                $imagesPaths[] = Storage::url($path);
+            }
+        }
+        $data['images'] = $imagesPaths;
+
         // Ensure features saved as array
         $data['features'] = $data['features'] ?? [];
 
         Package::create($data);
 
         return redirect()->route('admin.packages.index')->with('success', 'Package created successfully.');
+    }
+
+    /**
+     * Display the specified package.
+     */
+    public function show(Package $package)
+    {
+        return view('admin.packages.show', compact('package'));
     }
 
     /**
@@ -109,6 +127,39 @@ class PackageController extends Controller
             $data['main_image'] = $data['main_image_url'];
         }
 
+        // Handle multiple images upload
+        $existingImages = $package->images ?? [];
+        
+        // Handle image deletions
+        if ($request->has('delete_images')) {
+            $deleteImagesJson = $request->input('delete_images')[0] ?? null;
+            if ($deleteImagesJson) {
+                $deleteImages = json_decode($deleteImagesJson, true);
+                if (is_array($deleteImages)) {
+                    foreach ($deleteImages as $imageToDelete) {
+                        // Delete from storage
+                        if (str_contains($imageToDelete, '/storage/')) {
+                            $oldPath = str_replace('/storage/', '', $imageToDelete);
+                            Storage::disk('public')->delete($oldPath);
+                        }
+                        // Remove from array
+                        $existingImages = array_values(array_filter($existingImages, function($img) use ($imageToDelete) {
+                            return $img !== $imageToDelete;
+                        }));
+                    }
+                }
+            }
+        }
+
+        // Add new images
+        if ($request->hasFile('package_images')) {
+            foreach ($request->file('package_images') as $image) {
+                $path = $image->store('packages/gallery', 'public');
+                $existingImages[] = Storage::url($path);
+            }
+        }
+
+        $data['images'] = $existingImages;
         $data['features'] = $data['features'] ?? [];
 
         $package->update($data);
@@ -121,10 +172,20 @@ class PackageController extends Controller
      */
     public function destroy(Package $package)
     {
-        // Delete image if exists
+        // Delete main image if exists
         if ($package->main_image && str_contains($package->main_image, '/storage/')) {
             $oldPath = str_replace('/storage/', '', $package->main_image);
             Storage::disk('public')->delete($oldPath);
+        }
+
+        // Delete all gallery images
+        if ($package->images && is_array($package->images)) {
+            foreach ($package->images as $image) {
+                if (str_contains($image, '/storage/')) {
+                    $oldPath = str_replace('/storage/', '', $image);
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
         }
 
         $package->delete();

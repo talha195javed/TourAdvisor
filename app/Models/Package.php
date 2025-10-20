@@ -15,6 +15,7 @@ class Package extends Model
         'price',
         'duration_days',
         'main_image',
+        'images',
         'features',
         'category_id',
         'hotel_id',
@@ -28,6 +29,7 @@ class Package extends Model
     // Cast features to array and is_active to boolean
     protected $casts = [
         'features' => 'array',
+        'images' => 'array',
         'is_active' => 'boolean',
         'price' => 'decimal:2',
     ];
