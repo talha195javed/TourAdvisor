@@ -1,0 +1,480 @@
+@extends('admin.layouts.app')
+
+@section('page-title', 'Edit Booking')
+
+@section('content')
+<div class="container-fluid px-4 py-6">
+    <!-- Header -->
+    <div class="flex items-center mb-8">
+        <a href="{{ route('admin.bookings.index') }}" class="mr-4 text-gray-600 hover:text-gray-900">
+            <i class="fas fa-arrow-left text-xl"></i>
+        </a>
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Edit Booking</h1>
+            <p class="text-gray-600 mt-1">Update booking details for {{ $booking->booking_reference }}</p>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <form action="{{ route('admin.bookings.update', $booking) }}" method="POST" class="space-y-6">
+        @csrf
+        @method('PUT')
+
+        <!-- Customer Information -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-user text-blue-600 mr-3"></i>
+                Customer Information
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Customer Name -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Customer Name <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="customer_name"
+                        value="{{ old('customer_name', $booking->customer_name) }}"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('customer_name') border-red-300 @enderror"
+                        placeholder="Enter customer full name"
+                    >
+                    @error('customer_name')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Customer Email -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="email"
+                        name="customer_email"
+                        value="{{ old('customer_email', $booking->customer_email) }}"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('customer_email') border-red-300 @enderror"
+                        placeholder="customer@example.com"
+                    >
+                    @error('customer_email')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Customer Phone -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Phone Number <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="customer_phone"
+                        value="{{ old('customer_phone', $booking->customer_phone) }}"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('customer_phone') border-red-300 @enderror"
+                        placeholder="+971 50 123 4567"
+                    >
+                    @error('customer_phone')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Customer Country -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Country
+                    </label>
+                    <input
+                        type="text"
+                        name="customer_country"
+                        value="{{ old('customer_country', $booking->customer_country) }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('customer_country') border-red-300 @enderror"
+                        placeholder="United Arab Emirates"
+                    >
+                    @error('customer_country')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Customer Address -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Address
+                    </label>
+                    <textarea
+                        name="customer_address"
+                        rows="3"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('customer_address') border-red-300 @enderror"
+                        placeholder="Enter customer address"
+                    >{{ old('customer_address', $booking->customer_address) }}</textarea>
+                    @error('customer_address')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Details -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-calendar-alt text-green-600 mr-3"></i>
+                Booking Details
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Package Selection -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Select Package <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        name="package_id"
+                        id="package_select"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('package_id') border-red-300 @enderror"
+                    >
+                        <option value="">Select a package</option>
+                        @foreach($packages as $package)
+                        <option value="{{ $package->id }}" data-price="{{ $package->price }}" {{ old('package_id', $booking->package_id) == $package->id ? 'selected' : '' }}>
+                            {{ $package->title }} - ${{ number_format($package->price, 2) }}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('package_id')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Travel Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Travel Date <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="date"
+                        name="travel_date"
+                        value="{{ old('travel_date', $booking->travel_date->format('Y-m-d')) }}"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('travel_date') border-red-300 @enderror"
+                    >
+                    @error('travel_date')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Return Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Return Date
+                    </label>
+                    <input
+                        type="date"
+                        name="return_date"
+                        value="{{ old('return_date', $booking->return_date?->format('Y-m-d')) }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('return_date') border-red-300 @enderror"
+                    >
+                    @error('return_date')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Number of Adults -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Number of Adults <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        name="number_of_adults"
+                        id="number_of_adults"
+                        value="{{ old('number_of_adults', $booking->number_of_adults) }}"
+                        min="1"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('number_of_adults') border-red-300 @enderror"
+                    >
+                    @error('number_of_adults')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Number of Children -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Number of Children
+                    </label>
+                    <input
+                        type="number"
+                        name="number_of_children"
+                        id="number_of_children"
+                        value="{{ old('number_of_children', $booking->number_of_children) }}"
+                        min="0"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('number_of_children') border-red-300 @enderror"
+                    >
+                    @error('number_of_children')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Number of Infants -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Number of Infants
+                    </label>
+                    <input
+                        type="number"
+                        name="number_of_infants"
+                        value="{{ old('number_of_infants', $booking->number_of_infants) }}"
+                        min="0"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('number_of_infants') border-red-300 @enderror"
+                    >
+                    @error('number_of_infants')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Information -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-dollar-sign text-purple-600 mr-3"></i>
+                Pricing Information
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Package Price -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Package Price (Per Person) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        name="package_price"
+                        id="package_price"
+                        value="{{ old('package_price', $booking->package_price) }}"
+                        step="0.01"
+                        min="0"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('package_price') border-red-300 @enderror"
+                        placeholder="0.00"
+                    >
+                    @error('package_price')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Total Amount -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Total Amount <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        name="total_amount"
+                        id="total_amount"
+                        value="{{ old('total_amount', $booking->total_amount) }}"
+                        step="0.01"
+                        min="0"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('total_amount') border-red-300 @enderror"
+                        placeholder="0.00"
+                    >
+                    @error('total_amount')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Paid Amount -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Paid Amount
+                    </label>
+                    <input
+                        type="number"
+                        name="paid_amount"
+                        id="paid_amount"
+                        value="{{ old('paid_amount', $booking->paid_amount) }}"
+                        step="0.01"
+                        min="0"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('paid_amount') border-red-300 @enderror"
+                        placeholder="0.00"
+                    >
+                    @error('paid_amount')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Payment Method -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Payment Method
+                    </label>
+                    <select
+                        name="payment_method"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('payment_method') border-red-300 @enderror"
+                    >
+                        <option value="">Select payment method</option>
+                        <option value="cash" {{ old('payment_method', $booking->payment_method) == 'cash' ? 'selected' : '' }}>Cash</option>
+                        <option value="card" {{ old('payment_method', $booking->payment_method) == 'card' ? 'selected' : '' }}>Credit/Debit Card</option>
+                        <option value="bank_transfer" {{ old('payment_method', $booking->payment_method) == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
+                        <option value="online" {{ old('payment_method', $booking->payment_method) == 'online' ? 'selected' : '' }}>Online Payment</option>
+                    </select>
+                    @error('payment_method')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Transaction ID -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Transaction ID
+                    </label>
+                    <input
+                        type="text"
+                        name="transaction_id"
+                        value="{{ old('transaction_id', $booking->transaction_id) }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('transaction_id') border-red-300 @enderror"
+                        placeholder="TXN123456789"
+                    >
+                    @error('transaction_id')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Payment Status -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Payment Status <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        name="payment_status"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('payment_status') border-red-300 @enderror"
+                    >
+                        <option value="pending" {{ old('payment_status', $booking->payment_status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="partial" {{ old('payment_status', $booking->payment_status) == 'partial' ? 'selected' : '' }}>Partial Payment</option>
+                        <option value="paid" {{ old('payment_status', $booking->payment_status) == 'paid' ? 'selected' : '' }}>Fully Paid</option>
+                        <option value="refunded" {{ old('payment_status', $booking->payment_status) == 'refunded' ? 'selected' : '' }}>Refunded</option>
+                    </select>
+                    @error('payment_status')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        <!-- Status & Notes -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-info-circle text-orange-600 mr-3"></i>
+                Status & Additional Information
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Booking Status -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Booking Status <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        name="status"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('status') border-red-300 @enderror"
+                    >
+                        <option value="pending" {{ old('status', $booking->status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="confirmed" {{ old('status', $booking->status) == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                        <option value="cancelled" {{ old('status', $booking->status) == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        <option value="completed" {{ old('status', $booking->status) == 'completed' ? 'selected' : '' }}>Completed</option>
+                    </select>
+                    @error('status')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Special Requests -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Special Requests
+                    </label>
+                    <textarea
+                        name="special_requests"
+                        rows="3"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('special_requests') border-red-300 @enderror"
+                        placeholder="Any special requests from the customer..."
+                    >{{ old('special_requests', $booking->special_requests) }}</textarea>
+                    @error('special_requests')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Admin Notes -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Admin Notes (Internal)
+                    </label>
+                    <textarea
+                        name="admin_notes"
+                        rows="3"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('admin_notes') border-red-300 @enderror"
+                        placeholder="Internal notes for admin use only..."
+                    >{{ old('admin_notes', $booking->admin_notes) }}</textarea>
+                    @error('admin_notes')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-4">
+            <a href="{{ route('admin.bookings.index') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors">
+                Cancel
+            </a>
+            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg hover:shadow-xl">
+                <i class="fas fa-save mr-2"></i>
+                Update Booking
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const packageSelect = document.getElementById('package_select');
+    const packagePriceInput = document.getElementById('package_price');
+    const numberOfAdults = document.getElementById('number_of_adults');
+    const numberOfChildren = document.getElementById('number_of_children');
+    const totalAmountInput = document.getElementById('total_amount');
+    const paidAmountInput = document.getElementById('paid_amount');
+
+    // Auto-fill package price when package is selected
+    packageSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const price = selectedOption.getAttribute('data-price');
+        if (price) {
+            packagePriceInput.value = price;
+            calculateTotal();
+        }
+    });
+
+    // Calculate total amount
+    function calculateTotal() {
+        const pricePerPerson = parseFloat(packagePriceInput.value) || 0;
+        const adults = parseInt(numberOfAdults.value) || 0;
+        const children = parseInt(numberOfChildren.value) || 0;
+        
+        // Children might be 50% price, adjust as needed
+        const total = (pricePerPerson * adults) + (pricePerPerson * 0.5 * children);
+        totalAmountInput.value = total.toFixed(2);
+    }
+
+    // Recalculate on input changes
+    packagePriceInput.addEventListener('input', calculateTotal);
+    numberOfAdults.addEventListener('input', calculateTotal);
+    numberOfChildren.addEventListener('input', calculateTotal);
+});
+</script>
+@endsection

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\HotelController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\BookingController;
 
 // Frontend Routes (React SPA)
 Route::get('/', function () {
@@ -56,8 +57,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/hotels/bulk-action', [HotelController::class, 'bulkAction'])->name('hotels.bulk-action');
     Route::get('/hotels/stats', [HotelController::class, 'getStats'])->name('hotels.stats');
 
+    // Booking routes
+    Route::resource('bookings', BookingController::class);
+
     // User routes
     Route::resource('users', UserController::class);
+
+    // Support route
+    Route::get('/support', function () {
+        return view('admin.support');
+    })->name('support');
 });
 
 
