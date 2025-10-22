@@ -42,4 +42,9 @@ export const hotelsAPI = {
   getAll: () => api.get('/hotels'),
 };
 
+export const bookingsAPI = {
+  // Create a new booking
+  create: (bookingData) => api.post('/bookings', bookingData),
+};
+
 export default api;

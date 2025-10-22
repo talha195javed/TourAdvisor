@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { packagesAPI } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import BookingModal from '../components/BookingModal';
 
 function PackageDetail() {
   const { id } = useParams();
@@ -12,6 +13,7 @@ function PackageDetail() {
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   useEffect(() => {
     fetchPackage();
@@ -21,7 +23,7 @@ function PackageDetail() {
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (!pkg || galleryImages.length <= 1) return;
-      
+
       if (e.key === 'ArrowLeft') {
         prevImage();
       } else if (e.key === 'ArrowRight') {
@@ -50,11 +52,15 @@ function PackageDetail() {
   };
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = '971561325543'; // WhatsApp number without + or spaces
+    const phoneNumber = '971561325543';
     const packageUrl = window.location.href;
     const message = `Hi, I want to know more about this package:\n${packageUrl}`;
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleBookNowClick = () => {
+    setIsBookingModalOpen(true);
   };
 
   const galleryImages = pkg?.images && pkg.images.length > 0 ? pkg.images : (pkg?.main_image ? [pkg.main_image] : []);
@@ -97,7 +103,7 @@ function PackageDetail() {
       {/* Premium Hero Section */}
       <section className="relative min-h-[500px] lg:min-h-[600px] flex items-center overflow-hidden">
         {/* Background Image Layer */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url(${pkg.main_image || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&q=80'})`,
@@ -191,7 +197,6 @@ function PackageDetail() {
               </div>
             </div>
 
-            {/* Right Column - Price Card */}
             <div className="lg:col-span-1">
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-2xl">
                 <p className="text-sm text-blue-200 mb-2">{t('startingFrom')}</p>
@@ -199,7 +204,16 @@ function PackageDetail() {
                   ${parseFloat(pkg.price).toFixed(2)}
                 </p>
                 <p className="text-sm text-blue-200 mb-6">{t('perPerson')}</p>
-                
+
+                <button
+                  onClick={handleBookNowClick}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-4 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 rtl:space-x-reverse shadow-lg hover:shadow-2xl hover:scale-105 mb-3"
+                >
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>{t('bookNow') || 'Book Now'}</span>
+                </button>
                 <button
                   onClick={handleWhatsAppClick}
                   className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-4 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 rtl:space-x-reverse shadow-lg hover:shadow-2xl hover:scale-105"
@@ -247,7 +261,7 @@ function PackageDetail() {
                   className="w-full h-full object-cover cursor-pointer"
                   onClick={() => setIsImageModalOpen(true)}
                 />
-                
+
                 {/* Image Counter */}
                 <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
                   {currentImageIndex + 1} / {galleryImages.length}
@@ -433,6 +447,15 @@ function PackageDetail() {
               </div>
 
               <button
+                onClick={handleBookNowClick}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center space-x-2 rtl:space-x-reverse mb-3"
+              >
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{t('bookNow') || 'Book Now'}</span>
+              </button>
+              <button
                 onClick={handleWhatsAppClick}
                 className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center space-x-2 rtl:space-x-reverse mb-4"
               >
@@ -504,6 +527,13 @@ function PackageDetail() {
           </div>
         </div>
       )}
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        packageData={pkg}
+      />
 
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
