@@ -8,7 +8,6 @@ function PackageCard({ package: pkg }) {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      {/* Image */}
       <div className="relative h-56 overflow-hidden">
         <img
           src={pkg.main_image || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800'}
@@ -24,7 +23,6 @@ function PackageCard({ package: pkg }) {
         )}
       </div>
 
-      {/* Content */}
       <div className="p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
           {pkg.title}
@@ -33,8 +31,6 @@ function PackageCard({ package: pkg }) {
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
           {pkg.description}
         </p>
-
-        {/* Details */}
         <div className="space-y-2 mb-4">
           {pkg.location && (
             <div className="flex items-center text-gray-700 text-sm">
@@ -45,7 +41,7 @@ function PackageCard({ package: pkg }) {
               <span>{pkg.location}</span>
             </div>
           )}
-          
+
           {pkg.duration_days && (
             <div className="flex items-center text-gray-700 text-sm">
               <svg className="h-4 w-4 mr-2 rtl:mr-0 rtl:ml-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +70,6 @@ function PackageCard({ package: pkg }) {
           )}
         </div>
 
-        {/* Price and CTA */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
           <div>
             <p className="text-sm text-gray-600">{t('startingFrom')}</p>
@@ -82,7 +77,7 @@ function PackageCard({ package: pkg }) {
               ${parseFloat(pkg.price).toFixed(2)}
             </p>
           </div>
-          <Link 
+          <Link
             to={`/packages/${pkg.id}`}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors inline-block text-center"
           >

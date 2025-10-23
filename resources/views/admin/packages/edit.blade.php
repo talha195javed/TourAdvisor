@@ -126,7 +126,7 @@
                         Pricing & Duration
                     </h4>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Price -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -147,6 +147,33 @@
                                 >
                             </div>
                             @error('price')
+                            <p class="mt-1 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                {{ $message }}
+                            </p>
+                            @enderror
+                        </div>
+
+                        <!-- Visa Price -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Visa Price (USD)
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-passport text-gray-400"></i>
+                                </div>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="visa_price"
+                                    value="{{ old('visa_price', $package->visa_price) }}"
+                                    class="pl-10 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors @error('visa_price') border-red-300 @enderror"
+                                    placeholder="0.00"
+                                    min="0"
+                                >
+                            </div>
+                            @error('visa_price')
                             <p class="mt-1 text-sm text-red-600 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-1"></i>
                                 {{ $message }}

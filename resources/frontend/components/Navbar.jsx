@@ -30,13 +30,12 @@ function Navbar() {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled 
-        ? 'bg-white/95 backdrop-blur-md shadow-lg' 
+      scrolled
+        ? 'bg-white/95 backdrop-blur-md shadow-lg'
         : 'bg-white/80 backdrop-blur-sm shadow-md'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse group">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
@@ -54,7 +53,6 @@ function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-2 rtl:space-x-reverse">
             {navLinks.map((link) => (
               <Link
@@ -76,7 +74,6 @@ function Navbar() {
               </Link>
             ))}
 
-            {/* Language Switcher */}
             <button
               onClick={toggleLanguage}
               className="flex items-center space-x-2 rtl:space-x-reverse px-5 py-2.5 rounded-xl bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 transition-all duration-300 font-semibold text-sm text-gray-700 shadow-sm hover:shadow-md ml-2"
@@ -87,7 +84,6 @@ function Navbar() {
               <span>{i18n.language === 'en' ? 'العربية' : 'English'}</span>
             </button>
 
-            {/* WhatsApp Button */}
             <a
               href="https://wa.me/971561325543"
               target="_blank"
@@ -101,7 +97,6 @@ function Navbar() {
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2.5 rounded-xl hover:bg-gray-100 transition-colors"
@@ -118,7 +113,6 @@ function Navbar() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden py-6 border-t border-gray-100 animate-fade-in">
             <div className="flex flex-col space-y-3">
@@ -139,7 +133,7 @@ function Navbar() {
                   <span>{link.label}</span>
                 </Link>
               ))}
-              
+
               <button
                 onClick={() => {
                   toggleLanguage();

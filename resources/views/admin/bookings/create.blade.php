@@ -16,7 +16,7 @@
     </div>
 
     <!-- Form -->
-    <form action="{{ route('admin.bookings.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.bookings.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
 
         <!-- Customer Information -->
@@ -137,7 +137,7 @@
                     >
                         <option value="">Select a package</option>
                         @foreach($packages as $package)
-                        <option value="{{ $package->id }}" data-price="{{ $package->price }}" {{ old('package_id') == $package->id ? 'selected' : '' }}>
+                        <option value="{{ $package->id }}" data-price="{{ $package->price }}" data-visa-price="{{ $package->visa_price ?? 0 }}" {{ old('package_id') == $package->id ? 'selected' : '' }}>
                             {{ $package->title }} - ${{ number_format($package->price, 2) }}
                         </option>
                         @endforeach
@@ -427,6 +427,151 @@
             </div>
         </div>
 
+        <!-- Visa Information -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-passport text-teal-600 mr-3"></i>
+                Visa Information
+            </h3>
+
+            <!-- Visa Required Checkbox -->
+            <div class="mb-6">
+                <label class="flex items-center cursor-pointer">
+                    <input
+                        type="checkbox"
+                        name="visa_required"
+                        id="visa_required"
+                        value="1"
+                        {{ old('visa_required') ? 'checked' : '' }}
+                        class="w-5 h-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                    >
+                    <span class="ml-3 text-sm font-medium text-gray-700">Visa Required for this booking</span>
+                </label>
+            </div>
+
+            <!-- Visa Fields (shown when checkbox is checked) -->
+            <div id="visa_fields" class="{{ old('visa_required') ? '' : 'hidden' }}">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <!-- Number of Visas -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Number of Visas <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            name="number_of_visas"
+                            id="number_of_visas"
+                            value="{{ old('number_of_visas', 1) }}"
+                            min="1"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 @error('number_of_visas') border-red-300 @enderror"
+                            placeholder="1"
+                        >
+                        @error('number_of_visas')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Visa Price Per Person -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Visa Price (Per Person)
+                        </label>
+                        <input
+                            type="number"
+                            name="visa_price_per_person"
+                            id="visa_price_per_person"
+                            value="{{ old('visa_price_per_person', 0) }}"
+                            step="0.01"
+                            min="0"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 @error('visa_price_per_person') border-red-300 @enderror"
+                            placeholder="0.00"
+                        >
+                        @error('visa_price_per_person')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Total Visa Amount -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Total Visa Amount
+                        </label>
+                        <input
+                            type="number"
+                            name="total_visa_amount"
+                            id="total_visa_amount"
+                            value="{{ old('total_visa_amount', 0) }}"
+                            step="0.01"
+                            min="0"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-gray-50 @error('total_visa_amount') border-red-300 @enderror"
+                            placeholder="0.00"
+                            readonly
+                        >
+                        @error('total_visa_amount')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- File Upload Fields -->
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Passport Images Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Passport Images <span class="text-gray-500 text-xs">(Upload images in JPEG, JPG, or PNG format. Max 5MB each)</span>
+                        </label>
+                        <input
+                            type="file"
+                            name="passport_images[]"
+                            accept="image/*"
+                            multiple
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 @error('passport_images.*') border-red-300 @enderror"
+                        >
+                        @error('passport_images.*')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500">You can select multiple images at once.</p>
+                    </div>
+
+                    <!-- Applicant Images Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Applicant Photos <span class="text-gray-500 text-xs">(Upload images in JPEG, JPG, or PNG format. Max 5MB each)</span>
+                        </label>
+                        <input
+                            type="file"
+                            name="applicant_images[]"
+                            accept="image/*"
+                            multiple
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 @error('applicant_images.*') border-red-300 @enderror"
+                        >
+                        @error('applicant_images.*')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500">You can select multiple images at once.</p>
+                    </div>
+
+                    <!-- Emirates ID Images Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Emirates ID Images <span class="text-gray-500 text-xs">(Upload images in JPEG, JPG, or PNG format. Max 5MB each)</span>
+                        </label>
+                        <input
+                            type="file"
+                            name="emirates_id_images[]"
+                            accept="image/*"
+                            multiple
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 @error('emirates_id_images.*') border-red-300 @enderror"
+                        >
+                        @error('emirates_id_images.*')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500">You can select multiple images at once.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Action Buttons -->
         <div class="flex items-center justify-end space-x-4">
             <a href="{{ route('admin.bookings.index') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors">
@@ -448,25 +593,68 @@ document.addEventListener('DOMContentLoaded', function() {
     const numberOfChildren = document.getElementById('number_of_children');
     const totalAmountInput = document.getElementById('total_amount');
     const paidAmountInput = document.getElementById('paid_amount');
+    
+    // Visa elements
+    const visaRequiredCheckbox = document.getElementById('visa_required');
+    const visaFields = document.getElementById('visa_fields');
+    const numberOfVisas = document.getElementById('number_of_visas');
+    const visaPricePerPerson = document.getElementById('visa_price_per_person');
+    const totalVisaAmount = document.getElementById('total_visa_amount');
 
-    // Auto-fill package price when package is selected
+    // Toggle visa fields visibility
+    visaRequiredCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            visaFields.classList.remove('hidden');
+        } else {
+            visaFields.classList.add('hidden');
+        }
+        calculateTotal();
+    });
+
+    // Calculate visa amount
+    function calculateVisaAmount() {
+        const numVisas = parseInt(numberOfVisas.value) || 0;
+        const visaPrice = parseFloat(visaPricePerPerson.value) || 0;
+        const visaTotal = numVisas * visaPrice;
+        totalVisaAmount.value = visaTotal.toFixed(2);
+        return visaTotal;
+    }
+
+    // Auto-fill package price and visa price when package is selected
     packageSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
         const price = selectedOption.getAttribute('data-price');
+        const visaPrice = selectedOption.getAttribute('data-visa-price');
+        
         if (price) {
             packagePriceInput.value = price;
-            calculateTotal();
         }
+        
+        // Auto-fill visa price if available
+        if (visaPrice && parseFloat(visaPrice) > 0) {
+            visaPricePerPerson.value = visaPrice;
+        } else {
+            visaPricePerPerson.value = '0.00';
+        }
+        
+        calculateTotal();
     });
 
-    // Calculate total amount
+    // Calculate total amount (package + visa)
     function calculateTotal() {
         const pricePerPerson = parseFloat(packagePriceInput.value) || 0;
         const adults = parseInt(numberOfAdults.value) || 0;
         const children = parseInt(numberOfChildren.value) || 0;
         
         // Children might be 50% price, adjust as needed
-        const total = (pricePerPerson * adults) + (pricePerPerson * 0.5 * children);
+        let total = (pricePerPerson * adults) + (pricePerPerson * 0.5 * children);
+        
+        // Add visa amount if visa is required
+        if (visaRequiredCheckbox.checked) {
+            const visaTotal = calculateVisaAmount();
+            total += visaTotal;
+        }
+        
         totalAmountInput.value = total.toFixed(2);
     }
 
@@ -474,6 +662,14 @@ document.addEventListener('DOMContentLoaded', function() {
     packagePriceInput.addEventListener('input', calculateTotal);
     numberOfAdults.addEventListener('input', calculateTotal);
     numberOfChildren.addEventListener('input', calculateTotal);
+    
+    // Visa calculation listeners
+    if (numberOfVisas) {
+        numberOfVisas.addEventListener('input', calculateTotal);
+    }
+    if (visaPricePerPerson) {
+        visaPricePerPerson.addEventListener('input', calculateTotal);
+    }
 });
 </script>
 @endsection

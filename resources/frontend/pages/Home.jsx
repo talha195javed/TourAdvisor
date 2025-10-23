@@ -32,13 +32,10 @@ function Home() {
 
   return (
     <div className="min-h-screen overflow-hidden">
-      {/* New Ultra Modern Hero Section */}
       <HeroSection />
 
-      {/* Featured Packages Section */}
       <section className="py-24 bg-gradient-to-b from-gray-50 to-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
               ✨ Handpicked For You
@@ -111,9 +108,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
       <section className="py-24 bg-white relative overflow-hidden">
-        {/* Background Decoration */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-100 rounded-full filter blur-3xl opacity-30 -mr-48 -mt-48"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-100 rounded-full filter blur-3xl opacity-30 -ml-48 -mb-48"></div>
 
@@ -128,7 +123,6 @@ function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
             <div className="group relative bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200 rounded-full filter blur-2xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
               <div className="relative">
@@ -142,7 +136,6 @@ function Home() {
               </div>
             </div>
 
-            {/* Feature 2 */}
             <div className="group relative bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
               <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full filter blur-2xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
               <div className="relative">
@@ -156,7 +149,6 @@ function Home() {
               </div>
             </div>
 
-            {/* Feature 3 */}
             <div className="group relative bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
               <div className="absolute top-0 right-0 w-32 h-32 bg-purple-200 rounded-full filter blur-2xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
               <div className="relative">
@@ -173,10 +165,8 @@ function Home() {
         </div>
       </section>
 
-      {/* Customer Reviews Section */}
       <ReviewsSection />
 
-      {/* CTA Section */}
       <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="absolute inset-0">

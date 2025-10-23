@@ -44,7 +44,16 @@ export const hotelsAPI = {
 
 export const bookingsAPI = {
   // Create a new booking
-  create: (bookingData) => api.post('/bookings', bookingData),
+  create: (bookingData) => {
+    // If bookingData is FormData, we need to override the Content-Type header
+    const config = bookingData instanceof FormData ? {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    } : {};
+    
+    return api.post('/bookings', bookingData, config);
+  },
 };
 
 export default api;
