@@ -169,6 +169,11 @@ Route::post('/bookings', function (Request $request) {
         'number_of_children' => 'nullable|integer|min:0',
         'number_of_infants' => 'nullable|integer|min:0',
         'special_requests' => 'nullable|string',
+        'visa_required' => 'nullable|boolean',
+        'number_of_visas' => 'nullable|integer|min:0',
+        'passport_images.*' => 'nullable|image|max:5120',
+        'applicant_images.*' => 'nullable|image|max:5120',
+        'emirates_id_images.*' => 'nullable|image|max:5120',
     ]);
 
     // Get package to calculate pricing
@@ -181,6 +186,46 @@ Route::post('/bookings', function (Request $request) {
     
     // Simple calculation: adults pay full price, children 50%, infants free
     $totalAmount = ($adults * $package->price) + ($children * $package->price * 0.5);
+    
+    // Calculate visa amount if required
+    $visaRequired = $request->input('visa_required', false);
+    $numberOfVisas = $request->input('number_of_visas', 0);
+    $totalVisaAmount = 0;
+    $visaPricePerPerson = 0;
+    
+    if ($visaRequired && $numberOfVisas > 0 && $package->visa_price) {
+        $visaPricePerPerson = $package->visa_price;
+        $totalVisaAmount = $numberOfVisas * $visaPricePerPerson;
+        $totalAmount += $totalVisaAmount;
+    }
+    
+    // Handle visa file uploads
+    $passportImages = [];
+    $applicantImages = [];
+    $emiratesIdImages = [];
+    
+    if ($visaRequired) {
+        if ($request->hasFile('passport_images')) {
+            foreach ($request->file('passport_images') as $file) {
+                $path = $file->store('bookings/visa/passports', 'public');
+                $passportImages[] = $path;
+            }
+        }
+        
+        if ($request->hasFile('applicant_images')) {
+            foreach ($request->file('applicant_images') as $file) {
+                $path = $file->store('bookings/visa/applicants', 'public');
+                $applicantImages[] = $path;
+            }
+        }
+        
+        if ($request->hasFile('emirates_id_images')) {
+            foreach ($request->file('emirates_id_images') as $file) {
+                $path = $file->store('bookings/visa/emirates_ids', 'public');
+                $emiratesIdImages[] = $path;
+            }
+        }
+    }
     
     // Generate booking reference
     $bookingReference = \App\Models\Booking::generateBookingReference();
@@ -206,6 +251,13 @@ Route::post('/bookings', function (Request $request) {
         'payment_status' => 'pending',
         'status' => 'pending',
         'special_requests' => $validated['special_requests'] ?? null,
+        'visa_required' => $visaRequired,
+        'number_of_visas' => $numberOfVisas,
+        'visa_price_per_person' => $visaPricePerPerson,
+        'total_visa_amount' => $totalVisaAmount,
+        'passport_images' => $passportImages,
+        'applicant_images' => $applicantImages,
+        'emirates_id_images' => $emiratesIdImages,
     ]);
 
     return response()->json([

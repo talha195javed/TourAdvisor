@@ -32,6 +32,13 @@ class Booking extends Model
         'status',
         'special_requests',
         'admin_notes',
+        'visa_required',
+        'number_of_visas',
+        'visa_price_per_person',
+        'total_visa_amount',
+        'passport_images',
+        'applicant_images',
+        'emirates_id_images',
     ];
 
     protected $casts = [
@@ -41,6 +48,12 @@ class Booking extends Model
         'total_amount' => 'decimal:2',
         'paid_amount' => 'decimal:2',
         'remaining_amount' => 'decimal:2',
+        'visa_required' => 'boolean',
+        'visa_price_per_person' => 'decimal:2',
+        'total_visa_amount' => 'decimal:2',
+        'passport_images' => 'array',
+        'applicant_images' => 'array',
+        'emirates_id_images' => 'array',
     ];
 
     // Relationship with Package

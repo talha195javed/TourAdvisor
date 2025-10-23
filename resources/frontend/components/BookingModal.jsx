@@ -21,12 +21,21 @@ function BookingModal({ isOpen, onClose, packageData }) {
     number_of_children: 0,
     number_of_infants: 0,
     special_requests: '',
+    visa_required: false,
+    number_of_visas: 0,
+  });
+
+  const [visaFiles, setVisaFiles] = useState({
+    passportImages: [],
+    applicantImages: [],
+    emiratesIdImages: [],
   });
 
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
 
     // If travel date is changed and package has duration_days, auto-calculate return date
     if (name === 'travel_date' && value && packageData?.duration_days) {
@@ -39,10 +48,16 @@ function BookingModal({ isOpen, onClose, packageData }) {
         [name]: value,
         return_date: returnDate.toISOString().split('T')[0]
       }));
+    } else if (name === 'visa_required') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: newValue,
+        number_of_visas: newValue ? 1 : 0
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
-        [name]: value
+        [name]: newValue
       }));
     }
 
@@ -52,6 +67,21 @@ function BookingModal({ isOpen, onClose, packageData }) {
         [name]: null
       }));
     }
+  };
+
+  const handleFileChange = (e, fileType) => {
+    const files = Array.from(e.target.files);
+    setVisaFiles(prev => ({
+      ...prev,
+      [fileType]: [...prev[fileType], ...files]
+    }));
+  };
+
+  const removeFile = (fileType, index) => {
+    setVisaFiles(prev => ({
+      ...prev,
+      [fileType]: prev[fileType].filter((_, i) => i !== index)
+    }));
   };
 
   const validateForm = () => {
@@ -88,8 +118,17 @@ function BookingModal({ isOpen, onClose, packageData }) {
     const adults = parseInt(formData.number_of_adults) || 0;
     const children = parseInt(formData.number_of_children) || 0;
     const price = parseFloat(packageData.price) || 0;
+    const packageTotal = (adults * price) + (children * price * 0.5);
 
-    return (adults * price) + (children * price * 0.5);
+    // Add visa cost if required
+    let visaTotal = 0;
+    if (formData.visa_required && packageData.visa_price) {
+      const numberOfVisas = parseInt(formData.number_of_visas) || 0;
+      const visaPrice = parseFloat(packageData.visa_price) || 0;
+      visaTotal = numberOfVisas * visaPrice;
+    }
+
+    return packageTotal + visaTotal;
   };
 
   const handleSubmit = async (e) => {
@@ -103,15 +142,40 @@ function BookingModal({ isOpen, onClose, packageData }) {
     setError(null);
 
     try {
-      const bookingData = {
-        package_id: packageData.id,
-        ...formData,
-        number_of_adults: parseInt(formData.number_of_adults),
-        number_of_children: parseInt(formData.number_of_children),
-        number_of_infants: parseInt(formData.number_of_infants),
-      };
+      const formDataToSend = new FormData();
 
-      const response = await bookingsAPI.create(bookingData);
+      // Add basic booking data
+      formDataToSend.append('package_id', packageData.id);
+      formDataToSend.append('customer_name', formData.customer_name);
+      formDataToSend.append('customer_email', formData.customer_email);
+      formDataToSend.append('customer_phone', formData.customer_phone);
+      formDataToSend.append('customer_country', formData.customer_country);
+      formDataToSend.append('customer_address', formData.customer_address);
+      formDataToSend.append('travel_date', formData.travel_date);
+      formDataToSend.append('return_date', formData.return_date);
+      formDataToSend.append('number_of_adults', parseInt(formData.number_of_adults));
+      formDataToSend.append('number_of_children', parseInt(formData.number_of_children));
+      formDataToSend.append('number_of_infants', parseInt(formData.number_of_infants));
+      formDataToSend.append('special_requests', formData.special_requests);
+
+      // Add visa data
+      formDataToSend.append('visa_required', formData.visa_required ? '1' : '0');
+      if (formData.visa_required) {
+        formDataToSend.append('number_of_visas', parseInt(formData.number_of_visas));
+
+        // Add visa files - use array notation without index for Laravel
+        visaFiles.passportImages.forEach((file) => {
+          formDataToSend.append('passport_images[]', file);
+        });
+        visaFiles.applicantImages.forEach((file) => {
+          formDataToSend.append('applicant_images[]', file);
+        });
+        visaFiles.emiratesIdImages.forEach((file) => {
+          formDataToSend.append('emirates_id_images[]', file);
+        });
+      }
+
+      const response = await bookingsAPI.create(formDataToSend);
 
       if (response.data.success) {
         setSuccess(true);
@@ -146,6 +210,13 @@ function BookingModal({ isOpen, onClose, packageData }) {
       number_of_children: 0,
       number_of_infants: 0,
       special_requests: '',
+      visa_required: false,
+      number_of_visas: 0,
+    });
+    setVisaFiles({
+      passportImages: [],
+      applicantImages: [],
+      emiratesIdImages: [],
     });
     setErrors({});
     setError(null);
@@ -441,6 +512,165 @@ function BookingModal({ isOpen, onClose, packageData }) {
                   />
                 </div>
 
+                {packageData?.visa_price && packageData.visa_price > 0 && (
+                  <div className="mt-6 bg-gradient-to-r from-teal-50 to-cyan-50 border-2 border-teal-200 rounded-xl p-6">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="visa_required"
+                        name="visa_required"
+                        checked={formData.visa_required}
+                        onChange={handleChange}
+                        className="w-5 h-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                      />
+                      <label htmlFor="visa_required" className="ml-3 text-sm font-semibold text-gray-700 cursor-pointer">
+                        {t('Visa Required') || 'Visa Required'} (${parseFloat(packageData.visa_price).toFixed(2)} per person)
+                      </label>
+                    </div>
+                    {formData.visa_required && (
+                      <div className="mt-6 space-y-6 animate-slideDown">
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            {t('Number of Visas Required') || 'Number of Visas Required'} <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            name="number_of_visas"
+                            value={formData.number_of_visas}
+                            onChange={handleChange}
+                            min="1"
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 hover:border-gray-300 transition-all"
+                            placeholder="Enter number of visas"
+                          />
+                          <p className="mt-1 text-xs text-teal-600">
+                            Total visa cost: ${(parseInt(formData.number_of_visas || 0) * parseFloat(packageData.visa_price)).toFixed(2)}
+                          </p>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            {t('Passport Images') || 'Passport Images'} <span className="text-red-500">* (Upload images in JPEG, JPG, or PNG format.)</span>
+                          </label>
+                          <div className="border-2 border-dashed border-teal-300 rounded-xl p-4 hover:border-teal-500 transition-all">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={(e) => handleFileChange(e, 'passportImages')}
+                              className="hidden"
+                              id="passport_images"
+                            />
+                            <label htmlFor="passport_images" className="cursor-pointer flex flex-col items-center">
+                              <svg className="h-12 w-12 text-teal-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                              </svg>
+                              <span className="text-sm text-gray-600">Click to upload passport images</span>
+                              <span className="text-xs text-gray-500 mt-1">Multiple images allowed (per image 5MB max)</span>
+                            </label>
+                          </div>
+                          {visaFiles.passportImages.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                              {visaFiles.passportImages.map((file, index) => (
+                                <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg border border-gray-200">
+                                  <span className="text-sm text-gray-700 truncate flex-1">{file.name}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeFile('passportImages', index)}
+                                    className="ml-2 text-red-500 hover:text-red-700"
+                                  >
+                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            {t('Applicant Photos') || 'Applicant Photos'} <span className="text-red-500">* (Upload images in JPEG, JPG, or PNG format.)</span>
+                          </label>
+                          <div className="border-2 border-dashed border-teal-300 rounded-xl p-4 hover:border-teal-500 transition-all">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={(e) => handleFileChange(e, 'applicantImages')}
+                              className="hidden"
+                              id="applicant_images"
+                            />
+                            <label htmlFor="applicant_images" className="cursor-pointer flex flex-col items-center">
+                              <svg className="h-12 w-12 text-teal-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                              <span className="text-sm text-gray-600">Click to upload applicant photos</span>
+                              <span className="text-xs text-gray-500 mt-1">Multiple images allowed (per image 5MB max)</span>
+                            </label>
+                          </div>
+                          {visaFiles.applicantImages.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                              {visaFiles.applicantImages.map((file, index) => (
+                                <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg border border-gray-200">
+                                  <span className="text-sm text-gray-700 truncate flex-1">{file.name}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeFile('applicantImages', index)}
+                                    className="ml-2 text-red-500 hover:text-red-700"
+                                  >
+                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            {t('Emirates ID Images') || 'Emirates ID Images'} <span className="text-red-500">* (Upload images in JPEG, JPG, or PNG format.)</span>
+                          </label>
+                          <div className="border-2 border-dashed border-teal-300 rounded-xl p-4 hover:border-teal-500 transition-all">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={(e) => handleFileChange(e, 'emiratesIdImages')}
+                              className="hidden"
+                              id="emirates_id_images"
+                            />
+                            <label htmlFor="emirates_id_images" className="cursor-pointer flex flex-col items-center">
+                              <svg className="h-12 w-12 text-teal-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                              </svg>
+                              <span className="text-sm text-gray-600">Click to upload Emirates ID images</span>
+                              <span className="text-xs text-gray-500 mt-1">Multiple images allowed (per image 5MB max)</span>
+                            </label>
+                          </div>
+                          {visaFiles.emiratesIdImages.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                              {visaFiles.emiratesIdImages.map((file, index) => (
+                                <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg border border-gray-200">
+                                  <span className="text-sm text-gray-700 truncate flex-1">{file.name}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeFile('emiratesIdImages', index)}
+                                    className="ml-2 text-red-500 hover:text-red-700"
+                                  >
+                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="mt-8 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border-2 border-blue-200 rounded-2xl p-6 shadow-lg">
                   <div className="flex justify-between items-center mb-3">
                     <span className="text-gray-700">{t('packagePrice') || 'Package Price'}</span>
@@ -456,6 +686,12 @@ function BookingModal({ isOpen, onClose, packageData }) {
                       <span className="font-semibold text-gray-900">${(formData.number_of_children * parseFloat(packageData?.price || 0) * 0.5).toFixed(2)}</span>
                     </div>
                   )}
+                  {formData.visa_required && packageData?.visa_price && (
+                    <div className="flex justify-between items-center mb-3 bg-teal-50 p-3 rounded-lg">
+                      <span className="text-teal-700 font-medium">{t('Visa Cost') || 'Visa Cost'} ({formData.number_of_visas} × ${parseFloat(packageData.visa_price).toFixed(2)})</span>
+                      <span className="font-bold text-teal-700">${(parseInt(formData.number_of_visas || 0) * parseFloat(packageData.visa_price)).toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="border-t-2 border-blue-300 pt-4 mt-4">
                     <div className="flex justify-between items-center bg-white rounded-xl p-4 shadow-sm">
                       <span className="text-xl font-black text-gray-900">{t('totalAmount') || 'Total Amount'}</span>
@@ -468,7 +704,7 @@ function BookingModal({ isOpen, onClose, packageData }) {
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-105 shadow-md"
+                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-80f0 px-6 py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-105 shadow-md"
                   >
                     {t('cancel') || 'Cancel'}
                   </button>

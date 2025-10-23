@@ -100,28 +100,22 @@ function PackageDetail() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Premium Hero Section */}
       <section className="relative min-h-[500px] lg:min-h-[600px] flex items-center overflow-hidden">
-        {/* Background Image Layer */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url(${pkg.main_image || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&q=80'})`,
           }}
         >
-          {/* Dark Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-blue-900/85 to-purple-900/90"></div>
         </div>
 
-        {/* Floating Animated Blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-10 -left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob"></div>
           <div className="absolute top-1/3 -right-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         </div>
 
-        {/* Hero Content */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* Breadcrumb */}
           <div className="mb-8">
             <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
               <Link to="/" className="text-blue-200 hover:text-white transition-colors">{t('home')}</Link>
@@ -133,9 +127,7 @@ function PackageDetail() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8 items-end">
-            {/* Left Column - Package Info */}
             <div className="lg:col-span-2 text-white space-y-6">
-              {/* Category Badge */}
               {pkg.category && (
                 <div className="inline-flex items-center space-x-2 rtl:space-x-reverse bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md border border-white/30 rounded-full px-5 py-2 shadow-lg">
                   <svg className="h-5 w-5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,12 +137,10 @@ function PackageDetail() {
                 </div>
               )}
 
-              {/* Package Title */}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight">
                 {pkg.title}
               </h1>
 
-              {/* Quick Info Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {pkg.location && (
                   <div className="flex items-center space-x-3 rtl:space-x-reverse bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20">
@@ -228,7 +218,6 @@ function PackageDetail() {
           </div>
         </div>
 
-        {/* Decorative Wave Bottom */}
         <div className="absolute bottom-0 left-0 right-0 z-0">
           <svg className="w-full h-16 md:h-20" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <path
@@ -240,7 +229,6 @@ function PackageDetail() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Image Gallery Slider */}
         {galleryImages.length > 0 && (
           <div className="mb-8 bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="p-6 border-b border-gray-200">
@@ -253,7 +241,6 @@ function PackageDetail() {
             </div>
 
             <div className="relative">
-              {/* Main Image Display */}
               <div className="relative h-96 md:h-[500px] bg-gray-900">
                 <img
                   src={galleryImages[currentImageIndex]}
@@ -262,12 +249,10 @@ function PackageDetail() {
                   onClick={() => setIsImageModalOpen(true)}
                 />
 
-                {/* Image Counter */}
                 <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
                   {currentImageIndex + 1} / {galleryImages.length}
                 </div>
 
-                {/* Navigation Arrows */}
                 {galleryImages.length > 1 && (
                   <>
                     <button
@@ -292,7 +277,6 @@ function PackageDetail() {
                 )}
               </div>
 
-              {/* Thumbnail Navigation */}
               {galleryImages.length > 1 && (
                 <div className="p-6 bg-gray-50">
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
@@ -324,10 +308,8 @@ function PackageDetail() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2">
 
-            {/* Package Info */}
             <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
               <div className="flex items-start justify-between mb-6">
                 <div>
@@ -342,7 +324,6 @@ function PackageDetail() {
                 </div>
               </div>
 
-              {/* Quick Info */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 pb-6 border-b">
                 {pkg.location && (
                   <div className="flex items-center text-gray-700">
@@ -382,13 +363,11 @@ function PackageDetail() {
                 )}
               </div>
 
-              {/* Description */}
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('description')}</h2>
                 <p className="text-gray-700 leading-relaxed">{pkg.description}</p>
               </div>
 
-              {/* Features */}
               {pkg.features && pkg.features.length > 0 && (
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('included')}</h2>
@@ -405,7 +384,6 @@ function PackageDetail() {
                 </div>
               )}
 
-              {/* Hotel Info */}
               {pkg.hotel && (
                 <div className="bg-gray-50 rounded-lg p-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('accommodation')}</h2>
@@ -435,7 +413,6 @@ function PackageDetail() {
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
               <div className="mb-6">
@@ -475,7 +452,6 @@ function PackageDetail() {
         </div>
       </div>
 
-      {/* Fullscreen Image Modal */}
       {isImageModalOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
@@ -528,7 +504,6 @@ function PackageDetail() {
         </div>
       )}
 
-      {/* Booking Modal */}
       <BookingModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
