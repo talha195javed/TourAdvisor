@@ -7,28 +7,23 @@ function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-      {/* Animated Mesh Gradient Background */}
+
       <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 via-blue-500/20 to-purple-500/20"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,0),rgba(17,24,39,1))]"></div>
       </div>
 
-      {/* Floating Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse"></div>
         <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
         <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '4s' }}></div>
       </div>
 
-      {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-40"></div>
 
-      {/* Hero Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Column - Text Content */}
           <div className="text-left space-y-8">
-            {/* Premium Badge */}
             <div className="inline-flex items-center space-x-3 rtl:space-x-reverse bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-xl border border-cyan-500/20 rounded-full px-6 py-3 animate-fade-in-down">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full blur-sm"></div>
@@ -39,7 +34,6 @@ function HeroSection() {
               <span className="text-white font-semibold text-sm tracking-wide">Premium Travel Experiences</span>
             </div>
 
-            {/* Main Heading */}
             <div className="animate-fade-in-up">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
                 <span className="block text-white mb-2">{t('heroTitle')}</span>
@@ -49,12 +43,10 @@ function HeroSection() {
               </h1>
             </div>
 
-            {/* Subtitle */}
             <p className="text-xl md:text-2xl text-slate-300 leading-relaxed max-w-xl animate-fade-in-up animation-delay-200">
               {t('heroSubtitle')}
             </p>
 
-            {/* Feature Pills */}
             <div className="flex flex-wrap gap-3 animate-fade-in-up animation-delay-300">
               <div className="flex items-center space-x-2 rtl:space-x-reverse bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2">
                 <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +68,6 @@ function HeroSection() {
               </div>
             </div>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-400">
               <Link
                 to="/packages"
@@ -102,7 +93,6 @@ function HeroSection() {
               </a>
             </div>
 
-            {/* Trust Indicators */}
             <div className="flex items-center space-x-8 rtl:space-x-reverse pt-4 animate-fade-in-up animation-delay-500">
               <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <div className="flex -space-x-2 rtl:space-x-reverse">
@@ -125,10 +115,8 @@ function HeroSection() {
             </div>
           </div>
 
-          {/* Right Column - Floating Cards */}
           <div className="hidden lg:block relative animate-fade-in-right">
             <div className="relative h-96">
-              {/* Floating Card 1 - Premium Hotels */}
               <div className="absolute top-0 right-0 w-72 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl hover:scale-105 transition-transform duration-300 z-10">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center">
@@ -146,7 +134,6 @@ function HeroSection() {
                 </div>
               </div>
 
-              {/* Floating Card 2 - Destinations */}
               <div className="absolute bottom-0 left-0 w-72 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl hover:scale-105 transition-transform duration-300">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center">
@@ -168,14 +155,12 @@ function HeroSection() {
                 </div>
               </div>
 
-              {/* Center Glow Effect */}
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full filter blur-3xl opacity-20"></div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Wave */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg className="w-full h-24 fill-current text-gray-50" viewBox="0 0 1440 120" preserveAspectRatio="none">
           <path d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"></path>

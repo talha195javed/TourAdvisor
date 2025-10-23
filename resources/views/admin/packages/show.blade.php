@@ -139,6 +139,17 @@
                         <span class="text-2xl font-bold text-green-600">${{ number_format($package->price, 2) }}</span>
                     </div>
 
+                    <!-- Visa Price -->
+                    @if($package->visa_price && $package->visa_price > 0)
+                    <div class="flex items-center justify-between p-4 bg-teal-50 rounded-xl">
+                        <div class="flex items-center">
+                            <i class="fas fa-passport text-teal-500 mr-3 text-xl"></i>
+                            <span class="text-sm text-gray-600">Visa Price</span>
+                        </div>
+                        <span class="text-xl font-bold text-teal-600">${{ number_format($package->visa_price, 2) }}</span>
+                    </div>
+                    @endif
+
                     <!-- Duration -->
                     <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
                         <div class="flex items-center">

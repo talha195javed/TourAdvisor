@@ -77,13 +77,53 @@ class BookingController extends Controller
             'status' => 'required|in:pending,confirmed,cancelled,completed',
             'special_requests' => 'nullable|string',
             'admin_notes' => 'nullable|string',
+            'visa_required' => 'nullable|boolean',
+            'number_of_visas' => 'nullable|integer|min:0',
+            'visa_price_per_person' => 'nullable|numeric|min:0',
+            'total_visa_amount' => 'nullable|numeric|min:0',
+            'passport_images.*' => 'nullable|image|max:5120',
+            'applicant_images.*' => 'nullable|image|max:5120',
+            'emirates_id_images.*' => 'nullable|image|max:5120',
         ]);
+
+        // Handle visa file uploads
+        $passportImages = [];
+        $applicantImages = [];
+        $emiratesIdImages = [];
+        
+        if ($request->input('visa_required')) {
+            if ($request->hasFile('passport_images')) {
+                foreach ($request->file('passport_images') as $file) {
+                    $path = $file->store('bookings/visa/passports', 'public');
+                    $passportImages[] = $path;
+                }
+            }
+            
+            if ($request->hasFile('applicant_images')) {
+                foreach ($request->file('applicant_images') as $file) {
+                    $path = $file->store('bookings/visa/applicants', 'public');
+                    $applicantImages[] = $path;
+                }
+            }
+            
+            if ($request->hasFile('emirates_id_images')) {
+                foreach ($request->file('emirates_id_images') as $file) {
+                    $path = $file->store('bookings/visa/emirates_ids', 'public');
+                    $emiratesIdImages[] = $path;
+                }
+            }
+        }
 
         // Generate booking reference
         $validated['booking_reference'] = Booking::generateBookingReference();
 
         // Calculate remaining amount
         $validated['remaining_amount'] = $validated['total_amount'] - ($validated['paid_amount'] ?? 0);
+        
+        // Add visa images
+        $validated['passport_images'] = $passportImages;
+        $validated['applicant_images'] = $applicantImages;
+        $validated['emirates_id_images'] = $emiratesIdImages;
 
         Booking::create($validated);
 
@@ -135,10 +175,50 @@ class BookingController extends Controller
             'status' => 'required|in:pending,confirmed,cancelled,completed',
             'special_requests' => 'nullable|string',
             'admin_notes' => 'nullable|string',
+            'visa_required' => 'nullable|boolean',
+            'number_of_visas' => 'nullable|integer|min:0',
+            'visa_price_per_person' => 'nullable|numeric|min:0',
+            'total_visa_amount' => 'nullable|numeric|min:0',
+            'passport_images.*' => 'nullable|image|max:5120',
+            'applicant_images.*' => 'nullable|image|max:5120',
+            'emirates_id_images.*' => 'nullable|image|max:5120',
         ]);
+
+        // Handle visa file uploads (keep existing images)
+        $passportImages = $booking->passport_images ?? [];
+        $applicantImages = $booking->applicant_images ?? [];
+        $emiratesIdImages = $booking->emirates_id_images ?? [];
+        
+        if ($request->input('visa_required')) {
+            if ($request->hasFile('passport_images')) {
+                foreach ($request->file('passport_images') as $file) {
+                    $path = $file->store('bookings/visa/passports', 'public');
+                    $passportImages[] = $path;
+                }
+            }
+            
+            if ($request->hasFile('applicant_images')) {
+                foreach ($request->file('applicant_images') as $file) {
+                    $path = $file->store('bookings/visa/applicants', 'public');
+                    $applicantImages[] = $path;
+                }
+            }
+            
+            if ($request->hasFile('emirates_id_images')) {
+                foreach ($request->file('emirates_id_images') as $file) {
+                    $path = $file->store('bookings/visa/emirates_ids', 'public');
+                    $emiratesIdImages[] = $path;
+                }
+            }
+        }
 
         // Calculate remaining amount
         $validated['remaining_amount'] = $validated['total_amount'] - ($validated['paid_amount'] ?? 0);
+        
+        // Add visa images
+        $validated['passport_images'] = $passportImages;
+        $validated['applicant_images'] = $applicantImages;
+        $validated['emirates_id_images'] = $emiratesIdImages;
 
         $booking->update($validated);
 

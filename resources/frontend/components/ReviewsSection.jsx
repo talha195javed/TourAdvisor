@@ -99,16 +99,15 @@ function ReviewsSection() {
 
   return (
     <section className="py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 relative overflow-hidden">
-      {/* Background Decorations */}
+
       <div className="absolute top-0 left-0 w-96 h-96 bg-blue-200 rounded-full filter blur-3xl opacity-20 -ml-48 -mt-48"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-200 rounded-full filter blur-3xl opacity-20 -mr-48 -mb-48"></div>
-      
-      {/* Floating Elements */}
+
       <div className="absolute top-1/4 right-1/4 w-4 h-4 bg-blue-400 rounded-full animate-ping"></div>
       <div className="absolute bottom-1/3 left-1/3 w-3 h-3 bg-purple-400 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
+
         <div className="text-center mb-16">
           <div className="inline-flex items-center space-x-2 rtl:space-x-reverse bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200 rounded-full px-6 py-3 mb-6">
             <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
@@ -116,7 +115,7 @@ function ReviewsSection() {
             </svg>
             <span className="text-blue-700 font-semibold text-sm tracking-wide">{t('customerReviews')}</span>
           </div>
-          
+
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
             {t('whatCustomersSay')}
           </h2>
@@ -124,7 +123,6 @@ function ReviewsSection() {
             {t('reviewsSubtitle')}
           </p>
 
-          {/* Stats Bar */}
           <div className="flex items-center justify-center space-x-8 rtl:space-x-reverse mt-8">
             <div className="text-center">
               <div className="text-3xl font-black text-blue-600">4.9/5</div>
@@ -143,7 +141,6 @@ function ReviewsSection() {
           </div>
         </div>
 
-        {/* Reviews Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {reviews.map((review, index) => (
             <div
@@ -151,10 +148,8 @@ function ReviewsSection() {
               className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 relative overflow-hidden"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              {/* Gradient Overlay on Hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl"></div>
 
-              {/* Quote Icon */}
               <div className="absolute top-6 right-6 opacity-10 group-hover:opacity-20 transition-opacity">
                 <svg className="w-16 h-16 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
@@ -162,7 +157,7 @@ function ReviewsSection() {
               </div>
 
               <div className="relative">
-                {/* Header */}
+
                 <div className="flex items-center space-x-4 rtl:space-x-reverse mb-6">
                   <div className="relative">
                     <img
@@ -188,7 +183,6 @@ function ReviewsSection() {
                   </div>
                 </div>
 
-                {/* Rating */}
                 <div className="flex items-center space-x-1 rtl:space-x-reverse mb-4">
                   {[...Array(review.rating)].map((_, i) => (
                     <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -197,12 +191,10 @@ function ReviewsSection() {
                   ))}
                 </div>
 
-                {/* Review Text */}
                 <p className="text-gray-700 leading-relaxed mb-6 line-clamp-4">
                   "{review.review}"
                 </p>
 
-                {/* Package Badge */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                   <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
@@ -219,7 +211,6 @@ function ReviewsSection() {
           ))}
         </div>
 
-        {/* Bottom CTA */}
         <div className="text-center mt-16">
           <div className="inline-flex flex-col items-center space-y-4">
             <p className="text-gray-600 text-lg">

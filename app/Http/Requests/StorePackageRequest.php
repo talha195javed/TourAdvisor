@@ -24,6 +24,7 @@ class StorePackageRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'visa_price' => 'nullable|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
             'main_image_url' => 'nullable|url',
             'main_image_file' => 'nullable|image|max:2048',
