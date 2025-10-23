@@ -71,37 +71,29 @@ function Packages() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Premium Hero Section */}
       <section className="relative min-h-[600px] lg:min-h-[700px] flex items-center overflow-hidden">
-        {/* Background Image Layer */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105"
           style={{
             backgroundImage: 'url(https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&q=80)',
           }}
         >
-          {/* Dark Gradient Overlay for Text Readability */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-blue-900/85 to-purple-900/90"></div>
 
-          {/* Animated Pattern Overlay */}
           <div className="absolute inset-0 opacity-10" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
           }}></div>
         </div>
 
-        {/* Floating Animated Blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-10 -left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob"></div>
           <div className="absolute top-1/3 -right-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
           <div className="absolute -bottom-10 left-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
 
-        {/* Hero Content */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Column - Text Content */}
             <div className="text-white space-y-8">
-              {/* Premium Badge */}
               <div className="inline-flex items-center space-x-2 rtl:space-x-reverse bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md border border-white/30 rounded-full px-5 py-2.5 shadow-lg animate-fade-in-down">
                 <svg className="h-5 w-5 text-yellow-400 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -109,7 +101,6 @@ function Packages() {
                 <span className="text-white font-semibold text-sm">{t('premiumExperiences')}</span>
               </div>
 
-              {/* Main Heading */}
               <div className="animate-fade-in-up">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-4">
                   <span className="block text-white">{t('discoverYour')}</span>
@@ -119,12 +110,10 @@ function Packages() {
                 </h1>
               </div>
 
-              {/* Subtitle */}
               <p className="text-xl md:text-2xl text-blue-100 leading-relaxed max-w-xl animate-fade-in-up animation-delay-200">
                 {t('packagesSubtitle')}
               </p>
 
-              {/* Feature List */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in-up animation-delay-400">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
                   <div className="flex-shrink-0 w-10 h-10 bg-green-500/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-green-400/30">
@@ -160,7 +149,6 @@ function Packages() {
                 </div>
               </div>
 
-              {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-600">
                 <a
                   href="#packages"
@@ -189,9 +177,7 @@ function Packages() {
               </div>
             </div>
 
-            {/* Right Column - Stats Cards */}
             <div className="hidden lg:grid grid-cols-2 gap-6 animate-fade-in-up animation-delay-400">
-              {/* Stat Card 1 */}
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center">
@@ -204,7 +190,6 @@ function Packages() {
                 <div className="text-blue-200 font-medium">{t('travelPackages')}</div>
               </div>
 
-              {/* Stat Card 2 */}
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center">
@@ -217,7 +202,6 @@ function Packages() {
                 <div className="text-purple-200 font-medium">{t('categories')}</div>
               </div>
 
-              {/* Stat Card 3 */}
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center">
@@ -230,7 +214,6 @@ function Packages() {
                 <div className="text-green-200 font-medium">{t('happyTravelers')}</div>
               </div>
 
-              {/* Stat Card 4 */}
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-2xl flex items-center justify-center">
@@ -246,7 +229,6 @@ function Packages() {
           </div>
         </div>
 
-        {/* Decorative Wave Bottom */}
         <div className="absolute bottom-0 left-0 right-0 z-0">
           <svg className="w-full h-16 md:h-24" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <path
@@ -257,14 +239,11 @@ function Packages() {
         </div>
       </section>
 
-      {/* Packages Section Anchor */}
       <div id="packages"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search and Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-            {/* Search */}
             <div className="md:col-span-5">
               <div className="relative">
                 <svg className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,7 +259,6 @@ function Packages() {
               </div>
             </div>
 
-            {/* Category Filter */}
             <div className="md:col-span-4">
               <div className="relative">
                 <svg className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -301,7 +279,6 @@ function Packages() {
               </div>
             </div>
 
-            {/* Sort */}
             <div className="md:col-span-3">
               <div className="relative">
                 <svg className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,7 +296,6 @@ function Packages() {
             </div>
           </div>
 
-          {/* Active Filters */}
           {(searchQuery || selectedCategory) && (
             <div className="mt-4 flex flex-wrap gap-2">
               {searchQuery && (
@@ -348,7 +324,6 @@ function Packages() {
           )}
         </div>
 
-        {/* Results Count */}
         {!loading && (
           <div className="mb-6">
             <p className="text-gray-600">
@@ -357,7 +332,6 @@ function Packages() {
           </div>
         )}
 
-        {/* Packages Grid */}
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>

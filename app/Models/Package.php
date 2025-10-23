@@ -13,6 +13,7 @@ class Package extends Model
         'title',
         'description',
         'price',
+        'visa_price',
         'duration_days',
         'main_image',
         'images',
@@ -32,6 +33,7 @@ class Package extends Model
         'images' => 'array',
         'is_active' => 'boolean',
         'price' => 'decimal:2',
+        'visa_price' => 'decimal:2',
     ];
 
     // Relationships

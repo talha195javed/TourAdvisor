@@ -171,6 +171,103 @@
                 </div>
             </div>
 
+            <!-- Visa Information -->
+            @if($booking->visa_required)
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-passport text-teal-600 mr-3"></i>
+                    Visa Information
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Number of Visas</label>
+                        <p class="text-lg font-semibold text-gray-900 mt-1">{{ $booking->number_of_visas }}</p>
+                    </div>
+
+                    @if($booking->visa_price_per_person)
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Visa Price (Per Person)</label>
+                        <p class="text-lg font-semibold text-gray-900 mt-1">${{ number_format($booking->visa_price_per_person, 2) }}</p>
+                    </div>
+                    @endif
+
+                    @if($booking->total_visa_amount)
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Total Visa Amount</label>
+                        <p class="text-xl font-bold text-teal-600 mt-1">${{ number_format($booking->total_visa_amount, 2) }}</p>
+                    </div>
+                    @endif
+                </div>
+
+                <!-- Passport Images -->
+                @if($booking->passport_images && count($booking->passport_images) > 0)
+                <div class="mb-6">
+                    <label class="text-sm font-medium text-gray-700 mb-3 block">Passport Images ({{ count($booking->passport_images) }})</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        @foreach($booking->passport_images as $index => $image)
+                        <div class="relative group">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Passport {{ $index + 1 }}" class="w-full h-32 object-cover rounded-lg border border-gray-300">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
+                                <a href="{{ asset('storage/' . $image) }}" download class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </a>
+                            </div>
+                            <div class="absolute top-2 left-2">
+                                <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                <!-- Applicant Images -->
+                @if($booking->applicant_images && count($booking->applicant_images) > 0)
+                <div class="mb-6">
+                    <label class="text-sm font-medium text-gray-700 mb-3 block">Applicant Photos ({{ count($booking->applicant_images) }})</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        @foreach($booking->applicant_images as $index => $image)
+                        <div class="relative group">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Applicant {{ $index + 1 }}" class="w-full h-32 object-cover rounded-lg border border-gray-300">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
+                                <a href="{{ asset('storage/' . $image) }}" download class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </a>
+                            </div>
+                            <div class="absolute top-2 left-2">
+                                <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                <!-- Emirates ID Images -->
+                @if($booking->emirates_id_images && count($booking->emirates_id_images) > 0)
+                <div>
+                    <label class="text-sm font-medium text-gray-700 mb-3 block">Emirates ID Images ({{ count($booking->emirates_id_images) }})</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        @foreach($booking->emirates_id_images as $index => $image)
+                        <div class="relative group">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Emirates ID {{ $index + 1 }}" class="w-full h-32 object-cover rounded-lg border border-gray-300">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
+                                <a href="{{ asset('storage/' . $image) }}" download class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </a>
+                            </div>
+                            <div class="absolute top-2 left-2">
+                                <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+            </div>
+            @endif
+
             <!-- Special Requests & Notes -->
             @if($booking->special_requests || $booking->admin_notes)
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
