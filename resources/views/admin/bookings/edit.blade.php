@@ -514,68 +514,106 @@
                     </div>
                 </div>
 
-                <!-- Existing Visa Images Display -->
                 @if($booking->visa_required)
                     @if($booking->passport_images && count($booking->passport_images) > 0)
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-3">Existing Passport Images ({{ count($booking->passport_images) }})</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingPassportImages">
                             @foreach($booking->passport_images as $index => $image)
-                            <div class="relative group">
+                            <div class="relative group" data-visa-type="passport" data-image-path="{{ $image }}">
                                 <img src="{{ asset('storage/' . $image) }}" alt="Passport {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
+
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
+                                    <!-- Download Button -->
+                                    <a href="{{ asset('storage/' . $image) }}" download
+                                       class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
+                                        <i class="fas fa-download mr-1"></i> Download
+                                    </a>
+
+                                    <!-- Delete Button -->
+                                    <button type="button"
+                                            class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
+                                            onclick="deleteVisaImage('passport', '{{ $image }}')">
+                                        <i class="fas fa-trash mr-1"></i> Delete
+                                    </button>
+                                </div>
+
                                 <div class="absolute top-1 left-1">
                                     <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
                                 </div>
-                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
-                                    <a href="{{ asset('storage/' . $image) }}" download class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
-                                        <i class="fas fa-download mr-1"></i> Download
-                                    </a>
-                                </div>
                             </div>
+
                             @endforeach
                         </div>
+                        <input type="hidden" name="delete_passport_images[]" id="deletePassportImagesInput">
                     </div>
                     @endif
 
                     @if($booking->applicant_images && count($booking->applicant_images) > 0)
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-3">Existing Applicant Photos ({{ count($booking->applicant_images) }})</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingApplicantImages">
                             @foreach($booking->applicant_images as $index => $image)
-                            <div class="relative group">
+                            <div class="relative group" data-visa-type="applicant" data-image-path="{{ $image }}">
                                 <img src="{{ asset('storage/' . $image) }}" alt="Applicant {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
+
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
+                                    <!-- Download Button -->
+                                    <a href="{{ asset('storage/' . $image) }}" download
+                                       class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
+                                        <i class="fas fa-download mr-1"></i> Download
+                                    </a>
+
+                                    <!-- Delete Button -->
+                                    <button type="button"
+                                            class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
+                                            onclick="deleteVisaImage('applicant', '{{ $image }}')">
+                                        <i class="fas fa-trash mr-1"></i> Delete
+                                    </button>
+                                </div>
+
                                 <div class="absolute top-1 left-1">
                                     <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
                                 </div>
-                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
-                                    <a href="{{ asset('storage/' . $image) }}" download class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
-                                        <i class="fas fa-download mr-1"></i> Download
-                                    </a>
-                                </div>
                             </div>
+
                             @endforeach
                         </div>
+                        <input type="hidden" name="delete_applicant_images[]" id="deleteApplicantImagesInput">
                     </div>
                     @endif
 
                     @if($booking->emirates_id_images && count($booking->emirates_id_images) > 0)
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-3">Existing Emirates ID Images ({{ count($booking->emirates_id_images) }})</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingEmiratesIdImages">
                             @foreach($booking->emirates_id_images as $index => $image)
-                            <div class="relative group">
+                            <div class="relative group" data-visa-type="emirates_id" data-image-path="{{ $image }}">
                                 <img src="{{ asset('storage/' . $image) }}" alt="Emirates ID {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
+
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
+                                    <!-- Download Button -->
+                                    <a href="{{ asset('storage/' . $image) }}" download
+                                       class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
+                                        <i class="fas fa-download mr-1"></i> Download
+                                    </a>
+
+                                    <!-- Delete Button -->
+                                    <button type="button"
+                                            class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
+                                            onclick="deleteVisaImage('emirates_id', '{{ $image }}')">
+                                        <i class="fas fa-trash mr-1"></i> Delete
+                                    </button>
+                                </div>
+
                                 <div class="absolute top-1 left-1">
                                     <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
                                 </div>
-                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
-                                    <a href="{{ asset('storage/' . $image) }}" download class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
-                                        <i class="fas fa-download mr-1"></i> Download
-                                    </a>
-                                </div>
                             </div>
+
                             @endforeach
                         </div>
+                        <input type="hidden" name="delete_emirates_id_images[]" id="deleteEmiratesIdImagesInput">
                     </div>
                     @endif
                 @endif
@@ -651,6 +689,7 @@
         </div>
     </form>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -737,6 +776,58 @@ document.addEventListener('DOMContentLoaded', function() {
     if (visaPricePerPerson) {
         visaPricePerPerson.addEventListener('input', calculateTotal);
     }
+
+    // Deletion tracking for visa images
+    window._visaDeleteTracker = {
+        passport: [],
+        applicant: [],
+        emirates_id: []
+    };
+
+    window.deleteVisaImage = function(type, imagePath) {
+        if (!['passport','applicant','emirates_id'].includes(type)) return;
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to delete this image?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Track deletion
+                window._visaDeleteTracker[type].push(imagePath);
+
+                // Update hidden inputs
+                const map = {
+                    passport: 'deletePassportImagesInput',
+                    applicant: 'deleteApplicantImagesInput',
+                    emirates_id: 'deleteEmiratesIdImagesInput'
+                };
+                const inputEl = document.getElementById(map[type]);
+                if (inputEl) inputEl.value = JSON.stringify(window._visaDeleteTracker[type]);
+
+                // Remove from DOM
+                const selector = `[data-visa-type="${type}"][data-image-path="${CSS.escape(imagePath)}"]`;
+                const node = document.querySelector(selector);
+                if (node && node.parentElement) {
+                    node.parentElement.removeChild(node);
+                }
+
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'The image has been removed.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
+        });
+    };
+
 });
 </script>
 @endsection

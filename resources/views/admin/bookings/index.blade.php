@@ -19,14 +19,22 @@
         </a>
     </div>
 
-    <!-- Success Message -->
     @if(session('success'))
-    <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded-lg">
-        <div class="flex items-center">
-            <i class="fas fa-check-circle text-green-500 mr-3"></i>
-            <p class="text-green-700 font-medium">{{ session('success') }}</p>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success',
+                title: @json(session('success')),
+                text: @json(session('success')),
+                background: '#f0fdf4',
+                color: '#166534',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+        });
+    </script>
     @endif
 
     <!-- Filters Section -->

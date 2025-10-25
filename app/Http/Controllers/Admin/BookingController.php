@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookingController extends Controller
 {
@@ -184,10 +185,52 @@ class BookingController extends Controller
             'emirates_id_images.*' => 'nullable|image|max:5120',
         ]);
 
-        // Handle visa file uploads (keep existing images)
+        // Handle visa file uploads and deletions (keep existing images then remove requested ones)
         $passportImages = $booking->passport_images ?? [];
         $applicantImages = $booking->applicant_images ?? [];
         $emiratesIdImages = $booking->emirates_id_images ?? [];
+
+        // Deletions: passport images
+        if ($request->has('delete_passport_images')) {
+            $json = $request->input('delete_passport_images')[0] ?? null;
+            if ($json) {
+                $list = json_decode($json, true);
+                if (is_array($list)) {
+                    foreach ($list as $path) {
+                        Storage::disk('public')->delete($path);
+                        $passportImages = array_values(array_filter($passportImages, fn($p) => $p !== $path));
+                    }
+                }
+            }
+        }
+
+        // Deletions: applicant images
+        if ($request->has('delete_applicant_images')) {
+            $json = $request->input('delete_applicant_images')[0] ?? null;
+            if ($json) {
+                $list = json_decode($json, true);
+                if (is_array($list)) {
+                    foreach ($list as $path) {
+                        Storage::disk('public')->delete($path);
+                        $applicantImages = array_values(array_filter($applicantImages, fn($p) => $p !== $path));
+                    }
+                }
+            }
+        }
+
+        // Deletions: emirates id images
+        if ($request->has('delete_emirates_id_images')) {
+            $json = $request->input('delete_emirates_id_images')[0] ?? null;
+            if ($json) {
+                $list = json_decode($json, true);
+                if (is_array($list)) {
+                    foreach ($list as $path) {
+                        Storage::disk('public')->delete($path);
+                        $emiratesIdImages = array_values(array_filter($emiratesIdImages, fn($p) => $p !== $path));
+                    }
+                }
+            }
+        }
         
         if ($request->input('visa_required')) {
             if ($request->hasFile('passport_images')) {
