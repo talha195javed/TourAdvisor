@@ -246,12 +246,18 @@
                     @if($package->main_image)
                     <div class="mb-4">
                         <p class="text-sm text-gray-600 mb-2">Current Image:</p>
-                        <div class="relative inline-block">
-                            <img src="{{ asset('storage/packages/' . basename($package->main_image)) }}" alt="Current Package Image" class="w-48 h-32 object-cover rounded-lg shadow-sm border">
-                            <div class="absolute top-2 right-2">
+                        <div class="relative inline-block" id="currentMainImageWrapper">
+                            <img src="{{ asset('storage/packages/' . basename($package->main_image)) }}" alt="Current Package Image" class="w-48 h-32 object-cover rounded-lg shadow-sm border" id="currentMainImage">
+                            <div class="absolute top-2 left-2">
                                 <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Current</span>
                             </div>
+                            <div class="absolute top-2 right-2">
+                                <button type="button" class="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded shadow" onclick="removeMainImage()">
+                                    <i class="fas fa-trash mr-1"></i> Delete
+                                </button>
+                            </div>
                         </div>
+                        <input type="hidden" name="remove_main_image" id="removeMainImageInput" value="0">
                     </div>
                     @endif
 
@@ -581,6 +587,8 @@
         const imageFileInput = document.getElementById('main_image_file');
         const imagePreview = document.getElementById('imagePreview');
         const previewImage = document.getElementById('preview');
+        const currentMainImageWrapper = document.getElementById('currentMainImageWrapper');
+        const removeMainImageInput = document.getElementById('removeMainImageInput');
 
         if (imageFileInput) {
             imageFileInput.addEventListener('change', function(e) {
@@ -592,6 +600,11 @@
                         imagePreview.classList.remove('hidden');
                     }
                     reader.readAsDataURL(file);
+                    // If a new image is selected and user had marked delete, undo delete
+                    if (removeMainImageInput) {
+                        removeMainImageInput.value = '0';
+                        if (currentMainImageWrapper) currentMainImageWrapper.classList.remove('opacity-50');
+                    }
                 }
             });
         }
@@ -738,6 +751,16 @@
             if (remainingImages === 0) {
                 container.closest('.mb-6').remove();
             }
+        }
+    }
+
+    // Mark main image for deletion
+    function removeMainImage() {
+        if (confirm('Are you sure you want to delete the current main image?')) {
+            const input = document.getElementById('removeMainImageInput');
+            const wrapper = document.getElementById('currentMainImageWrapper');
+            if (input) input.value = '1';
+            if (wrapper) wrapper.classList.add('opacity-50');
         }
     }
 </script>

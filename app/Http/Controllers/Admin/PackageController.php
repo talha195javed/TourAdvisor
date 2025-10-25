@@ -114,6 +114,14 @@ class PackageController extends Controller
     {
 
         $data = $request->validated();
+        // Optionally remove current main image if requested
+        if ($request->boolean('remove_main_image')) {
+            if ($package->main_image && str_contains($package->main_image, '/storage/')) {
+                $oldPath = str_replace('/storage/', '', $package->main_image);
+                Storage::disk('public')->delete($oldPath);
+            }
+            $data['main_image'] = null;
+        }
         // Handle main image: replace if new uploaded
         if ($request->hasFile('main_image_file')) {
             // Delete old image if exists
