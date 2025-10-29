@@ -52,7 +52,7 @@ function PackageDetail() {
   };
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = '971561325543';
+    const phoneNumber = '971506003766';
     const packageUrl = window.location.href;
     const message = `Hi, I want to know more about this package:\n${packageUrl}`;
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
