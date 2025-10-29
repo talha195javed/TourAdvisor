@@ -217,7 +217,7 @@ function ReviewsSection() {
               {t('joinHappyCustomers')}
             </p>
             <a
-              href="https://wa.me/971561325543"
+              href="https://wa.me/971506003766"
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center space-x-3 rtl:space-x-reverse bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"

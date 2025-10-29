@@ -52,7 +52,7 @@
                 <h3 class="text-xl font-bold mb-2">WhatsApp</h3>
                 <p class="text-emerald-100 mb-4">Message us on WhatsApp</p>
                 <a href="https://wa.me/971501234567" target="_blank" class="inline-flex items-center text-white font-semibold hover:underline">
-                    +971561325543
+                    +971506003766
                     <i class="fas fa-arrow-right ml-2"></i>
                 </a>
             </div>

@@ -192,7 +192,7 @@ function Home() {
               </svg>
             </Link>
             <a
-              href="https://wa.me/971561325543"
+              href="https://wa.me/971506003766"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 rtl:space-x-reverse bg-green-500 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-green-600 hover:scale-105 transition-all duration-300 shadow-2xl"

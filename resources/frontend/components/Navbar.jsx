@@ -85,7 +85,7 @@ function Navbar() {
             </button>
 
             <a
-              href="https://wa.me/971561325543"
+              href="https://wa.me/971506003766"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 rtl:space-x-reverse px-5 py-2.5 rounded-xl bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold text-sm transition-all duration-300 shadow-lg shadow-green-500/30 hover:shadow-xl hover:scale-105"
@@ -148,7 +148,7 @@ function Navbar() {
               </button>
 
               <a
-                href="https://wa.me/971561325543"
+                href="https://wa.me/971506003766"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold shadow-lg"
