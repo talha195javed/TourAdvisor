@@ -139,7 +139,7 @@
                         <option value="">Select a package</option>
                         @foreach($packages as $package)
                         <option value="{{ $package->id }}" data-price="{{ $package->price }}" data-visa-price="{{ $package->visa_price ?? 0 }}" {{ old('package_id', $booking->package_id) == $package->id ? 'selected' : '' }}>
-                            {{ $package->title }} - ${{ number_format($package->price, 2) }}
+                        {{ $package->title }} - ${{ number_format($package->price, 2) }}
                         </option>
                         @endforeach
                     </select>
@@ -234,6 +234,21 @@
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+            </div>
+        </div>
+
+        <!-- Passengers Information -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-users text-amber-600 mr-3"></i>
+                    Passengers Information
+                </h3>
+                <span class="text-sm text-gray-500" id="passenger-count">Based on number of adults and children</span>
+            </div>
+
+            <div id="passengers-container" class="space-y-4">
+                <!-- Passengers will be dynamically added here -->
             </div>
         </div>
 
@@ -444,7 +459,7 @@
                         id="visa_required"
                         value="1"
                         {{ old('visa_required', $booking->visa_required) ? 'checked' : '' }}
-                        class="w-5 h-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                    class="w-5 h-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
                     >
                     <span class="ml-3 text-sm font-medium text-gray-700">Visa Required for this booking</span>
                 </label>
@@ -463,7 +478,7 @@
                             name="number_of_visas"
                             id="number_of_visas"
                             value="{{ old('number_of_visas', $booking->number_of_visas) }}"
-                            min="1"
+                            min="0"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 @error('number_of_visas') border-red-300 @enderror"
                             placeholder="1"
                         >
@@ -515,107 +530,107 @@
                 </div>
 
                 @if($booking->visa_required)
-                    @if($booking->passport_images && count($booking->passport_images) > 0)
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Existing Passport Images ({{ count($booking->passport_images) }})</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingPassportImages">
-                            @foreach($booking->passport_images as $index => $image)
-                            <div class="relative group" data-visa-type="passport" data-image-path="{{ $image }}">
-                                <img src="{{ asset('storage/' . $image) }}" alt="Passport {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
+                @if($booking->passport_images && count($booking->passport_images) > 0)
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">Existing Passport Images ({{ count($booking->passport_images) }})</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingPassportImages">
+                        @foreach($booking->passport_images as $index => $image)
+                        <div class="relative group" data-visa-type="passport" data-image-path="{{ $image }}">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Passport {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
 
-                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
-                                    <!-- Download Button -->
-                                    <a href="{{ asset('storage/' . $image) }}" download
-                                       class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
-                                        <i class="fas fa-download mr-1"></i> Download
-                                    </a>
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
+                                <!-- Download Button -->
+                                <a href="{{ asset('storage/' . $image) }}" download
+                                   class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </a>
 
-                                    <!-- Delete Button -->
-                                    <button type="button"
-                                            class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
-                                            onclick="deleteVisaImage('passport', '{{ $image }}')">
-                                        <i class="fas fa-trash mr-1"></i> Delete
-                                    </button>
-                                </div>
-
-                                <div class="absolute top-1 left-1">
-                                    <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
-                                </div>
+                                <!-- Delete Button -->
+                                <button type="button"
+                                        class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
+                                        onclick="deleteVisaImage('passport', '{{ $image }}')">
+                                    <i class="fas fa-trash mr-1"></i> Delete
+                                </button>
                             </div>
 
-                            @endforeach
+                            <div class="absolute top-1 left-1">
+                                <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
+                            </div>
                         </div>
-                        <input type="hidden" name="delete_passport_images[]" id="deletePassportImagesInput">
+
+                        @endforeach
                     </div>
-                    @endif
+                    <input type="hidden" name="delete_passport_images[]" id="deletePassportImagesInput">
+                </div>
+                @endif
 
-                    @if($booking->applicant_images && count($booking->applicant_images) > 0)
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Existing Applicant Photos ({{ count($booking->applicant_images) }})</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingApplicantImages">
-                            @foreach($booking->applicant_images as $index => $image)
-                            <div class="relative group" data-visa-type="applicant" data-image-path="{{ $image }}">
-                                <img src="{{ asset('storage/' . $image) }}" alt="Applicant {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
+                @if($booking->applicant_images && count($booking->applicant_images) > 0)
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">Existing Applicant Photos ({{ count($booking->applicant_images) }})</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingApplicantImages">
+                        @foreach($booking->applicant_images as $index => $image)
+                        <div class="relative group" data-visa-type="applicant" data-image-path="{{ $image }}">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Applicant {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
 
-                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
-                                    <!-- Download Button -->
-                                    <a href="{{ asset('storage/' . $image) }}" download
-                                       class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
-                                        <i class="fas fa-download mr-1"></i> Download
-                                    </a>
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
+                                <!-- Download Button -->
+                                <a href="{{ asset('storage/' . $image) }}" download
+                                   class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </a>
 
-                                    <!-- Delete Button -->
-                                    <button type="button"
-                                            class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
-                                            onclick="deleteVisaImage('applicant', '{{ $image }}')">
-                                        <i class="fas fa-trash mr-1"></i> Delete
-                                    </button>
-                                </div>
-
-                                <div class="absolute top-1 left-1">
-                                    <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
-                                </div>
+                                <!-- Delete Button -->
+                                <button type="button"
+                                        class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
+                                        onclick="deleteVisaImage('applicant', '{{ $image }}')">
+                                    <i class="fas fa-trash mr-1"></i> Delete
+                                </button>
                             </div>
 
-                            @endforeach
+                            <div class="absolute top-1 left-1">
+                                <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
+                            </div>
                         </div>
-                        <input type="hidden" name="delete_applicant_images[]" id="deleteApplicantImagesInput">
+
+                        @endforeach
                     </div>
-                    @endif
+                    <input type="hidden" name="delete_applicant_images[]" id="deleteApplicantImagesInput">
+                </div>
+                @endif
 
-                    @if($booking->emirates_id_images && count($booking->emirates_id_images) > 0)
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Existing Emirates ID Images ({{ count($booking->emirates_id_images) }})</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingEmiratesIdImages">
-                            @foreach($booking->emirates_id_images as $index => $image)
-                            <div class="relative group" data-visa-type="emirates_id" data-image-path="{{ $image }}">
-                                <img src="{{ asset('storage/' . $image) }}" alt="Emirates ID {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
+                @if($booking->emirates_id_images && count($booking->emirates_id_images) > 0)
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">Existing Emirates ID Images ({{ count($booking->emirates_id_images) }})</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="existingEmiratesIdImages">
+                        @foreach($booking->emirates_id_images as $index => $image)
+                        <div class="relative group" data-visa-type="emirates_id" data-image-path="{{ $image }}">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Emirates ID {{ $index + 1 }}" class="w-full h-24 object-cover rounded-lg border border-gray-300">
 
-                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
-                                    <!-- Download Button -->
-                                    <a href="{{ asset('storage/' . $image) }}" download
-                                       class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
-                                        <i class="fas fa-download mr-1"></i> Download
-                                    </a>
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center space-x-3">
+                                <!-- Download Button -->
+                                <a href="{{ asset('storage/' . $image) }}" download
+                                   class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-gray-100 transition-all flex items-center justify-center">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </a>
 
-                                    <!-- Delete Button -->
-                                    <button type="button"
-                                            class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
-                                            onclick="deleteVisaImage('emirates_id', '{{ $image }}')">
-                                        <i class="fas fa-trash mr-1"></i> Delete
-                                    </button>
-                                </div>
-
-                                <div class="absolute top-1 left-1">
-                                    <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
-                                </div>
+                                <!-- Delete Button -->
+                                <button type="button"
+                                        class="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium w-28 text-center hover:bg-red-600 transition-all flex items-center justify-center"
+                                        onclick="deleteVisaImage('emirates_id', '{{ $image }}')">
+                                    <i class="fas fa-trash mr-1"></i> Delete
+                                </button>
                             </div>
 
-                            @endforeach
+                            <div class="absolute top-1 left-1">
+                                <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded">{{ $index + 1 }}</span>
+                            </div>
                         </div>
-                        <input type="hidden" name="delete_emirates_id_images[]" id="deleteEmiratesIdImagesInput">
+
+                        @endforeach
                     </div>
-                    @endif
+                    <input type="hidden" name="delete_emirates_id_images[]" id="deleteEmiratesIdImagesInput">
+                </div>
+                @endif
                 @endif
 
                 <!-- File Upload Fields -->
@@ -692,142 +707,290 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const packageSelect = document.getElementById('package_select');
-    const packagePriceInput = document.getElementById('package_price');
-    const numberOfAdults = document.getElementById('number_of_adults');
-    const numberOfChildren = document.getElementById('number_of_children');
-    const totalAmountInput = document.getElementById('total_amount');
-    const paidAmountInput = document.getElementById('paid_amount');
+    document.addEventListener('DOMContentLoaded', function() {
+        const packageSelect = document.getElementById('package_select');
+        const packagePriceInput = document.getElementById('package_price');
+        const numberOfAdults = document.getElementById('number_of_adults');
+        const numberOfChildren = document.getElementById('number_of_children');
+        const totalAmountInput = document.getElementById('total_amount');
+        const paidAmountInput = document.getElementById('paid_amount');
 
-    // Visa elements
-    const visaRequiredCheckbox = document.getElementById('visa_required');
-    const visaFields = document.getElementById('visa_fields');
-    const numberOfVisas = document.getElementById('number_of_visas');
-    const visaPricePerPerson = document.getElementById('visa_price_per_person');
-    const totalVisaAmount = document.getElementById('total_visa_amount');
+        // Visa elements
+        const visaRequiredCheckbox = document.getElementById('visa_required');
+        const visaFields = document.getElementById('visa_fields');
+        const numberOfVisas = document.getElementById('number_of_visas');
+        const visaPricePerPerson = document.getElementById('visa_price_per_person');
+        const totalVisaAmount = document.getElementById('total_visa_amount');
 
-    // Toggle visa fields visibility
-    visaRequiredCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-            visaFields.classList.remove('hidden');
-        } else {
-            visaFields.classList.add('hidden');
-        }
-        calculateTotal();
-    });
+        // Passenger elements
+        const existingPassengers = @json($booking->passengers_data ?? []);
 
-    // Calculate visa amount
-    function calculateVisaAmount() {
-        const numVisas = parseInt(numberOfVisas.value) || 0;
-        const visaPrice = parseFloat(visaPricePerPerson.value) || 0;
-        const visaTotal = numVisas * visaPrice;
-        totalVisaAmount.value = visaTotal.toFixed(2);
-        return visaTotal;
-    }
-
-    // Auto-fill package price and visa price when package is selected
-    packageSelect.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const price = selectedOption.getAttribute('data-price');
-        const visaPrice = selectedOption.getAttribute('data-visa-price');
-
-        if (price) {
-            packagePriceInput.value = price;
-        }
-
-        // Auto-fill visa price if available
-        if (visaPrice && parseFloat(visaPrice) > 0) {
-            visaPricePerPerson.value = visaPrice;
-        } else {
-            visaPricePerPerson.value = '0.00';
-        }
-
-        calculateTotal();
-    });
-
-    // Calculate total amount (package + visa)
-    function calculateTotal() {
-        const pricePerPerson = parseFloat(packagePriceInput.value) || 0;
-        const adults = parseInt(numberOfAdults.value) || 0;
-        const children = parseInt(numberOfChildren.value) || 0;
-
-        // Children might be 50% price, adjust as needed
-        let total = (pricePerPerson * adults) + (pricePerPerson * 0.5 * children);
-
-        // Add visa amount if visa is required
-        if (visaRequiredCheckbox.checked) {
-            const visaTotal = calculateVisaAmount();
-            total += visaTotal;
-        }
-
-        totalAmountInput.value = total.toFixed(2);
-    }
-
-    // Recalculate on input changes
-    packagePriceInput.addEventListener('input', calculateTotal);
-    numberOfAdults.addEventListener('input', calculateTotal);
-    numberOfChildren.addEventListener('input', calculateTotal);
-
-    // Visa calculation listeners
-    if (numberOfVisas) {
-        numberOfVisas.addEventListener('input', calculateTotal);
-    }
-    if (visaPricePerPerson) {
-        visaPricePerPerson.addEventListener('input', calculateTotal);
-    }
-
-    // Deletion tracking for visa images
-    window._visaDeleteTracker = {
-        passport: [],
-        applicant: [],
-        emirates_id: []
-    };
-
-    window.deleteVisaImage = function(type, imagePath) {
-        if (!['passport','applicant','emirates_id'].includes(type)) return;
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Do you really want to delete this image?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Track deletion
-                window._visaDeleteTracker[type].push(imagePath);
-
-                // Update hidden inputs
-                const map = {
-                    passport: 'deletePassportImagesInput',
-                    applicant: 'deleteApplicantImagesInput',
-                    emirates_id: 'deleteEmiratesIdImagesInput'
-                };
-                const inputEl = document.getElementById(map[type]);
-                if (inputEl) inputEl.value = JSON.stringify(window._visaDeleteTracker[type]);
-
-                // Remove from DOM
-                const selector = `[data-visa-type="${type}"][data-image-path="${CSS.escape(imagePath)}"]`;
-                const node = document.querySelector(selector);
-                if (node && node.parentElement) {
-                    node.parentElement.removeChild(node);
-                }
-
-                Swal.fire({
-                    title: 'Deleted!',
-                    text: 'The image has been removed.',
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
+        // Toggle visa fields visibility
+        visaRequiredCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                visaFields.classList.remove('hidden');
+            } else {
+                visaFields.classList.add('hidden');
             }
+            calculateTotal();
         });
-    };
 
-});
+        // Calculate visa amount
+        function calculateVisaAmount() {
+            const numVisas = parseInt(numberOfVisas.value) || 0;
+            const visaPrice = parseFloat(visaPricePerPerson.value) || 0;
+            const visaTotal = numVisas * visaPrice;
+            totalVisaAmount.value = visaTotal.toFixed(2);
+            return visaTotal;
+        }
+
+        // Auto-fill package price and visa price when package is selected
+        packageSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const price = selectedOption.getAttribute('data-price');
+            const visaPrice = selectedOption.getAttribute('data-visa-price');
+
+            if (price) {
+                packagePriceInput.value = price;
+            }
+
+            // Auto-fill visa price if available
+            if (visaPrice) {
+                visaPricePerPerson.value = visaPrice;
+            } else {
+                visaPricePerPerson.value = '0.00';
+            }
+
+            calculateTotal();
+        });
+
+        // Calculate total amount (package + visa)
+        function calculateTotal() {
+            const pricePerPerson = parseFloat(packagePriceInput.value) || 0;
+            const adults = parseInt(numberOfAdults.value) || 0;
+            const children = parseInt(numberOfChildren.value) || 0;
+
+            // Children might be 50% price, adjust as needed
+            let total = (pricePerPerson * adults) + (pricePerPerson * 0.5 * children);
+
+            // Add visa amount if visa is required
+            if (visaRequiredCheckbox.checked) {
+                const visaTotal = calculateVisaAmount();
+                total += visaTotal;
+            }
+
+            totalAmountInput.value = total.toFixed(2);
+        }
+
+        // Recalculate on input changes
+        packagePriceInput.addEventListener('input', calculateTotal);
+        numberOfAdults.addEventListener('input', calculateTotal);
+        numberOfChildren.addEventListener('input', calculateTotal);
+
+        // Visa calculation listeners
+        if (numberOfVisas) {
+            numberOfVisas.addEventListener('input', calculateTotal);
+        }
+        if (visaPricePerPerson) {
+            visaPricePerPerson.addEventListener('input', calculateTotal);
+        }
+
+        // Deletion tracking for visa images
+        window._visaDeleteTracker = {
+            passport: [],
+            applicant: [],
+            emirates_id: []
+        };
+
+        window.deleteVisaImage = function(type, imagePath) {
+            if (!['passport','applicant','emirates_id'].includes(type)) return;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this image?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Track deletion
+                    window._visaDeleteTracker[type].push(imagePath);
+
+                    // Update hidden inputs
+                    const map = {
+                        passport: 'deletePassportImagesInput',
+                        applicant: 'deleteApplicantImagesInput',
+                        emirates_id: 'deleteEmiratesIdImagesInput'
+                    };
+                    const inputEl = document.getElementById(map[type]);
+                    if (inputEl) inputEl.value = JSON.stringify(window._visaDeleteTracker[type]);
+
+                    // Remove from DOM - using safer selector
+                    const selector = `[data-visa-type="${type}"][data-image-path="${imagePath.replace(/"/g, '\\"')}"]`;
+                    const node = document.querySelector(selector);
+                    if (node && node.parentElement) {
+                        node.parentElement.removeChild(node);
+                    }
+
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'The image has been removed.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        };
+
+        // Generate passenger forms dynamically
+        function generatePassengerForms() {
+            const adults = parseInt(numberOfAdults.value) || 0;
+            const children = parseInt(numberOfChildren.value) || 0;
+            const total = adults + children;
+            const container = document.getElementById('passengers-container');
+            const countSpan = document.getElementById('passenger-count');
+
+            countSpan.textContent = `${total} ${total === 1 ? 'passenger' : 'passengers'}`;
+            container.innerHTML = '';
+
+            // Generate forms for adults
+            for (let i = 0; i < adults; i++) {
+                const existingData = existingPassengers[i] || {};
+                container.appendChild(createPassengerForm(i, 'adult', existingData));
+            }
+
+            // Generate forms for children
+            for (let i = 0; i < children; i++) {
+                const existingData = existingPassengers[adults + i] || {};
+                container.appendChild(createPassengerForm(adults + i, 'child', existingData));
+            }
+        }
+
+        function createPassengerForm(index, type, data = {}) {
+            const today = new Date().toISOString().split('T')[0];
+            const div = document.createElement('div');
+            div.className = 'bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6';
+            div.innerHTML = `
+            <div class="flex items-center mb-4">
+                <span class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">
+                    ${index + 1}
+                </span>
+                <h4 class="text-lg font-bold text-gray-800">${type === 'adult' ? 'Adult' : 'Child'} Passenger</h4>
+            </div>
+
+            <input type="hidden" name="passengers[${index}][type]" value="${type}">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name (as per passport) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="passengers[${index}][full_name_passport]"
+                        value="${data.full_name_passport || ''}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        placeholder="Enter full name"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Date of Birth <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="date"
+                        name="passengers[${index}][date_of_birth]"
+                        value="${data.date_of_birth || ''}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        max="${today}"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Gender <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        name="passengers[${index}][gender]"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        required
+                    >
+                        <option value="">Select Gender</option>
+                        <option value="male" ${data.gender === 'male' ? 'selected' : ''}>Male</option>
+                        <option value="female" ${data.gender === 'female' ? 'selected' : ''}>Female</option>
+                        <option value="other" ${data.gender === 'other' ? 'selected' : ''}>Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Nationality <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="passengers[${index}][nationality]"
+                        value="${data.nationality || ''}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        placeholder="Enter nationality"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Passport Number <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="passengers[${index}][passport_number]"
+                        value="${data.passport_number || ''}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        placeholder="Enter passport number"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Passport Expiration <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="date"
+                        name="passengers[${index}][passport_expiration]"
+                        value="${data.passport_expiration || ''}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        min="${today}"
+                        required
+                    />
+                </div>
+            </div>
+        `;
+            return div;
+        }
+
+        // Listen for changes in passenger count
+        if (numberOfAdults) {
+            numberOfAdults.addEventListener('input', generatePassengerForms);
+        }
+        if (numberOfChildren) {
+            numberOfChildren.addEventListener('input', generatePassengerForms);
+        }
+
+        // Initialize passenger forms on page load
+        generatePassengerForms();
+
+        // Initialize calculations on page load
+        calculateTotal();
+        if (visaRequiredCheckbox.checked) {
+            calculateVisaAmount();
+        }
+    });
 </script>
 @endsection

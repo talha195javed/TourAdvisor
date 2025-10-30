@@ -25,6 +25,18 @@ function BookingModal({ isOpen, onClose, packageData }) {
     number_of_visas: 0,
   });
 
+  const [passengers, setPassengers] = useState([
+    {
+      type: 'adult',
+      full_name_passport: '',
+      date_of_birth: '',
+      gender: '',
+      nationality: '',
+      passport_number: '',
+      passport_expiration: '',
+    }
+  ]);
+
   const [visaFiles, setVisaFiles] = useState({
     passportImages: [],
     applicantImages: [],
@@ -54,6 +66,16 @@ function BookingModal({ isOpen, onClose, packageData }) {
         [name]: newValue,
         number_of_visas: newValue ? 1 : 0
       }));
+    } else if (name === 'number_of_adults' || name === 'number_of_children') {
+      // Update passengers array when number changes
+      const adults = name === 'number_of_adults' ? parseInt(newValue) : parseInt(formData.number_of_adults);
+      const children = name === 'number_of_children' ? parseInt(newValue) : parseInt(formData.number_of_children);
+      updatePassengersArray(adults, children);
+
+      setFormData(prev => ({
+        ...prev,
+        [name]: newValue
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
@@ -67,6 +89,53 @@ function BookingModal({ isOpen, onClose, packageData }) {
         [name]: null
       }));
     }
+  };
+
+  // Update passengers array based on number of adults and children
+  const updatePassengersArray = (adults, children) => {
+    const totalPassengers = adults + children;
+    const newPassengers = [];
+
+    // Add adults
+    for (let i = 0; i < adults; i++) {
+      newPassengers.push(passengers[i] || {
+        type: 'adult',
+        full_name_passport: '',
+        date_of_birth: '',
+        gender: '',
+        nationality: '',
+        passport_number: '',
+        passport_expiration: '',
+      });
+    }
+
+    // Add children
+    for (let i = 0; i < children; i++) {
+      const passengerIndex = adults + i;
+      newPassengers.push(passengers[passengerIndex] || {
+        type: 'child',
+        full_name_passport: '',
+        date_of_birth: '',
+        gender: '',
+        nationality: '',
+        passport_number: '',
+        passport_expiration: '',
+      });
+    }
+
+    setPassengers(newPassengers);
+  };
+
+  // Handle passenger field change
+  const handlePassengerChange = (index, field, value) => {
+    setPassengers(prev => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [field]: value
+      };
+      return updated;
+    });
   };
 
   const handleFileChange = (e, fileType) => {
@@ -158,6 +227,9 @@ function BookingModal({ isOpen, onClose, packageData }) {
       formDataToSend.append('number_of_infants', parseInt(formData.number_of_infants));
       formDataToSend.append('special_requests', formData.special_requests);
 
+      // Add passengers data as JSON
+      formDataToSend.append('passengers', JSON.stringify(passengers));
+
       // Add visa data
       formDataToSend.append('visa_required', formData.visa_required ? '1' : '0');
       if (formData.visa_required) {
@@ -213,6 +285,17 @@ function BookingModal({ isOpen, onClose, packageData }) {
       visa_required: false,
       number_of_visas: 0,
     });
+    setPassengers([
+      {
+        type: 'adult',
+        full_name_passport: '',
+        date_of_birth: '',
+        gender: '',
+        nationality: '',
+        passport_number: '',
+        passport_expiration: '',
+      }
+    ]);
     setVisaFiles({
       passportImages: [],
       applicantImages: [],
@@ -496,6 +579,112 @@ function BookingModal({ isOpen, onClose, packageData }) {
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-gray-300 transition-all resize-none"
                     placeholder={t('Enter Address') || 'Enter your address'}
                   />
+                </div>
+
+                {/* Passengers Requirements Section */}
+                <div className="mt-8 space-y-4">
+                  <div className="flex items-center mb-4">
+                    <svg className="h-6 w-6 text-amber-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <h4 className="text-lg font-bold text-gray-800">{t('Passenger Information') || 'Passenger Information'}</h4>
+                    <span className="ml-2 text-sm text-gray-500">({passengers.length} {passengers.length === 1 ? 'passenger' : 'passengers'})</span>
+                  </div>
+
+                  {passengers.map((passenger, index) => (
+                    <div key={index} className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h5 className="text-md font-bold text-gray-800 flex items-center">
+                          <span className="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2 text-sm">
+                            {index + 1}
+                          </span>
+                          {passenger.type === 'adult' ? 'Adult' : 'Child'} Passenger
+                        </h5>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Full Name (as per passport) <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={passenger.full_name_passport}
+                            onChange={(e) => handlePassengerChange(index, 'full_name_passport', e.target.value)}
+                            className="w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all border-gray-200 hover:border-gray-300"
+                            placeholder="Enter full name"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Date of Birth <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            value={passenger.date_of_birth}
+                            onChange={(e) => handlePassengerChange(index, 'date_of_birth', e.target.value)}
+                            className="w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all border-gray-200 hover:border-gray-300"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Gender <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            value={passenger.gender}
+                            onChange={(e) => handlePassengerChange(index, 'gender', e.target.value)}
+                            className="w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all border-gray-200 hover:border-gray-300"
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Nationality <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={passenger.nationality}
+                            onChange={(e) => handlePassengerChange(index, 'nationality', e.target.value)}
+                            className="w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all border-gray-200 hover:border-gray-300"
+                            placeholder="Enter nationality"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Passport Number <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={passenger.passport_number}
+                            onChange={(e) => handlePassengerChange(index, 'passport_number', e.target.value)}
+                            className="w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all border-gray-200 hover:border-gray-300"
+                            placeholder="Enter passport number"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Passport Expiration <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            value={passenger.passport_expiration}
+                            onChange={(e) => handlePassengerChange(index, 'passport_expiration', e.target.value)}
+                            min={today}
+                            className="w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all border-gray-200 hover:border-gray-300"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="mt-6">
