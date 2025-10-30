@@ -81,6 +81,76 @@
                 </div>
             </div>
 
+            <!-- Passengers Information -->
+            @if($booking->passengers_data && count($booking->passengers_data) > 0)
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-users text-amber-600 mr-3"></i>
+                    Passengers Information
+                    <span class="ml-2 text-sm font-normal text-gray-500">({{ count($booking->passengers_data) }} {{ count($booking->passengers_data) == 1 ? 'passenger' : 'passengers' }})</span>
+                </h3>
+
+                <div class="space-y-6">
+                    @foreach($booking->passengers_data as $index => $passenger)
+                    <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">
+                                {{ $index + 1 }}
+                            </span>
+                            <h4 class="text-lg font-bold text-gray-800">
+                                {{ ucfirst($passenger['type'] ?? 'adult') }} Passenger
+                            </h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @if(!empty($passenger['full_name_passport']))
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">Full Name (as per passport)</label>
+                                <p class="text-lg font-semibold text-gray-900 mt-1">{{ $passenger['full_name_passport'] }}</p>
+                            </div>
+                            @endif
+
+                            @if(!empty($passenger['date_of_birth']))
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">Date of Birth</label>
+                                <p class="text-lg text-gray-900 mt-1">{{ \Carbon\Carbon::parse($passenger['date_of_birth'])->format('F d, Y') }}</p>
+                            </div>
+                            @endif
+
+                            @if(!empty($passenger['gender']))
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">Gender</label>
+                                <p class="text-lg text-gray-900 mt-1">{{ ucfirst($passenger['gender']) }}</p>
+                            </div>
+                            @endif
+
+                            @if(!empty($passenger['nationality']))
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">Nationality</label>
+                                <p class="text-lg text-gray-900 mt-1">{{ $passenger['nationality'] }}</p>
+                            </div>
+                            @endif
+
+                            @if(!empty($passenger['passport_number']))
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">Passport Number</label>
+                                <p class="text-lg text-gray-900 mt-1 font-mono">{{ $passenger['passport_number'] }}</p>
+                            </div>
+                            @endif
+
+                            @if(!empty($passenger['passport_expiration']))
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">Passport Expiration Date</label>
+                                <p class="text-lg text-gray-900 mt-1">{{ \Carbon\Carbon::parse($passenger['passport_expiration'])->format('F d, Y') }}</p>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
             <!-- Booking Details -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">

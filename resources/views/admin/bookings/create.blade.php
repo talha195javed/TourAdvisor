@@ -138,7 +138,7 @@
                         <option value="">Select a package</option>
                         @foreach($packages as $package)
                         <option value="{{ $package->id }}" data-price="{{ $package->price }}" data-visa-price="{{ $package->visa_price ?? 0 }}" {{ old('package_id') == $package->id ? 'selected' : '' }}>
-                            {{ $package->title }} - ${{ number_format($package->price, 2) }}
+                        {{ $package->title }} - ${{ number_format($package->price, 2) }}
                         </option>
                         @endforeach
                     </select>
@@ -235,6 +235,21 @@
                 </div>
             </div>
         </div>
+        <!-- Passengers Information -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-users text-amber-600 mr-3"></i>
+                    Passengers Information
+                </h3>
+                <span class="text-sm text-gray-500" id="passenger-count">Based on number of adults and children</span>
+            </div>
+
+            <div id="passengers-container" class="space-y-4">
+                <!-- Passengers will be dynamically added here -->
+            </div>
+        </div>
+
 
         <!-- Pricing Information -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
@@ -593,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const numberOfChildren = document.getElementById('number_of_children');
     const totalAmountInput = document.getElementById('total_amount');
     const paidAmountInput = document.getElementById('paid_amount');
-    
+
     // Visa elements
     const visaRequiredCheckbox = document.getElementById('visa_required');
     const visaFields = document.getElementById('visa_fields');
@@ -625,18 +640,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedOption = this.options[this.selectedIndex];
         const price = selectedOption.getAttribute('data-price');
         const visaPrice = selectedOption.getAttribute('data-visa-price');
-        
+
         if (price) {
             packagePriceInput.value = price;
         }
-        
+
         // Auto-fill visa price if available
         if (visaPrice && parseFloat(visaPrice) > 0) {
             visaPricePerPerson.value = visaPrice;
         } else {
             visaPricePerPerson.value = '0.00';
         }
-        
+
         calculateTotal();
     });
 
@@ -645,24 +660,30 @@ document.addEventListener('DOMContentLoaded', function() {
         const pricePerPerson = parseFloat(packagePriceInput.value) || 0;
         const adults = parseInt(numberOfAdults.value) || 0;
         const children = parseInt(numberOfChildren.value) || 0;
-        
+
         // Children might be 50% price, adjust as needed
         let total = (pricePerPerson * adults) + (pricePerPerson * 0.5 * children);
-        
+
         // Add visa amount if visa is required
         if (visaRequiredCheckbox.checked) {
             const visaTotal = calculateVisaAmount();
             total += visaTotal;
         }
-        
+
         totalAmountInput.value = total.toFixed(2);
     }
 
     // Recalculate on input changes
     packagePriceInput.addEventListener('input', calculateTotal);
-    numberOfAdults.addEventListener('input', calculateTotal);
-    numberOfChildren.addEventListener('input', calculateTotal);
-    
+    numberOfAdults.addEventListener('input', function() {
+        calculateTotal();
+        generatePassengerForms();
+    });
+    numberOfChildren.addEventListener('input', function() {
+        calculateTotal();
+        generatePassengerForms();
+    });
+
     // Visa calculation listeners
     if (numberOfVisas) {
         numberOfVisas.addEventListener('input', calculateTotal);
@@ -670,6 +691,129 @@ document.addEventListener('DOMContentLoaded', function() {
     if (visaPricePerPerson) {
         visaPricePerPerson.addEventListener('input', calculateTotal);
     }
+
+    // Generate passenger forms dynamically
+    function generatePassengerForms() {
+        const adults = parseInt(numberOfAdults.value) || 0;
+        const children = parseInt(numberOfChildren.value) || 0;
+        const total = adults + children;
+        const container = document.getElementById('passengers-container');
+        const countSpan = document.getElementById('passenger-count');
+
+        countSpan.textContent = `${total} ${total === 1 ? 'passenger' : 'passengers'}`;
+        container.innerHTML = '';
+
+        // Generate forms for adults
+        for (let i = 0; i < adults; i++) {
+            container.appendChild(createPassengerForm(i, 'adult'));
+        }
+
+        // Generate forms for children
+        for (let i = 0; i < children; i++) {
+            container.appendChild(createPassengerForm(adults + i, 'child'));
+        }
+    }
+
+    function createPassengerForm(index, type) {
+        const div = document.createElement('div');
+        div.className = 'bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6';
+        div.innerHTML = `
+            <div class="flex items-center mb-4">
+                <span class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">
+                    ${index + 1}
+                </span>
+                <h4 class="text-lg font-bold text-gray-800">${type === 'adult' ? 'Adult' : 'Child'} Passenger</h4>
+            </div>
+
+            <input type="hidden" name="passengers[${index}][type]" value="${type}">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name (as per passport) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="passengers[${index}][full_name_passport]"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        placeholder="Enter full name"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Date of Birth <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="date"
+                        name="passengers[${index}][date_of_birth]"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Gender <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        name="passengers[${index}][gender]"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        required
+                    >
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Nationality <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="passengers[${index}][nationality]"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        placeholder="Enter nationality"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Passport Number <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="passengers[${index}][passport_number]"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        placeholder="Enter passport number"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Passport Expiration <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="date"
+                        name="passengers[${index}][passport_expiration]"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        min="${new Date().toISOString().split('T')[0]}"
+                        required
+                    />
+                </div>
+            </div>
+        `;
+        return div;
+    }
+
+    // Initialize passenger forms on page load
+    generatePassengerForms();
 });
 </script>
 @endsection

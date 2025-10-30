@@ -230,6 +230,17 @@ Route::post('/bookings', function (Request $request) {
     // Generate booking reference
     $bookingReference = \App\Models\Booking::generateBookingReference();
     
+    // Handle passengers data (from frontend JSON string)
+    $passengersData = null;
+    if ($request->has('passengers')) {
+        $passengersJson = $request->input('passengers');
+        if (is_string($passengersJson)) {
+            $passengersData = json_decode($passengersJson, true);
+        } elseif (is_array($passengersJson)) {
+            $passengersData = $passengersJson;
+        }
+    }
+    
     // Create booking
     $booking = \App\Models\Booking::create([
         'booking_reference' => $bookingReference,
@@ -258,6 +269,7 @@ Route::post('/bookings', function (Request $request) {
         'passport_images' => $passportImages,
         'applicant_images' => $applicantImages,
         'emirates_id_images' => $emiratesIdImages,
+        'passengers_data' => $passengersData,
     ]);
 
     return response()->json([

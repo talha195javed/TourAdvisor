@@ -39,6 +39,14 @@ class Booking extends Model
         'passport_images',
         'applicant_images',
         'emirates_id_images',
+        // Requirements fields
+        'full_name_passport',
+        'date_of_birth',
+        'gender',
+        'nationality',
+        'passport_number',
+        'passport_expiration',
+        'passengers_data',
     ];
 
     protected $casts = [
@@ -54,6 +62,9 @@ class Booking extends Model
         'passport_images' => 'array',
         'applicant_images' => 'array',
         'emirates_id_images' => 'array',
+        'date_of_birth' => 'date',
+        'passport_expiration' => 'date',
+        'passengers_data' => 'array',
     ];
 
     // Relationship with Package

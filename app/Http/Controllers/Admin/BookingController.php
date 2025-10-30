@@ -126,6 +126,15 @@ class BookingController extends Controller
         $validated['applicant_images'] = $applicantImages;
         $validated['emirates_id_images'] = $emiratesIdImages;
 
+        // Handle passengers data
+        if ($request->has('passengers')) {
+            // From admin create view (array format)
+            $validated['passengers_data'] = $request->input('passengers');
+        } elseif ($request->has('passengers') && is_string($request->input('passengers'))) {
+            // From frontend modal (JSON string)
+            $validated['passengers_data'] = json_decode($request->input('passengers'), true);
+        }
+
         Booking::create($validated);
 
         return redirect()->route('admin.bookings.index')
@@ -262,6 +271,15 @@ class BookingController extends Controller
         $validated['passport_images'] = $passportImages;
         $validated['applicant_images'] = $applicantImages;
         $validated['emirates_id_images'] = $emiratesIdImages;
+
+        // Handle passengers data
+        if ($request->has('passengers')) {
+            // From admin edit view (array format)
+            $validated['passengers_data'] = $request->input('passengers');
+        } elseif ($request->has('passengers') && is_string($request->input('passengers'))) {
+            // From frontend modal (JSON string)
+            $validated['passengers_data'] = json_decode($request->input('passengers'), true);
+        }
 
         $booking->update($validated);
 
