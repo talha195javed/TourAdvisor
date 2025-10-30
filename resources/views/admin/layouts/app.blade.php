@@ -6,6 +6,7 @@
     <title>@yield('page-title') | Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="{{ asset('js/google-translator.js') }}" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -339,6 +340,11 @@
             </nav>
         </div>
         <div class="flex items-center space-x-4">
+            <button id="lang-btn" onclick="toggleLanguage()" class="flex items-center px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+                <i class="fas fa-language mr-2"></i>
+                <span class="text-sm font-medium">العربية</span>
+            </button>
+            
             <div class="hidden md:flex items-center space-x-3 bg-gray-50 rounded-lg px-4 py-2">
                 <i class="fas fa-search text-gray-400"></i>
                 <input type="text" placeholder="Search..."
