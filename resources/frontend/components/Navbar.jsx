@@ -124,14 +124,24 @@ function Navbar() {
                 </button>
 
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100">
-                    <div className="px-4 py-2 border-b border-gray-100">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl py-2 z-50 border border-gray-100">
+                    <div className="px-4 py-3 border-b border-gray-100">
                       <p className="text-sm font-semibold text-gray-900">{client?.name}</p>
                       <p className="text-xs text-gray-500 truncate">{client?.email}</p>
                     </div>
+                    <Link
+                      to="/my-bookings"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors flex items-center space-x-2 group"
+                    >
+                      <svg className="h-4 w-4 text-gray-400 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      <span className="group-hover:text-blue-600">{t('My Bookings') || 'My Bookings'}</span>
+                    </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
                     >
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -227,6 +237,16 @@ function Navbar() {
                     <p className="text-sm font-semibold text-gray-900">{client?.name}</p>
                     <p className="text-xs text-gray-500">{client?.email}</p>
                   </div>
+                  <Link
+                    to="/my-bookings"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50 transition-colors font-semibold"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <span>{t('My Bookings') || 'My Bookings'}</span>
+                  </Link>
                   <button
                     onClick={() => {
                       handleLogout();

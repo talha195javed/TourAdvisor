@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -9,6 +10,7 @@ import Packages from './pages/Packages';
 import PackageDetail from './pages/PackageDetail';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import MyBookings from './pages/MyBookings';
 
 function App() {
   console.log('App component rendering...');
@@ -34,6 +36,11 @@ function App() {
             <Route path="/packages/:id" element={<PackageDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/my-bookings" element={
+              <ProtectedRoute>
+                <MyBookings />
+              </ProtectedRoute>
+            } />
           </Routes>
         </main>
         <Footer />

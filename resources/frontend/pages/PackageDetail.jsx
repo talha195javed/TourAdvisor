@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { packagesAPI } from '../services/api';
@@ -9,6 +9,7 @@ import BookingModal from '../components/BookingModal';
 function PackageDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuth();
   const [pkg, setPkg] = useState(null);
@@ -64,8 +65,8 @@ function PackageDetail() {
 
   const handleBookNowClick = () => {
     if (!isAuthenticated) {
-      // Redirect to login with return URL
-      navigate('/login', { state: { from: location } });
+      // Redirect to login with return URL (only pass pathname, not the whole location object)
+      navigate('/login', { state: { from: { pathname: location.pathname } } });
       return;
     }
     setIsBookingModalOpen(true);
