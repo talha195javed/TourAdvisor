@@ -216,11 +216,16 @@
     <div class="p-6 border-b border-gray-100 flex items-center">
         <div
             class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">
-            TA
+
+                <img
+                    src="/images/logo.jpeg"
+                    alt="Logo"
+                    className="h-12 w-12"
+                />
         </div>
         <div>
-            <h1 class="text-xl font-bold text-gray-800">TourAdvisor</h1>
-            <p class="text-xs text-gray-500">Management System</p>
+            <h1 class="text-xl font-bold text-gray-800">Basmago</h1>
+            <p class="text-xs text-gray-500">Begin your Journey with Blessings</p>
         </div>
     </div>
 
@@ -317,7 +322,7 @@
         <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-sm mr-2">
             TA
         </div>
-        <span class="font-bold text-gray-800">TourAdvisor</span>
+        <span class="font-bold text-gray-800">Basmago</span>
     </div>
     <div class="relative">
         <button id="notification-btn" class="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
@@ -344,7 +349,7 @@
                 <i class="fas fa-language mr-2"></i>
                 <span class="text-sm font-medium">العربية</span>
             </button>
-            
+
             <div class="hidden md:flex items-center space-x-3 bg-gray-50 rounded-lg px-4 py-2">
                 <i class="fas fa-search text-gray-400"></i>
                 <input type="text" placeholder="Search..."

@@ -17,7 +17,7 @@ function Footer() {
               <svg className="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
-              <span className="text-2xl font-bold">TourAdvisor</span>
+              <span className="text-2xl font-bold">Basmago</span>
             </Link>
             <p className="text-gray-400 text-sm">
               {t('heroSubtitle')}
@@ -86,7 +86,7 @@ function Footer() {
         <div className="mt-8 pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm mb-4 md:mb-0">
-              © {currentYear} TourAdvisor. {t('allRightsReserved')}
+              © {currentYear} Basmago. {t('allRightsReserved')}
             </p>
             <div className="flex space-x-4 rtl:space-x-reverse">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">

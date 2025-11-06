@@ -39,17 +39,19 @@ function Navbar() {
           <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse group">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-xl">
-                <svg className="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-              </div>
+                <div>
+                    <img
+                        src="/images/logo.jpeg"
+                        alt="Logo"
+                        className="h-12 w-12"
+                    />
+                </div>
             </div>
             <div>
               <span className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                TourAdvisor
+                Basmago
               </span>
-              <p className="text-xs text-gray-500 font-medium -mt-1">Your Travel Partner</p>
+              <p className="text-xs text-gray-500 font-medium -mt-1">Begin your Journey with Blessings</p>
             </div>
           </Link>
 
