@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Your Brand</title>
+    <title>Login | Basmago</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -25,6 +25,11 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-logo {
+            margin: 3% !important;
+            padding: 3% !important;
         }
 
         body {
@@ -404,12 +409,14 @@
 <div class="login-container">
     <!-- Left Side: Branding & Info -->
     <div class="login-left">
-        <div class="brand-logo">
-            <i class="fas fa-rocket"></i>
-            <h1>BrandName</h1>
+        <div className="flex justify-center items-center" style="padding-left: 5% !important;">
+            <img
+                src="/images/logo.jpeg"
+                alt="Logo"
+                className="h-16 w-16 object-contain login-logo"
+            />
         </div>
         <div class="welcome-text">
-            <h2>Welcome Back!</h2>
             <p>Sign in to access your personalized dashboard, manage your account, and explore all the features we offer for our valued users.</p>
         </div>
         <div class="features">

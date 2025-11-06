@@ -25,8 +25,8 @@
                 </div>
                 <h3 class="text-xl font-bold mb-2">Contact Support</h3>
                 <p class="text-blue-100 mb-4">Get in touch with our support team</p>
-                <a href="mailto:support@touradvisor.com" class="inline-flex items-center text-white font-semibold hover:underline">
-                    support@touradvisor.com
+                <a href="mailto:support@basmago.com" class="inline-flex items-center text-white font-semibold hover:underline">
+                    support@basmago.com
                     <i class="fas fa-arrow-right ml-2"></i>
                 </a>
             </div>
@@ -222,9 +222,9 @@
                         Email Support
                     </h3>
                     <p class="text-gray-300 mb-2">General Inquiries:</p>
-                    <a href="mailto:info@touradvisor.com" class="text-blue-400 hover:text-blue-300">info@touradvisor.com</a>
+                    <a href="mailto:info@basmago.com" class="text-blue-400 hover:text-blue-300">info@touradvisor.com</a>
                     <p class="text-gray-300 mt-3 mb-2">Technical Support:</p>
-                    <a href="mailto:support@touradvisor.com" class="text-blue-400 hover:text-blue-300">support@touradvisor.com</a>
+                    <a href="mailto:support@basmago.com" class="text-blue-400 hover:text-blue-300">support@touradvisor.com</a>
                 </div>
 
                 <div>
@@ -245,7 +245,7 @@
                         Office Location
                     </h3>
                     <p class="text-gray-300">
-                        TourAdvisor Travel Agency<br>
+                        Basmago Travel Agency<br>
                         Sheikh Zayed Road<br>
                         Dubai, UAE<br>
                         P.O. Box 12345
