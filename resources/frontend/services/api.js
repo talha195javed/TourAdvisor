@@ -11,13 +11,20 @@ const api = axios.create({
   },
 });
 
-// Add language parameter to all requests
+// Add language parameter and auth token to all requests
 api.interceptors.request.use((config) => {
   const lang = i18n.language || 'en';
   config.params = {
     ...config.params,
     lang: lang,
   };
+  
+  // Add auth token if available
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  
   return config;
 });
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
 use App\Models\Category;
 use App\Models\Hotel;
 use App\Models\Package;
@@ -12,6 +13,17 @@ use Illuminate\Support\Facades\Route;
 | API Routes
 |--------------------------------------------------------------------------
 */
+
+// Authentication Routes
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+
+// Protected Routes (require authentication)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::get('/auth/me', [AuthController::class, 'me']);
+    Route::get('/auth/my-bookings', [AuthController::class, 'myBookings']);
+});
 
 // Get featured packages (latest 6) - MUST be before /packages/{id}
 Route::get('/packages/featured/list', function (Request $request) {
@@ -154,8 +166,8 @@ Route::get('/hotels', function () {
     return response()->json($hotels);
 });
 
-// Create booking from frontend
-Route::post('/bookings', function (Request $request) {
+// Create booking from frontend (requires authentication)
+Route::middleware('auth:sanctum')->post('/bookings', function (Request $request) {
     $validated = $request->validate([
         'package_id' => 'required|exists:packages,id',
         'customer_name' => 'required|string|max:255',
@@ -241,10 +253,14 @@ Route::post('/bookings', function (Request $request) {
         }
     }
     
+    // Get authenticated client
+    $client = $request->user();
+    
     // Create booking
     $booking = \App\Models\Booking::create([
         'booking_reference' => $bookingReference,
         'package_id' => $validated['package_id'],
+        'client_id' => $client->id,
         'customer_name' => $validated['customer_name'],
         'customer_email' => $validated['customer_email'],
         'customer_phone' => $validated['customer_phone'],

@@ -12,6 +12,7 @@ class Booking extends Model
     protected $fillable = [
         'booking_reference',
         'package_id',
+        'client_id',
         'customer_name',
         'customer_email',
         'customer_phone',
@@ -71,6 +72,12 @@ class Booking extends Model
     public function package()
     {
         return $this->belongsTo(Package::class);
+    }
+
+    // Relationship with Client
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
     }
 
     // Generate unique booking reference
