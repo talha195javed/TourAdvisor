@@ -483,21 +483,21 @@
 
         <!-- Divider -->
         <div class="divider">
-            <span>Or continue with</span>
+            <span>Or </span>
         </div>
 
         <!-- Social Login -->
-        <div class="social-login">
-            <div class="social-btn google">
-                <i class="fab fa-google"></i>
-            </div>
-            <div class="social-btn facebook">
-                <i class="fab fa-facebook-f"></i>
-            </div>
-            <div class="social-btn twitter">
-                <i class="fab fa-twitter"></i>
-            </div>
-        </div>
+<!--        <div class="social-login">-->
+<!--            <div class="social-btn google">-->
+<!--                <i class="fab fa-google"></i>-->
+<!--            </div>-->
+<!--            <div class="social-btn facebook">-->
+<!--                <i class="fab fa-facebook-f"></i>-->
+<!--            </div>-->
+<!--            <div class="social-btn twitter">-->
+<!--                <i class="fab fa-twitter"></i>-->
+<!--            </div>-->
+<!--        </div>-->
 
         <!-- Sign Up Link -->
         <div class="signup-link">
