@@ -1,0 +1,14 @@
+# Add this line to your .env file:
+
+VITE_STRIPE_PUBLISHABLE_KEY="${STRIPE_KEY}"
+
+# Your complete Stripe configuration should look like:
+
+STRIPE_KEY=pk_test_51RHioER6TPn3anLsM5dHoX2W8KlhZldusKq8sZKOHpUXPsPU2uUxYcdh8qMYpP73hcCSnHtT6N3pqnF9Hcyx70TM00ngnQRydG
+STRIPE_SECRET=sk_test_51RHioER6TPn3anLsRM0CunPnMZ6X6kYZBFVNjM3KYUEUqR0j0eO9ZivXUa6z8cEsTWxt3hCQijsFPzi2yuRoLMJS00mdbYYthI
+STRIPE_CURRENCY=aed
+STRIPE_WEBHOOK_SECRET=whsec_35836de593cb5287171fd41c924e0b3076e8a63f0e50d7932c8b0a3bc5d907ad
+VITE_STRIPE_PUBLISHABLE_KEY="${STRIPE_KEY}"
+
+# Then rebuild:
+# npm run build
