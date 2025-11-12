@@ -29,7 +29,13 @@ class Booking extends Model
         'remaining_amount',
         'payment_status',
         'payment_method',
+        'payment_method_type',
+        'payment_timing',
         'transaction_id',
+        'stripe_payment_intent_id',
+        'stripe_charge_id',
+        'stripe_customer_id',
+        'can_edit_before_payment',
         'status',
         'special_requests',
         'admin_notes',
@@ -66,6 +72,7 @@ class Booking extends Model
         'date_of_birth' => 'date',
         'passport_expiration' => 'date',
         'passengers_data' => 'array',
+        'can_edit_before_payment' => 'boolean',
     ];
 
     // Relationship with Package

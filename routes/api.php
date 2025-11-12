@@ -5,6 +5,7 @@ use App\Models\Category;
 use App\Models\Hotel;
 use App\Models\Package;
 use App\Services\TranslationService;
+use App\Services\StripePaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,210 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::get('/auth/my-bookings', [AuthController::class, 'myBookings']);
+    
+    // Stripe Payment Routes
+    Route::post('/stripe/create-payment-intent', function (Request $request) {
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:0.01',
+            'booking_reference' => 'required|string',
+        ]);
+
+        $stripeService = new StripePaymentService();
+        $result = $stripeService->createPaymentIntent(
+            $validated['amount'],
+            'usd',
+            [
+                'booking_reference' => $validated['booking_reference'],
+                'customer_email' => $request->user()->email,
+            ]
+        );
+
+        if ($result['success']) {
+            return response()->json([
+                'success' => true,
+                'clientSecret' => $result['client_secret'],
+                'paymentIntentId' => $result['payment_intent_id'],
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'error' => $result['error'],
+        ], 400);
+    });
+
+    Route::post('/stripe/confirm-payment', function (Request $request) {
+        $validated = $request->validate([
+            'payment_intent_id' => 'required|string',
+            'booking_id' => 'required|exists:bookings,id',
+        ]);
+
+        $stripeService = new StripePaymentService();
+        $result = $stripeService->confirmPayment($validated['payment_intent_id']);
+
+        if ($result['success']) {
+            // Update booking with payment information
+            $booking = \App\Models\Booking::findOrFail($validated['booking_id']);
+            $booking->update([
+                'stripe_payment_intent_id' => $validated['payment_intent_id'],
+                'stripe_charge_id' => $result['charge_id'],
+                'payment_status' => 'paid',
+                'paid_amount' => $booking->total_amount,
+                'remaining_amount' => 0,
+                'payment_method' => 'card',
+                'payment_method_type' => 'stripe',
+                'payment_timing' => 'now',
+                'transaction_id' => $result['charge_id'],
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment confirmed successfully',
+                'booking' => $booking->fresh()->load('package'),
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'error' => $result['error'],
+        ], 400);
+    });
+
+    // Update booking (only if can_edit_before_payment is true)
+    Route::put('/bookings/{id}', function (Request $request, $id) {
+        $booking = \App\Models\Booking::findOrFail($id);
+        
+        // Check if user owns this booking
+        if ($booking->client_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+        // Check if booking can be edited
+        if (!$booking->can_edit_before_payment) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This booking cannot be edited. Payment has been initiated or completed.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'customer_name' => 'nullable|string|max:255',
+            'customer_email' => 'nullable|email|max:255',
+            'customer_phone' => 'nullable|string|max:255',
+            'customer_country' => 'nullable|string|max:255',
+            'customer_address' => 'nullable|string',
+            'travel_date' => 'nullable|date|after_or_equal:today',
+            'return_date' => 'nullable|date|after_or_equal:travel_date',
+            'number_of_adults' => 'nullable|integer|min:1',
+            'number_of_children' => 'nullable|integer|min:0',
+            'number_of_infants' => 'nullable|integer|min:0',
+            'special_requests' => 'nullable|string',
+        ]);
+
+        // Handle passengers data
+        $passengersData = null;
+        if ($request->has('passengers')) {
+            $passengersJson = $request->input('passengers');
+            if (is_string($passengersJson)) {
+                $passengersData = json_decode($passengersJson, true);
+            } elseif (is_array($passengersJson)) {
+                $passengersData = $passengersJson;
+            }
+            $validated['passengers_data'] = $passengersData;
+        }
+
+        // Recalculate total if passenger numbers changed
+        if (isset($validated['number_of_adults']) || isset($validated['number_of_children'])) {
+            $package = $booking->package;
+            $adults = $validated['number_of_adults'] ?? $booking->number_of_adults;
+            $children = $validated['number_of_children'] ?? $booking->number_of_children;
+            
+            $totalAmount = ($adults * $package->price) + ($children * $package->price * 0.5);
+            
+            if ($booking->visa_required && $booking->number_of_visas > 0) {
+                $totalAmount += $booking->total_visa_amount;
+            }
+            
+            $validated['total_amount'] = $totalAmount;
+            $validated['remaining_amount'] = $totalAmount;
+        }
+
+        $booking->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking updated successfully',
+            'booking' => $booking->fresh()->load('package'),
+        ]);
+    });
+
+    // Make payment for existing booking
+    Route::post('/bookings/{id}/pay', function (Request $request, $id) {
+        $booking = \App\Models\Booking::findOrFail($id);
+        
+        // Check if user owns this booking
+        if ($booking->client_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+        // Check if already paid
+        if ($booking->payment_status === 'paid') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This booking has already been paid.',
+            ], 400);
+        }
+
+        $validated = $request->validate([
+            'payment_method_type' => 'required|string|in:stripe,cash,personal',
+        ]);
+
+        // If Stripe, create payment intent
+        if ($validated['payment_method_type'] === 'stripe') {
+            $stripeService = new StripePaymentService();
+            $result = $stripeService->createPaymentIntent(
+                $booking->total_amount,
+                'usd',
+                [
+                    'booking_reference' => $booking->booking_reference,
+                    'customer_email' => $booking->customer_email,
+                ]
+            );
+
+            if ($result['success']) {
+                return response()->json([
+                    'success' => true,
+                    'clientSecret' => $result['client_secret'],
+                    'paymentIntentId' => $result['payment_intent_id'],
+                    'booking' => $booking,
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'error' => $result['error'],
+            ], 400);
+        }
+
+        // For cash/personal, update payment method
+        $booking->update([
+            'payment_method_type' => $validated['payment_method_type'],
+            'payment_timing' => 'now',
+            'can_edit_before_payment' => false,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment method updated. Please complete payment.',
+            'booking' => $booking->fresh()->load('package'),
+        ]);
+    });
 });
 
 // Get featured packages (latest 6) - MUST be before /packages/{id}
@@ -186,6 +391,8 @@ Route::middleware('auth:sanctum')->post('/bookings', function (Request $request)
         'passport_images.*' => 'nullable|image|max:5120',
         'applicant_images.*' => 'nullable|image|max:5120',
         'emirates_id_images.*' => 'nullable|image|max:5120',
+        'payment_method_type' => 'nullable|string|in:stripe,cash,personal',
+        'payment_timing' => 'nullable|string|in:now,later',
     ]);
 
     // Get package to calculate pricing
@@ -256,6 +463,18 @@ Route::middleware('auth:sanctum')->post('/bookings', function (Request $request)
     // Get authenticated client
     $client = $request->user();
     
+    // Determine payment status and method
+    $paymentMethodType = $request->input('payment_method_type', 'later');
+    $paymentTiming = $request->input('payment_timing', 'later');
+    $paymentStatus = 'pending';
+    $canEditBeforePayment = true;
+    
+    // If payment method is cash or personal and timing is now, mark as pending but allow completion
+    if (in_array($paymentMethodType, ['cash', 'personal']) && $paymentTiming === 'now') {
+        $paymentStatus = 'pending'; // Admin will confirm later
+        $canEditBeforePayment = false;
+    }
+    
     // Create booking
     $booking = \App\Models\Booking::create([
         'booking_reference' => $bookingReference,
@@ -275,7 +494,10 @@ Route::middleware('auth:sanctum')->post('/bookings', function (Request $request)
         'total_amount' => $totalAmount,
         'paid_amount' => 0,
         'remaining_amount' => $totalAmount,
-        'payment_status' => 'pending',
+        'payment_status' => $paymentStatus,
+        'payment_method_type' => $paymentMethodType,
+        'payment_timing' => $paymentTiming,
+        'can_edit_before_payment' => $canEditBeforePayment,
         'status' => 'pending',
         'special_requests' => $validated['special_requests'] ?? null,
         'visa_required' => $visaRequired,
