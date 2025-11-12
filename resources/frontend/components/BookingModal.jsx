@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { bookingsAPI } from '../services/api';
+import api from '../services/api';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, useStripe, useElements, CardNumberElement } from '@stripe/react-stripe-js';
+import StripePaymentFields from './StripePaymentFields';
+
+// Debug: Log Stripe key
+console.log('Stripe Publishable Key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 function BookingModal({ isOpen, onClose, packageData }) {
     const { t } = useTranslation();
@@ -8,7 +17,13 @@ function BookingModal({ isOpen, onClose, packageData }) {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
     const [bookingReference, setBookingReference] = useState('');
+    const [bookingId, setBookingId] = useState(null);
     const [activeSection, setActiveSection] = useState('personal');
+    const [paymentMethod, setPaymentMethod] = useState('later');
+    const [clientSecret, setClientSecret] = useState('');
+    const [paymentIntentId, setPaymentIntentId] = useState('');
+    const [cardData, setCardData] = useState({});
+    const [stripeInstance, setStripeInstance] = useState(null);
 
     const [formData, setFormData] = useState({
         customer_name: '',
@@ -52,7 +67,8 @@ function BookingModal({ isOpen, onClose, packageData }) {
         { id: 'travel', label: 'Travel Details', icon: '✈️' },
         { id: 'passengers', label: 'Passengers', icon: '👥' },
         { id: 'visa', label: 'Visa Services', icon: '📋' },
-        { id: 'review', label: 'Review & Pay', icon: '💰' },
+        { id: 'payment', label: 'Payment Method', icon: '💳' },
+        { id: 'review', label: 'Review & Confirm', icon: '✅' },
     ];
 
     const getCurrentSectionIndex = () => sections.findIndex(section => section.id === activeSection);
@@ -141,6 +157,12 @@ function BookingModal({ isOpen, onClose, packageData }) {
                     if (visaFiles.applicantImages.length === 0) {
                         newErrors.applicantImages = 'Applicant photos are required';
                     }
+                }
+                break;
+
+            case 'payment':
+                if (!paymentMethod) {
+                    newErrors.paymentMethod = 'Please select a payment method';
                 }
                 break;
         }
@@ -312,6 +334,11 @@ function BookingModal({ isOpen, onClose, packageData }) {
             // Add passengers data as JSON
             formDataToSend.append('passengers', JSON.stringify(passengers));
 
+            // Add payment method information
+            const paymentTiming = paymentMethod === 'stripe' ? 'now' : (paymentMethod === 'later' ? 'later' : 'now');
+            formDataToSend.append('payment_method_type', paymentMethod);
+            formDataToSend.append('payment_timing', paymentTiming);
+
             // Add visa data
             formDataToSend.append('visa_required', formData.visa_required ? '1' : '0');
             if (formData.visa_required) {
@@ -331,12 +358,20 @@ function BookingModal({ isOpen, onClose, packageData }) {
             const response = await bookingsAPI.create(formDataToSend);
 
             if (response.data.success) {
-                setSuccess(true);
-                setBookingReference(response.data.booking.booking_reference);
+                const booking = response.data.booking;
+                setBookingReference(booking.booking_reference);
+                setBookingId(booking.id);
 
-                setTimeout(() => {
-                    handleClose();
-                }, 5000);
+                // If payment method is Stripe, process payment directly
+                if (paymentMethod === 'stripe') {
+                    await processStripePayment(booking);
+                } else {
+                    // For cash/personal/later, show success immediately
+                    setSuccess(true);
+                    setTimeout(() => {
+                        handleClose();
+                    }, 5000);
+                }
             }
         } catch (err) {
             console.error('Booking error:', err);
@@ -348,6 +383,107 @@ function BookingModal({ isOpen, onClose, packageData }) {
         } finally {
             setLoading(false);
         }
+    };
+
+    const processStripePayment = async (booking) => {
+        try {
+            console.log('🔵 Processing Stripe payment...');
+            
+            // Validate Stripe is ready
+            if (!stripeInstance || !stripeInstance.stripe || !stripeInstance.elements) {
+                setError('Payment system not ready. Please wait a moment and try again.');
+                return;
+            }
+
+            // Validate card data
+            if (!stripeInstance.cardholderName || stripeInstance.cardholderName.trim() === '') {
+                setError('Please enter cardholder name');
+                return;
+            }
+
+            const totalAmount = calculateTotal();
+            console.log('Total amount:', totalAmount);
+
+            // Create payment intent
+            console.log('Creating payment intent...');
+            const response = await api.post('/stripe/create-payment-intent', {
+                amount: totalAmount,
+                booking_reference: booking.booking_reference,
+            });
+
+            console.log('Payment intent response:', response.data);
+
+            if (response.data.success) {
+                console.log('✅ Payment intent created!');
+                const clientSecret = response.data.clientSecret;
+                
+                // Confirm payment with Stripe
+                console.log('Confirming payment with Stripe...');
+                const { error: stripeError, paymentIntent } = await stripeInstance.stripe.confirmCardPayment(
+                    clientSecret,
+                    {
+                        payment_method: {
+                            card: stripeInstance.elements.getElement(CardNumberElement),
+                            billing_details: {
+                                name: stripeInstance.cardholderName,
+                            },
+                        },
+                    }
+                );
+
+                if (stripeError) {
+                    console.error('❌ Stripe payment error:', stripeError);
+                    setError(stripeError.message);
+                    return;
+                }
+
+                if (paymentIntent.status === 'succeeded') {
+                    console.log('✅ Payment successful!');
+                    
+                    // Confirm payment with backend
+                    await api.post('/stripe/confirm-payment', {
+                        payment_intent_id: paymentIntent.id,
+                        booking_id: booking.id,
+                    });
+                    
+                    setSuccess(true);
+                    setTimeout(() => {
+                        handleClose();
+                    }, 5000);
+                }
+            } else {
+                console.error('❌ Payment intent creation failed');
+                setError('Failed to create payment intent.');
+            }
+        } catch (err) {
+            console.error('❌ Payment error:', err);
+            console.error('Error details:', err.response?.data);
+            setError('Failed to process payment. Please try again.');
+        }
+    };
+
+    const handlePaymentSuccess = async (paymentIntent) => {
+        try {
+            const response = await api.post('/stripe/confirm-payment', {
+                payment_intent_id: paymentIntentId,
+                booking_id: bookingId,
+            });
+
+            if (response.data.success) {
+                setSuccess(true);
+                setTimeout(() => {
+                    handleClose();
+                }, 5000);
+            }
+        } catch (err) {
+            console.error('Payment confirmation error:', err);
+            console.error('Error details:', err.response?.data);
+            setError('Payment successful but confirmation failed. Please contact support.');
+        }
+    };
+
+    const handlePaymentError = (errorMessage) => {
+        setError(errorMessage);
     };
 
     const handleClose = () => {
@@ -386,6 +522,10 @@ function BookingModal({ isOpen, onClose, packageData }) {
         setError(null);
         setSuccess(false);
         setBookingReference('');
+        setBookingId(null);
+        setPaymentMethod('later');
+        setClientSecret('');
+        setPaymentIntentId('');
         setActiveSection('personal');
         onClose();
     };
@@ -667,7 +807,93 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                     </SectionBox>
                                 )}
 
-                                {/* Review & Payment Section */}
+                                {/* Payment Method Section */}
+                                {activeSection === 'payment' && (
+                                    <SectionBox
+                                        title="Payment Method"
+                                        icon="💳"
+                                        description="Choose how you want to pay"
+                                    >
+                                        <div className="space-y-4">
+                                            <PaymentMethodOption
+                                                id="stripe"
+                                                title="Pay Now with Card"
+                                                description="Secure payment via Stripe - Complete payment now"
+                                                icon="💳"
+                                                selected={paymentMethod === 'stripe'}
+                                                onSelect={() => setPaymentMethod('stripe')}
+                                                badge="Recommended"
+                                                badgeColor="green"
+                                            />
+                                            <PaymentMethodOption
+                                                id="cash"
+                                                title="Cash Payment"
+                                                description="Pay in cash when you arrive"
+                                                icon="💵"
+                                                selected={paymentMethod === 'cash'}
+                                                onSelect={() => setPaymentMethod('cash')}
+                                            />
+                                            <PaymentMethodOption
+                                                id="personal"
+                                                title="Personal Payment"
+                                                description="Arrange payment directly with us"
+                                                icon="🤝"
+                                                selected={paymentMethod === 'personal'}
+                                                onSelect={() => setPaymentMethod('personal')}
+                                            />
+                                            <PaymentMethodOption
+                                                id="later"
+                                                title="Pay Later"
+                                                description="Complete booking and pay later - You can edit booking details before payment"
+                                                icon="⏰"
+                                                selected={paymentMethod === 'later'}
+                                                onSelect={() => setPaymentMethod('later')}
+                                                badge="Flexible"
+                                                badgeColor="blue"
+                                            />
+                                        </div>
+                                        {errors.paymentMethod && (
+                                            <p className="mt-4 text-sm text-red-500 flex items-center">
+                                                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                {errors.paymentMethod}
+                                            </p>
+                                        )}
+                                    </SectionBox>
+                                )}
+
+                                {/* Debug Info */}
+                                {activeSection === 'stripe-payment' && !clientSecret && (
+                                    <div className="bg-yellow-50 border-2 border-yellow-300 rounded-2xl p-6 mb-6">
+                                        <h4 className="text-lg font-bold text-yellow-800 mb-2">⚠️ Debug Information</h4>
+                                        <p className="text-yellow-700">Active Section: {activeSection}</p>
+                                        <p className="text-yellow-700">Client Secret: {clientSecret ? 'Present' : 'Missing'}</p>
+                                        <p className="text-yellow-700">Booking ID: {bookingId}</p>
+                                        <p className="text-yellow-700 mt-2">Waiting for payment intent...</p>
+                                    </div>
+                                )}
+
+                                {/* Stripe Payment Section */}
+                                {activeSection === 'stripe-payment' && clientSecret && (
+                                    <SectionBox
+                                        title="Complete Payment"
+                                        icon="🔒"
+                                        description="Enter your card details to complete the booking"
+                                    >
+                                        <Elements stripe={stripePromise} options={{ clientSecret }}>
+                                            <StripePaymentForm
+                                                clientSecret={clientSecret}
+                                                amount={calculateTotal()}
+                                                onSuccess={handlePaymentSuccess}
+                                                onError={handlePaymentError}
+                                                bookingId={bookingId}
+                                            />
+                                        </Elements>
+                                    </SectionBox>
+                                )}
+
+                                {/* Review & Confirm Section */}
                                 {activeSection === 'review' && (
                                     <SectionBox
                                         title="Review & Payment"
@@ -710,6 +936,64 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                                 rows="3"
                                                 placeholder="Any special requests or requirements?"
                                             />
+
+                                            {/* Show Stripe Payment Form if Stripe is selected */}
+                                            {paymentMethod === 'stripe' && (
+                                                <div className="mt-6">
+                                                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 mb-4">
+                                                        <h4 className="text-lg font-bold text-slate-800 mb-2 flex items-center">
+                                                            <svg className="h-6 w-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                                            </svg>
+                                                            Payment Details
+                                                        </h4>
+                                                        <p className="text-sm text-slate-600">Enter your card information to complete the payment</p>
+                                                    </div>
+                                                    
+                                                    {!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? (
+                                                        <div className="bg-red-50 border-2 border-red-300 rounded-2xl p-6">
+                                                            <h4 className="text-lg font-bold text-red-800 mb-2">⚠️ Stripe Not Configured</h4>
+                                                            <p className="text-red-700 mb-2">
+                                                                Stripe publishable key is missing. Please add it to your .env file:
+                                                            </p>
+                                                            <code className="block bg-red-100 p-2 rounded text-sm text-red-900">
+                                                                VITE_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+                                                            </code>
+                                                            <p className="text-red-700 mt-2 text-sm">
+                                                                Then rebuild: <code className="bg-red-100 px-2 py-1 rounded">npm run build</code>
+                                                            </p>
+                                                        </div>
+                                                    ) : (
+                                                        <Elements stripe={stripePromise}>
+                                                            <StripePaymentFields
+                                                                onCardChange={(data) => setCardData(prev => ({ ...prev, ...data }))}
+                                                                onStripeReady={(stripeData) => setStripeInstance(stripeData)}
+                                                                errors={errors}
+                                                            />
+                                                        </Elements>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Payment Method Summary */}
+                                            {paymentMethod !== 'stripe' && paymentMethod !== 'later' && (
+                                                <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-6">
+                                                    <h4 className="text-lg font-bold text-green-800 mb-2">✅ Payment Method Selected</h4>
+                                                    <p className="text-green-700">
+                                                        {paymentMethod === 'cash' && 'You will pay in cash when you arrive.'}
+                                                        {paymentMethod === 'personal' && 'Payment will be arranged directly with us.'}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {paymentMethod === 'later' && (
+                                                <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
+                                                    <h4 className="text-lg font-bold text-blue-800 mb-2">⏰ Pay Later Selected</h4>
+                                                    <p className="text-blue-700">
+                                                        You can complete payment later and edit your booking details before payment.
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
                                     </SectionBox>
                                 )}
@@ -1124,6 +1408,54 @@ const SummaryCard = ({ title, items }) => (
                     <span className="font-semibold text-slate-800">{item.value || 'Not provided'}</span>
                 </div>
             ))}
+        </div>
+    </div>
+);
+
+// Payment Method Option Component
+const PaymentMethodOption = ({ id, title, description, icon, selected, onSelect, badge, badgeColor }) => (
+    <div
+        onClick={onSelect}
+        className={`relative border-2 rounded-2xl p-6 cursor-pointer transition-all transform hover:scale-102 ${
+            selected
+                ? 'border-blue-500 bg-blue-50 shadow-lg'
+                : 'border-slate-200 bg-white hover:border-blue-300 hover:shadow-md'
+        }`}
+    >
+        <div className="flex items-start">
+            <div className={`text-4xl mr-4 ${selected ? 'scale-110' : ''} transition-transform`}>
+                {icon}
+            </div>
+            <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                    <h5 className={`text-lg font-bold ${selected ? 'text-blue-700' : 'text-slate-800'}`}>
+                        {title}
+                    </h5>
+                    {badge && (
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            badgeColor === 'green' 
+                                ? 'bg-green-100 text-green-700' 
+                                : 'bg-blue-100 text-blue-700'
+                        }`}>
+                            {badge}
+                        </span>
+                    )}
+                </div>
+                <p className={`text-sm ${selected ? 'text-blue-600' : 'text-slate-600'}`}>
+                    {description}
+                </p>
+            </div>
+            <div className={`ml-4 flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                selected 
+                    ? 'border-blue-500 bg-blue-500' 
+                    : 'border-slate-300'
+            }`}>
+                {selected && (
+                    <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                )}
+            </div>
         </div>
     </div>
 );
