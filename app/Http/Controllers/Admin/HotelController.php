@@ -17,7 +17,6 @@ class HotelController extends Controller
     {
         $query = Hotel::query();
 
-        // Search filter
         if ($request->filled('q')) {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->q . '%')
@@ -25,7 +24,6 @@ class HotelController extends Controller
             });
         }
 
-        // Status filter
         if ($request->filled('status')) {
             if ($request->status === 'active') {
                 $query->where('is_active', true);
@@ -34,7 +32,6 @@ class HotelController extends Controller
             }
         }
 
-        // Sort options
         switch ($request->get('sort', 'newest')) {
             case 'oldest':
                 $query->orderBy('created_at', 'asc');
@@ -49,7 +46,6 @@ class HotelController extends Controller
                 $query->orderBy('created_at', 'desc');
         }
 
-        // Get active hotels count for stats
         $activeHotelsCount = Hotel::where('is_active', true)->count();
 
         $hotels = $query->paginate(10);
@@ -73,7 +69,6 @@ class HotelController extends Controller
         try {
             $data = $request->validated();
 
-            // Handle image upload or URL
             if ($request->hasFile('image_file')) {
                 $path = $request->file('image_file')->store('hotels', 'public');
                 $data['image_path'] = Storage::url($path);
@@ -81,7 +76,6 @@ class HotelController extends Controller
                 $data['image_path'] = $data['image_url'];
             }
 
-            // Ensure boolean value for is_active
             $data['is_active'] = $request->has('is_active');
 
             Hotel::create($data);
@@ -112,9 +106,7 @@ class HotelController extends Controller
         try {
             $data = $request->validated();
 
-            // Handle image upload or URL
             if ($request->hasFile('image_file')) {
-                // Delete old image if it exists and is from storage
                 if ($hotel->image_path && str_contains($hotel->image_path, '/storage/')) {
                     $oldPath = str_replace('/storage/', '', $hotel->image_path);
                     Storage::disk('public')->delete($oldPath);
@@ -125,7 +117,6 @@ class HotelController extends Controller
                 $data['image_path'] = $data['image_url'];
             }
 
-            // Ensure boolean value for is_active
             $data['is_active'] = $request->has('is_active');
 
             $hotel->update($data);
@@ -146,13 +137,11 @@ class HotelController extends Controller
     public function destroy(Hotel $hotel)
     {
         try {
-            // Check if hotel has any packages before deletion
             if ($hotel->packages()->exists()) {
                 return redirect()->route('admin.hotels.index')
                     ->with('error', 'Cannot delete hotel. There are packages associated with this hotel.');
             }
 
-            // Delete image if it exists and is from storage
             if ($hotel->image_path && str_contains($hotel->image_path, '/storage/')) {
                 $oldPath = str_replace('/storage/', '', $hotel->image_path);
                 Storage::disk('public')->delete($oldPath);
@@ -229,7 +218,6 @@ class HotelController extends Controller
                     break;
 
                 case 'delete':
-                    // Check if any hotels have packages
                     $hotelsWithPackages = Hotel::whereIn('id', $request->ids)
                         ->whereHas('packages')
                         ->count();
@@ -241,7 +229,6 @@ class HotelController extends Controller
                         ], 422);
                     }
 
-                    // Delete images and hotels
                     $hotels = Hotel::whereIn('id', $request->ids)->get();
                     foreach ($hotels as $hotel) {
                         if ($hotel->image_path && str_contains($hotel->image_path, '/storage/')) {

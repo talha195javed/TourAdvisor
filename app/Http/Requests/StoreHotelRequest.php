@@ -11,7 +11,6 @@ class StoreHotelRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Only allow logged-in users (or admin) to create/update
         return auth()->check();
     }
 
@@ -49,7 +48,6 @@ class StoreHotelRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            // Ensure at least one image source is provided if not updating
             if (!$this->isMethod('PUT') && !$this->isMethod('PATCH')) {
                 if (!$this->hasFile('image_file') && empty($this->image_url)) {
                     $validator->errors()->add(

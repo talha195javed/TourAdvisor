@@ -75,19 +75,16 @@ class Booking extends Model
         'can_edit_before_payment' => 'boolean',
     ];
 
-    // Relationship with Package
     public function package()
     {
         return $this->belongsTo(Package::class);
     }
 
-    // Relationship with Client
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
 
-    // Generate unique booking reference
     public static function generateBookingReference()
     {
         do {
@@ -97,7 +94,6 @@ class Booking extends Model
         return $reference;
     }
 
-    // Get status badge color
     public function getStatusBadgeColorAttribute()
     {
         return match($this->status) {
@@ -109,7 +105,6 @@ class Booking extends Model
         };
     }
 
-    // Get payment status badge color
     public function getPaymentStatusBadgeColorAttribute()
     {
         return match($this->payment_status) {

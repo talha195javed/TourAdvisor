@@ -21,7 +21,7 @@ class StripePaymentService
     {
         try {
             $paymentIntent = PaymentIntent::create([
-                'amount' => $amount * 100, // Stripe expects amount in cents
+                'amount' => $amount * 100,
                 'currency' => $currency,
                 'metadata' => $metadata,
                 'automatic_payment_methods' => [
@@ -94,7 +94,7 @@ class StripePaymentService
     {
         try {
             $paymentIntent = PaymentIntent::retrieve($paymentIntentId);
-            
+
             if ($paymentIntent->status === 'succeeded') {
                 return [
                     'success' => true,

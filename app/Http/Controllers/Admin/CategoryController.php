@@ -37,7 +37,6 @@ class CategoryController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        // Auto-generate slug if not provided
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['name']);
         }
@@ -78,7 +77,6 @@ class CategoryController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        // Auto-generate slug if not provided
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['name']);
         }
@@ -96,7 +94,6 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        // Check if category has packages
         if ($category->packages()->count() > 0) {
             return redirect()->route('admin.categories.index')
                 ->with('error', 'Cannot delete category with existing packages!');

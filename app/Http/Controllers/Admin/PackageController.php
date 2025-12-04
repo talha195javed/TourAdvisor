@@ -19,17 +19,14 @@ class PackageController extends Controller
     {
         $query = Package::with('category', 'hotel');
 
-        // Search filter
         if ($request->filled('q')) {
             $query->where('title', 'like', '%' . $request->q . '%');
         }
 
-        // Category filter
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        // Status filter
         if ($request->filled('status')) {
             if ($request->status === 'active') {
                 $query->where('is_active', true);
@@ -38,7 +35,6 @@ class PackageController extends Controller
             }
         }
 
-        // Get active packages count for stats
         $activePackagesCount = Package::where('is_active', true)->count();
 
         $packages = $query->orderBy('created_at', 'desc')->paginate(10);
@@ -63,7 +59,6 @@ class PackageController extends Controller
     {
         $data = $request->validated();
 
-        // Handle main image: file upload or URL
         if ($request->hasFile('main_image_file')) {
             $path = $request->file('main_image_file')->store('packages', 'public');
             $data['main_image'] = Storage::url($path);
@@ -71,7 +66,6 @@ class PackageController extends Controller
             $data['main_image'] = $data['main_image_url'];
         }
 
-        // Handle multiple images upload
         $imagesPaths = [];
         if ($request->hasFile('package_images')) {
             foreach ($request->file('package_images') as $image) {
@@ -81,7 +75,6 @@ class PackageController extends Controller
         }
         $data['images'] = $imagesPaths;
 
-        // Ensure features saved as array
         $data['features'] = $data['features'] ?? [];
 
         Package::create($data);
@@ -114,7 +107,6 @@ class PackageController extends Controller
     {
 
         $data = $request->validated();
-        // Optionally remove current main image if requested
         if ($request->boolean('remove_main_image')) {
             if ($package->main_image && str_contains($package->main_image, '/storage/')) {
                 $oldPath = str_replace('/storage/', '', $package->main_image);
@@ -122,9 +114,7 @@ class PackageController extends Controller
             }
             $data['main_image'] = null;
         }
-        // Handle main image: replace if new uploaded
         if ($request->hasFile('main_image_file')) {
-            // Delete old image if exists
             if ($package->main_image && str_contains($package->main_image, '/storage/')) {
                 $oldPath = str_replace('/storage/', '', $package->main_image);
                 Storage::disk('public')->delete($oldPath);
@@ -135,22 +125,18 @@ class PackageController extends Controller
             $data['main_image'] = $data['main_image_url'];
         }
 
-        // Handle multiple images upload
         $existingImages = $package->images ?? [];
-        
-        // Handle image deletions
+
         if ($request->has('delete_images')) {
             $deleteImagesJson = $request->input('delete_images')[0] ?? null;
             if ($deleteImagesJson) {
                 $deleteImages = json_decode($deleteImagesJson, true);
                 if (is_array($deleteImages)) {
                     foreach ($deleteImages as $imageToDelete) {
-                        // Delete from storage
                         if (str_contains($imageToDelete, '/storage/')) {
                             $oldPath = str_replace('/storage/', '', $imageToDelete);
                             Storage::disk('public')->delete($oldPath);
                         }
-                        // Remove from array
                         $existingImages = array_values(array_filter($existingImages, function($img) use ($imageToDelete) {
                             return $img !== $imageToDelete;
                         }));
@@ -159,7 +145,6 @@ class PackageController extends Controller
             }
         }
 
-        // Add new images
         if ($request->hasFile('package_images')) {
             foreach ($request->file('package_images') as $image) {
                 $path = $image->store('packages/gallery', 'public');
@@ -180,13 +165,11 @@ class PackageController extends Controller
      */
     public function destroy(Package $package)
     {
-        // Delete main image if exists
         if ($package->main_image && str_contains($package->main_image, '/storage/')) {
             $oldPath = str_replace('/storage/', '', $package->main_image);
             Storage::disk('public')->delete($oldPath);
         }
 
-        // Delete all gallery images
         if ($package->images && is_array($package->images)) {
             foreach ($package->images as $image) {
                 if (str_contains($image, '/storage/')) {

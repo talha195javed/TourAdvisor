@@ -388,7 +388,7 @@ function BookingModal({ isOpen, onClose, packageData }) {
     const processStripePayment = async (booking) => {
         try {
             console.log('🔵 Processing Stripe payment...');
-            
+
             // Validate Stripe is ready
             if (!stripeInstance || !stripeInstance.stripe || !stripeInstance.elements) {
                 setError('Payment system not ready. Please wait a moment and try again.');
@@ -416,7 +416,7 @@ function BookingModal({ isOpen, onClose, packageData }) {
             if (response.data.success) {
                 console.log('✅ Payment intent created!');
                 const clientSecret = response.data.clientSecret;
-                
+
                 // Confirm payment with Stripe
                 console.log('Confirming payment with Stripe...');
                 const { error: stripeError, paymentIntent } = await stripeInstance.stripe.confirmCardPayment(
@@ -439,13 +439,13 @@ function BookingModal({ isOpen, onClose, packageData }) {
 
                 if (paymentIntent.status === 'succeeded') {
                     console.log('✅ Payment successful!');
-                    
+
                     // Confirm payment with backend
                     await api.post('/stripe/confirm-payment', {
                         payment_intent_id: paymentIntent.id,
                         booking_id: booking.id,
                     });
-                    
+
                     setSuccess(true);
                     setTimeout(() => {
                         handleClose();
@@ -949,7 +949,7 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                                         </h4>
                                                         <p className="text-sm text-slate-600">Enter your card information to complete the payment</p>
                                                     </div>
-                                                    
+
                                                     {!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? (
                                                         <div className="bg-red-50 border-2 border-red-300 rounded-2xl p-6">
                                                             <h4 className="text-lg font-bold text-red-800 mb-2">⚠️ Stripe Not Configured</h4>
@@ -1433,8 +1433,8 @@ const PaymentMethodOption = ({ id, title, description, icon, selected, onSelect,
                     </h5>
                     {badge && (
                         <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            badgeColor === 'green' 
-                                ? 'bg-green-100 text-green-700' 
+                            badgeColor === 'green'
+                                ? 'bg-green-100 text-green-700'
                                 : 'bg-blue-100 text-blue-700'
                         }`}>
                             {badge}
@@ -1446,8 +1446,8 @@ const PaymentMethodOption = ({ id, title, description, icon, selected, onSelect,
                 </p>
             </div>
             <div className={`ml-4 flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                selected 
-                    ? 'border-blue-500 bg-blue-500' 
+                selected
+                    ? 'border-blue-500 bg-blue-500'
                     : 'border-slate-300'
             }`}>
                 {selected && (
