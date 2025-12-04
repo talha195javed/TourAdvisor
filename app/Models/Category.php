@@ -11,7 +11,6 @@ class Category extends Model
 
     protected $fillable = ['name', 'slug', 'is_active'];
 
-    // Relationship: a category has many packages
     public function packages()
     {
         return $this->hasMany(Package::class);

@@ -38,10 +38,9 @@ class Hotel extends Model
         'room_count' => 'integer',
         'check_in_time' => 'datetime:H:i',
         'check_out_time' => 'datetime:H:i',
-        'amenities' => 'array', // Cast amenities to array
+        'amenities' => 'array',
     ];
 
-    // Relationship: a hotel has many packages
     public function packages()
     {
         return $this->hasMany(Package::class);

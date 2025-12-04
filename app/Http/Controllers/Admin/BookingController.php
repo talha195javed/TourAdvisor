@@ -17,7 +17,6 @@ class BookingController extends Controller
     {
         $query = Booking::with('package');
 
-        // Search functionality
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -28,12 +27,10 @@ class BookingController extends Controller
             });
         }
 
-        // Filter by status
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
 
-        // Filter by payment status
         if ($request->has('payment_status') && $request->payment_status != '') {
             $query->where('payment_status', $request->payment_status);
         }
@@ -87,11 +84,10 @@ class BookingController extends Controller
             'emirates_id_images.*' => 'nullable|image|max:5120',
         ]);
 
-        // Handle visa file uploads
         $passportImages = [];
         $applicantImages = [];
         $emiratesIdImages = [];
-        
+
         if ($request->input('visa_required')) {
             if ($request->hasFile('passport_images')) {
                 foreach ($request->file('passport_images') as $file) {
@@ -99,14 +95,14 @@ class BookingController extends Controller
                     $passportImages[] = $path;
                 }
             }
-            
+
             if ($request->hasFile('applicant_images')) {
                 foreach ($request->file('applicant_images') as $file) {
                     $path = $file->store('bookings/visa/applicants', 'public');
                     $applicantImages[] = $path;
                 }
             }
-            
+
             if ($request->hasFile('emirates_id_images')) {
                 foreach ($request->file('emirates_id_images') as $file) {
                     $path = $file->store('bookings/visa/emirates_ids', 'public');
@@ -115,13 +111,10 @@ class BookingController extends Controller
             }
         }
 
-        // Generate booking reference
         $validated['booking_reference'] = Booking::generateBookingReference();
 
-        // Calculate remaining amount
         $validated['remaining_amount'] = $validated['total_amount'] - ($validated['paid_amount'] ?? 0);
-        
-        // Add visa images
+
         $validated['passport_images'] = $passportImages;
         $validated['applicant_images'] = $applicantImages;
         $validated['emirates_id_images'] = $emiratesIdImages;
@@ -194,12 +187,10 @@ class BookingController extends Controller
             'emirates_id_images.*' => 'nullable|image|max:5120',
         ]);
 
-        // Handle visa file uploads and deletions (keep existing images then remove requested ones)
         $passportImages = $booking->passport_images ?? [];
         $applicantImages = $booking->applicant_images ?? [];
         $emiratesIdImages = $booking->emirates_id_images ?? [];
 
-        // Deletions: passport images
         if ($request->has('delete_passport_images')) {
             $json = $request->input('delete_passport_images')[0] ?? null;
             if ($json) {
@@ -213,7 +204,6 @@ class BookingController extends Controller
             }
         }
 
-        // Deletions: applicant images
         if ($request->has('delete_applicant_images')) {
             $json = $request->input('delete_applicant_images')[0] ?? null;
             if ($json) {
@@ -227,7 +217,6 @@ class BookingController extends Controller
             }
         }
 
-        // Deletions: emirates id images
         if ($request->has('delete_emirates_id_images')) {
             $json = $request->input('delete_emirates_id_images')[0] ?? null;
             if ($json) {
@@ -240,7 +229,7 @@ class BookingController extends Controller
                 }
             }
         }
-        
+
         if ($request->input('visa_required')) {
             if ($request->hasFile('passport_images')) {
                 foreach ($request->file('passport_images') as $file) {
@@ -248,14 +237,14 @@ class BookingController extends Controller
                     $passportImages[] = $path;
                 }
             }
-            
+
             if ($request->hasFile('applicant_images')) {
                 foreach ($request->file('applicant_images') as $file) {
                     $path = $file->store('bookings/visa/applicants', 'public');
                     $applicantImages[] = $path;
                 }
             }
-            
+
             if ($request->hasFile('emirates_id_images')) {
                 foreach ($request->file('emirates_id_images') as $file) {
                     $path = $file->store('bookings/visa/emirates_ids', 'public');
@@ -264,20 +253,15 @@ class BookingController extends Controller
             }
         }
 
-        // Calculate remaining amount
         $validated['remaining_amount'] = $validated['total_amount'] - ($validated['paid_amount'] ?? 0);
-        
-        // Add visa images
+
         $validated['passport_images'] = $passportImages;
         $validated['applicant_images'] = $applicantImages;
         $validated['emirates_id_images'] = $emiratesIdImages;
 
-        // Handle passengers data
         if ($request->has('passengers')) {
-            // From admin edit view (array format)
             $validated['passengers_data'] = $request->input('passengers');
         } elseif ($request->has('passengers') && is_string($request->input('passengers'))) {
-            // From frontend modal (JSON string)
             $validated['passengers_data'] = json_decode($request->input('passengers'), true);
         }
 

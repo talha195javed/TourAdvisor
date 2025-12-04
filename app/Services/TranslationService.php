@@ -25,16 +25,13 @@ class TranslationService
             return '';
         }
 
-        // Create cache key based on text and language
         $cacheKey = 'translation_' . md5($text . $targetLang);
 
-        // Check cache first (cache for 30 days)
         return Cache::remember($cacheKey, 60 * 60 * 24 * 30, function () use ($text, $targetLang) {
             try {
                 $this->translator->setTarget($targetLang);
                 return $this->translator->translate($text);
             } catch (\Exception $e) {
-                // If translation fails, return original text
                 \Log::error('Translation failed: ' . $e->getMessage());
                 return $text;
             }
@@ -48,8 +45,7 @@ class TranslationService
     {
         foreach ($fields as $field) {
             $arField = $field . '_ar';
-            
-            // Only translate if Arabic field is empty and English field exists
+
             if (empty($item->$arField) && !empty($item->$field)) {
                 $item->$arField = $this->translate($item->$field, $targetLang);
             }
@@ -64,7 +60,6 @@ class TranslationService
     public function getTranslatedValue($englishValue, $arabicValue, string $currentLang = 'en'): string
     {
         if ($currentLang === 'ar') {
-            // If Arabic value exists, use it; otherwise auto-translate
             if (!empty($arabicValue)) {
                 return $arabicValue;
             }

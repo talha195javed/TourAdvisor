@@ -12,7 +12,6 @@ class PackagesTable extends Component
 
     public $search = '';
 
-    // Optional: reset page when search changes
     protected $updatesQueryString = ['search'];
     protected $paginationTheme = 'tailwind';
 

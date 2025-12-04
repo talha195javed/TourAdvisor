@@ -11,7 +11,6 @@ class StorePackageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Only allow logged-in users (or admin) to create
         return auth()->check();
     }
 

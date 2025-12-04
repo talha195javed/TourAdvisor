@@ -27,7 +27,6 @@ class Package extends Model
         'is_active',
     ];
 
-    // Cast features to array and is_active to boolean
     protected $casts = [
         'features' => 'array',
         'images' => 'array',
@@ -36,7 +35,6 @@ class Package extends Model
         'visa_price' => 'decimal:2',
     ];
 
-    // Relationships
     public function category()
     {
         return $this->belongsTo(Category::class);
