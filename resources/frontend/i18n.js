@@ -11,8 +11,8 @@ const resources = {
       contact: 'Contact',
 
       // Hero Section
-      heroTitle: 'Discover Your Next Adventure',
-      heroSubtitle: 'Explore amazing travel packages and create unforgettable memories',
+      heroTitle: 'Begin Your Sacred Journey',
+      heroSubtitle: 'Experience blessed Umrah & Hajj packages with comfort, guidance, and spiritual fulfillment',
       explorePackages: 'Explore Packages',
 
       // Featured Packages
@@ -35,18 +35,18 @@ const resources = {
       priceLowest: 'Price: Low to High',
       priceHighest: 'Price: High to Low',
       noPackagesFound: 'No packages found',
-      premiumExperiences: 'Premium Travel Experiences',
-      discoverYour: 'Discover Your',
-      dreamDestination: 'Dream Destination',
-      packagesSubtitle: 'Explore curated travel packages designed to turn your wanderlust into reality. From pristine beaches to majestic mountains, your perfect adventure awaits.',
+      premiumExperiences: 'Premium Umrah & Hajj Packages',
+      discoverYour: 'Plan Your',
+      dreamDestination: 'Sacred Journey',
+      packagesSubtitle: 'Discover our carefully curated Umrah and Hajj packages designed to provide you with a spiritually enriching experience. From 5-star accommodations near Haram to guided religious tours, your blessed journey awaits.',
       bestPrice: 'Best Price Guarantee',
       support247: '24/7 Support',
       instantConfirmation: 'Instant Confirmation',
       flexibleBooking: 'Flexible Booking',
       browsePackages: 'Browse Packages',
-      travelPackages: 'Travel Packages',
+      travelPackages: 'Umrah & Hajj Packages',
       categories: 'Categories',
-      happyTravelers: 'Happy Travelers',
+      happyTravelers: 'Happy Pilgrims',
       averageRating: 'Average Rating',
 
       // Package Details
@@ -72,10 +72,10 @@ const resources = {
       aboutUs: 'About Us',
       ourStory: 'Our Story',
       careers: 'Careers',
-      services: 'Services',
-      tourPackages: 'Tour Packages',
-      hotelBooking: 'Hotel Booking',
-      flightBooking: 'Flight Booking',
+      services: 'Our Services',
+      tourPackages: 'Umrah Packages',
+      hotelBooking: 'Hajj Packages',
+      flightBooking: 'Group Packages',
       support: 'Support',
       helpCenter: 'Help Center',
       termsConditions: 'Terms & Conditions',
@@ -89,27 +89,27 @@ const resources = {
 
       // Why Choose Us Section
       whyChooseUs: 'Why Choose Us',
-      yourJourneyOurPriority: 'Your Journey, Our Priority',
+      yourJourneyOurPriority: 'Your Sacred Journey, Our Priority',
       support247Title: '24/7 Support',
-      support247Desc: 'Round-the-clock customer service to ensure your journey is smooth and worry-free',
+      support247Desc: 'Round-the-clock assistance to ensure your pilgrimage is smooth and spiritually fulfilling',
       bestPricesTitle: 'Best Prices',
-      bestPricesDesc: 'Competitive rates and exclusive deals to make your dream vacation affordable',
-      curatedExperiencesTitle: 'Curated Experiences',
-      curatedExperiencesDesc: 'Handpicked destinations and unique adventures tailored to create unforgettable memories',
+      bestPricesDesc: 'Competitive rates and exclusive packages to make your Umrah and Hajj journey affordable',
+      curatedExperiencesTitle: 'Guided Experience',
+      curatedExperiencesDesc: 'Expert religious guides and scholars to help you perform your rituals correctly and meaningfully',
 
       // CTA Section
-      readyToStart: 'Ready to Start Your Adventure?',
-      joinThousands: 'Join thousands of happy travelers who have discovered their dream destinations with us',
+      readyToStart: 'Ready to Begin Your Sacred Journey?',
+      joinThousands: 'Join thousands of blessed pilgrims who have fulfilled their spiritual dreams with us',
       chatOnWhatsApp: 'Chat on WhatsApp',
 
       // Reviews Section
-      customerReviews: 'Customer Reviews',
-      whatCustomersSay: 'What Our Customers Say',
-      reviewsSubtitle: 'Real experiences from real travelers who trusted us with their dream vacations',
+      customerReviews: 'Pilgrim Reviews',
+      whatCustomersSay: 'What Our Pilgrims Say',
+      reviewsSubtitle: 'Real experiences from blessed pilgrims who trusted us with their sacred journey',
       reviews: 'Reviews',
       satisfaction: 'Satisfaction',
-      joinHappyCustomers: 'Join thousands of satisfied customers',
-      bookYourTrip: 'Book Your Trip Now',
+      joinHappyCustomers: 'Join thousands of satisfied pilgrims',
+      bookYourTrip: 'Book Your Journey Now',
     }
   },
   ar: {
@@ -121,8 +121,8 @@ const resources = {
       contact: 'اتصل بنا',
 
       // Hero Section
-      heroTitle: 'اكتشف مغامرتك القادمة',
-      heroSubtitle: 'استكشف باقات السفر المذهلة وأنشئ ذكريات لا تُنسى',
+      heroTitle: 'ابدأ رحلتك المقدسة',
+      heroSubtitle: 'استمتع بباقات العمرة والحج المباركة مع الراحة والإرشاد والإشباع الروحي',
       explorePackages: 'استكشف الباقات',
 
       // Featured Packages
@@ -145,18 +145,18 @@ const resources = {
       priceLowest: 'السعر: من الأقل إلى الأعلى',
       priceHighest: 'السعر: من الأعلى إلى الأقل',
       noPackagesFound: 'لم يتم العثور على باقات',
-      premiumExperiences: 'تجارب سفر مميزة',
-      discoverYour: 'اكتشف',
-      dreamDestination: 'وجهتك المثالية',
-      packagesSubtitle: 'استكشف باقات السفر المنتقاة بعناية والمصممة لتحويل شغفك بالسفر إلى واقع. من الشواطئ النقية إلى الجبال المهيبة، مغامرتك المثالية بانتظارك.',
+      premiumExperiences: 'باقات العمرة والحج المميزة',
+      discoverYour: 'خطط',
+      dreamDestination: 'لرحلتك المقدسة',
+      packagesSubtitle: 'اكتشف باقات العمرة والحج المنتقاة بعناية والمصممة لتوفير تجربة روحانية غنية. من الإقامة الفاخرة بالقرب من الحرم إلى الجولات الدينية المرشدة، رحلتك المباركة بانتظارك.',
       bestPrice: 'ضمان أفضل سعر',
       support247: 'دعم على مدار الساعة',
       instantConfirmation: 'تأكيد فوري',
       flexibleBooking: 'حجز مرن',
       browsePackages: 'تصفح الباقات',
-      travelPackages: 'باقات السفر',
+      travelPackages: 'باقات العمرة والحج',
       categories: 'الفئات',
-      happyTravelers: 'مسافرون سعداء',
+      happyTravelers: 'معتمرون سعداء',
       averageRating: 'متوسط التقييم',
 
       // Package Details
@@ -182,10 +182,10 @@ const resources = {
       aboutUs: 'من نحن',
       ourStory: 'قصتنا',
       careers: 'الوظائف',
-      services: 'الخدمات',
-      tourPackages: 'باقات الجولات',
-      hotelBooking: 'حجز الفنادق',
-      flightBooking: 'حجز الرحلات',
+      services: 'خدماتنا',
+      tourPackages: 'باقات العمرة',
+      hotelBooking: 'باقات الحج',
+      flightBooking: 'الباقات الجماعية',
       support: 'الدعم',
       helpCenter: 'مركز المساعدة',
       termsConditions: 'الشروط والأحكام',
@@ -199,26 +199,26 @@ const resources = {
 
       // Why Choose Us Section
       whyChooseUs: 'لماذا تختارنا',
-      yourJourneyOurPriority: 'رحلتك، أولويتنا',
+      yourJourneyOurPriority: 'رحلتك المقدسة، أولويتنا',
       support247Title: 'دعم على مدار الساعة',
-      support247Desc: 'خدمة عملاء على مدار الساعة لضمان رحلة سلسة وخالية من القلق',
+      support247Desc: 'مساعدة على مدار الساعة لضمان أن تكون رحلتك سلسة ومُشبعة روحانياً',
       bestPricesTitle: 'أفضل الأسعار',
-      bestPricesDesc: 'أسعار تنافسية وعروض حصرية لجعل عطلة أحلامك في متناول يدك',
-      curatedExperiencesTitle: 'تجارب منتقاة',
-      curatedExperiencesDesc: 'وجهات مختارة بعناية ومغامرات فريدة مصممة لخلق ذكريات لا تُنسى',
+      bestPricesDesc: 'أسعار تنافسية وباقات حصرية لجعل رحلة العمرة والحج في متناول يدك',
+      curatedExperiencesTitle: 'تجربة مُرشدة',
+      curatedExperiencesDesc: 'مرشدون دينيون وعلماء خبراء لمساعدتك على أداء مناسكك بشكل صحيح وهادف',
 
       // CTA Section
-      readyToStart: 'هل أنت مستعد لبدء مغامرتك؟',
-      joinThousands: 'انضم إلى آلاف المسافرين السعداء الذين اكتشفوا وجهات أحلامهم معنا',
+      readyToStart: 'هل أنت مستعد لبدء رحلتك المقدسة؟',
+      joinThousands: 'انضم إلى آلاف المعتمرين المباركين الذين حققوا أحلامهم الروحية معنا',
       chatOnWhatsApp: 'تحدث على واتساب',
 
       // Reviews Section
-      customerReviews: 'آراء العملاء',
-      whatCustomersSay: 'ماذا يقول عملاؤنا',
-      reviewsSubtitle: 'تجارب حقيقية من مسافرين حقيقيين وثقوا بنا في عطلات أحلامهم',
+      customerReviews: 'آراء المعتمرين',
+      whatCustomersSay: 'ماذا يقول معتمرونا',
+      reviewsSubtitle: 'تجارب حقيقية من معتمرين مباركين وثقوا بنا في رحلتهم المقدسة',
       reviews: 'التقييمات',
       satisfaction: 'الرضا',
-      joinHappyCustomers: 'انضم إلى آلاف العملاء الراضين',
+      joinHappyCustomers: 'انضم إلى آلاف المعتمرين الراضين',
       bookYourTrip: 'احجز رحلتك الآن',
     }
   }

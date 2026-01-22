@@ -1,44 +1,120 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+const heroImages = [
+  {
+    url: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2070',
+    title: 'Masjid al-Haram',
+    location: 'Makkah, Saudi Arabia'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=2070',
+    title: 'Al-Masjid an-Nabawi',
+    location: 'Madinah, Saudi Arabia'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?q=80&w=2070',
+    title: 'Kaaba at Night',
+    location: 'Makkah, Saudi Arabia'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1466442929976-97f336a657be?q=80&w=2070',
+    title: 'Istanbul Blue Mosque',
+    location: 'Istanbul, Turkey'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1585155770913-c756e5f4e6f4?q=80&w=2070',
+    title: 'Dubai Skyline',
+    location: 'Dubai, UAE'
+  }
+];
+
 function HeroSection() {
   const { t } = useTranslation();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 via-blue-500/20 to-purple-500/20"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,0),rgba(17,24,39,1))]"></div>
+      {/* Image Slider Background */}
+      <div className="absolute inset-0">
+        {heroImages.map((image, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img
+              src={image.url}
+              alt={image.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+        {/* Dark overlay with gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-emerald-900/80 to-teal-900/85"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-slate-900/50"></div>
+      </div>
+
+      {/* Slide indicators */}
+      <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2 rtl:space-x-reverse">
+        {heroImages.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              index === currentSlide
+                ? 'bg-emerald-400 w-8'
+                : 'bg-white/50 hover:bg-white/80'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Current slide info */}
+      <div className="absolute bottom-32 right-8 z-20 text-right rtl:text-left rtl:right-auto rtl:left-8 hidden md:block">
+        <p className="text-emerald-400 text-sm font-medium">{heroImages[currentSlide].location}</p>
+        <p className="text-white/80 text-xs">{heroImages[currentSlide].title}</p>
+      </div>
+
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-green-500/20"></div>
       </div>
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-pulse"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-gradient-to-r from-teal-400 to-green-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '4s' }}></div>
       </div>
-
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-40"></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-left space-y-8">
-            <div className="inline-flex items-center space-x-3 rtl:space-x-reverse bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-xl border border-cyan-500/20 rounded-full px-6 py-3 animate-fade-in-down">
+            <div className="inline-flex items-center space-x-3 rtl:space-x-reverse bg-gradient-to-r from-emerald-500/10 to-teal-500/10 backdrop-blur-xl border border-emerald-500/20 rounded-full px-6 py-3 animate-fade-in-down">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full blur-sm"></div>
-                <svg className="h-5 w-5 text-cyan-400 relative" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full blur-sm"></div>
+                <svg className="h-5 w-5 text-emerald-400 relative" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                 </svg>
               </div>
-              <span className="text-white font-semibold text-sm tracking-wide">Premium Travel Experiences</span>
+              <span className="text-white font-semibold text-sm tracking-wide">🕋 Umrah & Hajj Packages</span>
             </div>
 
             <div className="animate-fade-in-up">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
                 <span className="block text-white mb-2">{t('heroTitle')}</span>
-                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400">
-                  Starts Here
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400">
+                  {t('dreamDestination')}
                 </span>
               </h1>
             </div>
@@ -71,13 +147,13 @@ function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-400">
               <Link
                 to="/packages"
-                className="group relative inline-flex items-center justify-center space-x-3 rtl:space-x-reverse bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-2xl shadow-blue-500/50 hover:shadow-blue-500/70 hover:scale-105 transition-all duration-300 overflow-hidden"
+                className="group relative inline-flex items-center justify-center space-x-3 rtl:space-x-reverse bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-2xl shadow-emerald-500/50 hover:shadow-emerald-500/70 hover:scale-105 transition-all duration-300 overflow-hidden"
               >
                 <span className="relative z-10">{t('explorePackages')}</span>
                 <svg className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </Link>
 
               <a
@@ -96,12 +172,12 @@ function HeroSection() {
             <div className="flex items-center space-x-8 rtl:space-x-reverse pt-4 animate-fade-in-up animation-delay-500">
               <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <div className="flex -space-x-2 rtl:space-x-reverse">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 border-2 border-slate-900"></div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 border-2 border-slate-900"></div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 border-2 border-slate-900"></div>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 border-2 border-slate-900"></div>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-green-500 border-2 border-slate-900"></div>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 border-2 border-slate-900"></div>
                 </div>
                 <div className="text-sm text-slate-300">
-                  <span className="font-bold text-white">500+</span> {t('happyTravelers')}
+                  <span className="font-bold text-white">5000+</span> {t('happyTravelers')}
                 </div>
               </div>
               <div className="flex items-center space-x-1 rtl:space-x-reverse">
@@ -119,43 +195,43 @@ function HeroSection() {
             <div className="relative h-96">
               <div className="absolute top-0 left-0 w-72 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl hover:scale-105 transition-transform duration-300 z-10">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                   </div>
                   <div>
-                    <div className="text-white font-bold">Premium Hotels</div>
+                    <div className="text-white font-bold">Hotels Near Haram</div>
                     <div className="text-slate-300 text-sm">5-Star Luxury</div>
                   </div>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full w-4/5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
+                  <div className="h-full w-4/5 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full"></div>
                 </div>
               </div>
 
               <div className="absolute bottom-0 left-0 w-72 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl hover:scale-105 transition-transform duration-300">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
                   <div>
-                    <div className="text-white font-bold">50+ Destinations</div>
-                    <div className="text-slate-300 text-sm">Worldwide</div>
+                    <div className="text-white font-bold">Makkah & Madinah</div>
+                    <div className="text-slate-300 text-sm">Holy Cities</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2 rtl:space-x-reverse text-slate-300 text-sm">
                   <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Verified & Trusted</span>
+                  <span>Licensed & Trusted</span>
                 </div>
               </div>
 
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full filter blur-3xl opacity-20"></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full filter blur-3xl opacity-20"></div>
             </div>
           </div>
         </div>
