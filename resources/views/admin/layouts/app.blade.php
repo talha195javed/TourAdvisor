@@ -6,7 +6,7 @@
     <title>@yield('page-title') | Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <script src="{{ asset('js/google-translator.js') }}" defer></script>
+    <script src="{{ asset('js/admin-translations.js') }}" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -242,7 +242,7 @@
                class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.packages.*') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-boxes mr-3 text-lg"></i>
                 <span class="font-medium">Packages</span>
-                <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">5</span>
+                <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">{{ \App\Models\Package::count() }}</span>
             </a>
             <a href="{{ route('admin.categories.index') }}"
                class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.categories.*') ? 'bg-primary-50 text-primary-600' : '' }}">
@@ -254,7 +254,7 @@
                class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 active-nav-item {{ request()->routeIs('admin.hotels.*') ? 'bg-primary-50 text-primary-600' : '' }}">
                 <i class="fas fa-hotel mr-3 text-lg"></i>
                 <span class="font-medium">Hotels</span>
-                <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">12</span>
+                <span class="ml-auto bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">{{ \App\Models\Hotel::count() }}</span>
             </a>
         </div>
 

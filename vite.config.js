@@ -21,13 +21,6 @@ export default defineConfig({
             },
         },
     },
-    server: {
-        host: 'localhost',
-        port: 5173,
-        hmr: {
-            overlay: true,
-        },
-    },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
     },

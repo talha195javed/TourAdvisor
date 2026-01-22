@@ -23,7 +23,7 @@ class StoreHotelRequest extends FormRequest
             'name' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:55120', // 55MB
             'image_url' => 'nullable|url|max:500',
             'star_rating' => 'nullable|integer|between:1,5',
             'contact_email' => 'nullable|email|max:255',

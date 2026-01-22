@@ -76,7 +76,7 @@
                     </h3>
                 </div>
                 <div class="p-6">
-                    <img src="{{ asset('storage/packages/' . basename($package->main_image)) }}" alt="{{ $package->title }}" class="w-full h-96 object-cover rounded-xl">
+                    <img src="{{ $package->main_image }}" alt="{{ $package->title }}" class="w-full h-96 object-cover rounded-xl">
                 </div>
             </div>
             @endif

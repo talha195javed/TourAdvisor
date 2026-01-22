@@ -111,7 +111,7 @@
                     <div class="mb-4">
                         <p class="text-sm text-gray-600 mb-2">Current Image:</p>
                         <div class="relative inline-block">
-                            <img src="{{asset('storage/hotels/' . basename($hotel->image_path)) }}" alt="Current Hotel Image" class="w-48 h-32 object-cover rounded-lg shadow-sm border">
+                            <img src="{{ $hotel->image_path }}" alt="Current Hotel Image" class="w-48 h-32 object-cover rounded-lg shadow-sm border">
                             <div class="absolute top-2 right-2">
                                 <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Current</span>
                             </div>

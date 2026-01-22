@@ -9,22 +9,22 @@ const resources = {
       packages: 'Packages',
       about: 'About',
       contact: 'Contact',
-      
+
       // Hero Section
       heroTitle: 'Discover Your Next Adventure',
       heroSubtitle: 'Explore amazing travel packages and create unforgettable memories',
       explorePackages: 'Explore Packages',
-      
+
       // Featured Packages
       featuredPackages: 'Featured Packages',
       viewAllPackages: 'View All Packages',
-      
+
       // Package Card
       days: 'Days',
       startingFrom: 'Starting from',
       viewDetails: 'View Details',
       bookNow: 'Book Now',
-      
+
       // Packages Page
       allPackages: 'All Packages',
       searchPackages: 'Search packages...',
@@ -48,7 +48,7 @@ const resources = {
       categories: 'Categories',
       happyTravelers: 'Happy Travelers',
       averageRating: 'Average Rating',
-      
+
       // Package Details
       duration: 'Duration',
       location: 'Location',
@@ -67,7 +67,7 @@ const resources = {
       needHelp: 'Need Help?',
       contactUs: 'Contact us for any questions',
       backToPackages: 'Back to Packages',
-      
+
       // Footer
       aboutUs: 'About Us',
       ourStory: 'Our Story',
@@ -82,11 +82,11 @@ const resources = {
       privacyPolicy: 'Privacy Policy',
       followUs: 'Follow Us',
       allRightsReserved: 'All rights reserved',
-      
+
       // Common
       loading: 'Loading...',
       error: 'Error loading data',
-      
+
       // Why Choose Us Section
       whyChooseUs: 'Why Choose Us',
       yourJourneyOurPriority: 'Your Journey, Our Priority',
@@ -96,12 +96,12 @@ const resources = {
       bestPricesDesc: 'Competitive rates and exclusive deals to make your dream vacation affordable',
       curatedExperiencesTitle: 'Curated Experiences',
       curatedExperiencesDesc: 'Handpicked destinations and unique adventures tailored to create unforgettable memories',
-      
+
       // CTA Section
       readyToStart: 'Ready to Start Your Adventure?',
       joinThousands: 'Join thousands of happy travelers who have discovered their dream destinations with us',
       chatOnWhatsApp: 'Chat on WhatsApp',
-      
+
       // Reviews Section
       customerReviews: 'Customer Reviews',
       whatCustomersSay: 'What Our Customers Say',
@@ -119,22 +119,22 @@ const resources = {
       packages: 'الباقات',
       about: 'من نحن',
       contact: 'اتصل بنا',
-      
+
       // Hero Section
       heroTitle: 'اكتشف مغامرتك القادمة',
       heroSubtitle: 'استكشف باقات السفر المذهلة وأنشئ ذكريات لا تُنسى',
       explorePackages: 'استكشف الباقات',
-      
+
       // Featured Packages
       featuredPackages: 'الباقات المميزة',
       viewAllPackages: 'عرض جميع الباقات',
-      
+
       // Package Card
       days: 'أيام',
       startingFrom: 'ابتداءً من',
       viewDetails: 'عرض التفاصيل',
       bookNow: 'احجز الآن',
-      
+
       // Packages Page
       allPackages: 'جميع الباقات',
       searchPackages: 'البحث عن الباقات...',
@@ -158,7 +158,7 @@ const resources = {
       categories: 'الفئات',
       happyTravelers: 'مسافرون سعداء',
       averageRating: 'متوسط التقييم',
-      
+
       // Package Details
       duration: 'المدة',
       location: 'الموقع',
@@ -177,7 +177,7 @@ const resources = {
       needHelp: 'تحتاج مساعدة؟',
       contactUs: 'اتصل بنا لأي استفسارات',
       backToPackages: 'العودة إلى الباقات',
-      
+
       // Footer
       aboutUs: 'من نحن',
       ourStory: 'قصتنا',
@@ -192,11 +192,11 @@ const resources = {
       privacyPolicy: 'سياسة الخصوصية',
       followUs: 'تابعنا',
       allRightsReserved: 'جميع الحقوق محفوظة',
-      
+
       // Common
       loading: 'جاري التحميل...',
       error: 'خطأ في تحميل البيانات',
-      
+
       // Why Choose Us Section
       whyChooseUs: 'لماذا تختارنا',
       yourJourneyOurPriority: 'رحلتك، أولويتنا',
@@ -206,12 +206,12 @@ const resources = {
       bestPricesDesc: 'أسعار تنافسية وعروض حصرية لجعل عطلة أحلامك في متناول يدك',
       curatedExperiencesTitle: 'تجارب منتقاة',
       curatedExperiencesDesc: 'وجهات مختارة بعناية ومغامرات فريدة مصممة لخلق ذكريات لا تُنسى',
-      
+
       // CTA Section
       readyToStart: 'هل أنت مستعد لبدء مغامرتك؟',
       joinThousands: 'انضم إلى آلاف المسافرين السعداء الذين اكتشفوا وجهات أحلامهم معنا',
       chatOnWhatsApp: 'تحدث على واتساب',
-      
+
       // Reviews Section
       customerReviews: 'آراء العملاء',
       whatCustomersSay: 'ماذا يقول عملاؤنا',

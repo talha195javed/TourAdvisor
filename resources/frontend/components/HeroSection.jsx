@@ -117,7 +117,7 @@ function HeroSection() {
 
           <div className="hidden lg:block relative animate-fade-in-right">
             <div className="relative h-96">
-              <div className="absolute top-0 right-0 w-72 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl hover:scale-105 transition-transform duration-300 z-10">
+              <div className="absolute top-0 left-0 w-72 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl hover:scale-105 transition-transform duration-300 z-10">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

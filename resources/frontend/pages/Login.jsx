@@ -8,12 +8,12 @@ function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const { login } = useAuth();
-    
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
-    
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -73,7 +73,7 @@ function Login() {
                         {t('Sign in to continue your journey') || 'Sign in to continue your journey'}
                     </p>
                 </div>
-                
+
                 {/* Login Form Card */}
                 <div className="bg-white/95 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-white/20">
                     <form className="space-y-6" onSubmit={handleSubmit}>
