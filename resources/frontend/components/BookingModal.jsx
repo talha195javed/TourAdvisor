@@ -1041,7 +1041,7 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                         <button
                                             type="submit"
                                             disabled={loading}
-                                            className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-4 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center shadow-xl"
+                                            className="flex-1 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-6 py-4 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center shadow-xl"
                                         >
                                             {loading ? (
                                                 <>
@@ -1219,10 +1219,10 @@ const PassengerCard = ({ passenger, index, onChange, errors }) => (
 // Visa Section Component
 const VisaSection = ({ formData, onChange, packageData, visaFiles, onFileChange, onRemoveFile, errors }) => (
     <div className="space-y-6">
-        <div className="flex items-center justify-between p-4 bg-teal-50 border-2 border-teal-200 rounded-2xl">
+        <div className="flex items-center justify-between p-4 bg-indigo-50 border-2 border-indigo-200 rounded-2xl">
             <div>
-                <h5 className="font-bold text-teal-800">Visa Processing Service</h5>
-                <p className="text-teal-600 text-sm">${parseFloat(packageData.visa_price).toFixed(2)} per person</p>
+                <h5 className="font-bold text-indigo-800">Visa Processing Service</h5>
+                <p className="text-indigo-600 text-sm">${parseFloat(packageData.visa_price).toFixed(2)} per person</p>
             </div>
             <label className="flex items-center cursor-pointer">
                 <div className="relative">
@@ -1235,7 +1235,7 @@ const VisaSection = ({ formData, onChange, packageData, visaFiles, onFileChange,
                         className="sr-only"
                     />
                     <div className={`block w-14 h-8 rounded-full transition-all ${
-                        formData.visa_required ? 'bg-teal-500' : 'bg-slate-300'
+                        formData.visa_required ? 'bg-indigo-500' : 'bg-slate-300'
                     }`}></div>
                     <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${
                         formData.visa_required ? 'transform translate-x-6' : ''
@@ -1300,7 +1300,7 @@ const FileUploadSection = ({ title, fileType, files, onFileChange, onRemoveFile,
             {title} <span className="text-red-500 text-sm font-normal">* (JPEG, JPG, PNG - 5MB max per file)</span>
         </label>
         <div className={`border-2 border-dashed rounded-2xl p-6 transition-all ${
-            error ? 'border-red-300 bg-red-50' : 'border-teal-300 bg-teal-50/50 hover:border-teal-500'
+            error ? 'border-red-300 bg-red-50' : 'border-indigo-300 bg-indigo-50/50 hover:border-indigo-500'
         }`}>
             <input
                 type="file"
@@ -1311,7 +1311,7 @@ const FileUploadSection = ({ title, fileType, files, onFileChange, onRemoveFile,
                 id={fileType}
             />
             <label htmlFor={fileType} className="cursor-pointer flex flex-col items-center">
-                <svg className="h-12 w-12 text-teal-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-12 w-12 text-indigo-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <span className="text-sm text-slate-600 font-medium">Click to upload {title.toLowerCase()}</span>
@@ -1333,7 +1333,7 @@ const FileUploadSection = ({ title, fileType, files, onFileChange, onRemoveFile,
                 {files.map((file, index) => (
                     <div key={index} className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200">
                         <div className="flex items-center flex-1">
-                            <svg className="h-5 w-5 text-teal-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="h-5 w-5 text-indigo-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                             <span className="text-sm text-slate-700 truncate">{file.name}</span>
@@ -1357,7 +1357,7 @@ const FileUploadSection = ({ title, fileType, files, onFileChange, onRemoveFile,
 // Success View Component
 const SuccessView = ({ bookingReference, onClose, t }) => (
     <div className="p-12 text-center bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
-        <div className="mx-auto flex items-center justify-center h-32 w-32 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 mb-8 shadow-2xl animate-bounce">
+        <div className="mx-auto flex items-center justify-center h-32 w-32 rounded-full bg-gradient-to-br from-green-400 to-blue-600 mb-8 shadow-2xl animate-bounce">
             <svg className="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
             </svg>
@@ -1493,11 +1493,11 @@ const PricingSummary = ({ packageData, formData, calculateTotal }) => (
             )}
 
             {formData.visa_required && packageData?.visa_price && (
-                <div className="flex justify-between items-center py-3 border-b border-blue-200 bg-teal-50 rounded-xl px-4">
-          <span className="text-teal-700 font-medium">
+                <div className="flex justify-between items-center py-3 border-b border-blue-200 bg-indigo-50 rounded-xl px-4">
+          <span className="text-indigo-700 font-medium">
             Visa Cost ({formData.number_of_visas} × ${parseFloat(packageData.visa_price).toFixed(2)})
           </span>
-                    <span className="font-bold text-teal-700">
+                    <span className="font-bold text-indigo-700">
             ${(parseInt(formData.number_of_visas || 0) * parseFloat(packageData.visa_price)).toFixed(2)}
           </span>
                 </div>

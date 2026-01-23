@@ -125,7 +125,7 @@ function Packages() {
             </div>
           ))}
           {/* Dark overlay with gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-emerald-900/80 to-teal-900/85"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-blue-900/80 to-indigo-900/85"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/40"></div>
         </div>
 
@@ -137,7 +137,7 @@ function Packages() {
               onClick={() => setCurrentSlide(index)}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
                 index === currentSlide
-                  ? 'bg-emerald-400 w-8'
+                  ? 'bg-blue-400 w-8'
                   : 'bg-white/50 hover:bg-white/80'
               }`}
               aria-label={`Go to slide ${index + 1}`}
@@ -147,20 +147,20 @@ function Packages() {
 
         {/* Current slide info */}
         <div className="absolute bottom-28 right-8 z-20 text-right rtl:text-left rtl:right-auto rtl:left-8 hidden md:block">
-          <p className="text-emerald-400 text-sm font-medium">{heroImages[currentSlide].location}</p>
+          <p className="text-blue-400 text-sm font-medium">{heroImages[currentSlide].location}</p>
           <p className="text-white/80 text-xs">{heroImages[currentSlide].title}</p>
         </div>
 
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-10 -left-10 w-96 h-96 bg-emerald-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob"></div>
-          <div className="absolute top-1/3 -right-10 w-96 h-96 bg-teal-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+          <div className="absolute -top-10 -left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob"></div>
+          <div className="absolute top-1/3 -right-10 w-96 h-96 bg-indigo-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
           <div className="absolute -bottom-10 left-1/3 w-96 h-96 bg-green-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-white space-y-8">
-              <div className="inline-flex items-center space-x-2 rtl:space-x-reverse bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-md border border-emerald-400/30 rounded-full px-5 py-2.5 shadow-lg animate-fade-in-down">
+              <div className="inline-flex items-center space-x-2 rtl:space-x-reverse bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-md border border-blue-400/30 rounded-full px-5 py-2.5 shadow-lg animate-fade-in-down">
                 <span className="text-lg">🕋</span>
                 <span className="text-white font-semibold text-sm">{t('premiumExperiences')}</span>
               </div>
@@ -168,28 +168,28 @@ function Packages() {
               <div className="animate-fade-in-up">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-4">
                   <span className="block text-white">{t('discoverYour')}</span>
-                  <span className="block bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400">
+                  <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-green-400">
                     {t('dreamDestination')}
                   </span>
                 </h1>
               </div>
 
-              <p className="text-xl md:text-2xl text-emerald-100 leading-relaxed max-w-xl animate-fade-in-up animation-delay-200">
+              <p className="text-xl md:text-2xl text-blue-100 leading-relaxed max-w-xl animate-fade-in-up animation-delay-200">
                 {t('packagesSubtitle')}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in-up animation-delay-400">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                  <div className="flex-shrink-0 w-10 h-10 bg-emerald-500/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-emerald-400/30">
-                    <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex-shrink-0 w-10 h-10 bg-blue-500/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-blue-400/30">
+                    <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <span className="text-white font-medium">{t('bestPrice')}</span>
                 </div>
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                  <div className="flex-shrink-0 w-10 h-10 bg-teal-500/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-teal-400/30">
-                    <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex-shrink-0 w-10 h-10 bg-indigo-500/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-indigo-400/30">
+                    <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
@@ -204,8 +204,8 @@ function Packages() {
                   <span className="text-white font-medium">{t('instantConfirmation')}</span>
                 </div>
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                  <div className="flex-shrink-0 w-10 h-10 bg-emerald-500/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-emerald-400/30">
-                    <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex-shrink-0 w-10 h-10 bg-blue-500/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-blue-400/30">
+                    <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
@@ -220,7 +220,7 @@ function Packages() {
                     e.preventDefault();
                     document.querySelector('#packages')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="group inline-flex items-center justify-center space-x-2 rtl:space-x-reverse bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center justify-center space-x-2 rtl:space-x-reverse bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
                 >
                   <span>{t('browsePackages')}</span>
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -244,26 +244,26 @@ function Packages() {
             <div className="hidden lg:grid grid-cols-2 gap-6 animate-fade-in-up animation-delay-400">
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                   </div>
                 </div>
                 <div className="text-4xl font-black text-white mb-2">{packages.length}+</div>
-                <div className="text-emerald-200 font-medium">{t('travelPackages')}</div>
+                <div className="text-blue-200 font-medium">{t('travelPackages')}</div>
               </div>
 
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-teal-400 to-teal-600 rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                     </svg>
                   </div>
                 </div>
                 <div className="text-4xl font-black text-white mb-2">{categories.length}+</div>
-                <div className="text-teal-200 font-medium">{t('categories')}</div>
+                <div className="text-indigo-200 font-medium">{t('categories')}</div>
               </div>
 
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
@@ -398,7 +398,7 @@ function Packages() {
 
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-emerald-600"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
           </div>
         ) : error ? (
           <div className="text-center py-20">
@@ -429,7 +429,7 @@ function Packages() {
                   setSearchQuery('');
                   setSelectedCategory('');
                 }}
-                className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Clear Filters
               </button>
