@@ -247,7 +247,7 @@
                     <div class="mb-4">
                         <p class="text-sm text-gray-600 mb-2">Current Image:</p>
                         <div class="relative inline-block" id="currentMainImageWrapper">
-                            <img src="{{ asset('storage/packages/' . basename($package->main_image)) }}" alt="Current Package Image" class="w-48 h-32 object-cover rounded-lg shadow-sm border" id="currentMainImage">
+                            <img src="{{ $package->main_image }}" alt="Current Package Image" class="w-48 h-32 object-cover rounded-lg shadow-sm border" id="currentMainImage">
                             <div class="absolute top-2 left-2">
                                 <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Current</span>
                             </div>
@@ -300,13 +300,26 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-link text-gray-400"></i>
                                 </div>
+                                @php
+                                $oldUrl = old('main_image_url');
+                                $packageUrl = $package->main_image ?? null;
+
+                                if (filter_var($oldUrl, FILTER_VALIDATE_URL)) {
+                                $value = $oldUrl;
+                                } elseif (filter_var($packageUrl, FILTER_VALIDATE_URL)) {
+                                $value = $packageUrl;
+                                } else {
+                                $value = '';
+                                }
+                                @endphp
+
                                 <input
                                     type="url"
                                     name="main_image_url"
-                                    value="{{ old('main_image_url', $package->main_image) }}"
+                                    value="{{ $value }}"
                                     class="pl-10 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors @error('main_image_url') border-red-300 @enderror"
                                     placeholder="https://example.com/image.jpg"
-                                >
+                                />
                             </div>
                             @error('main_image_url')
                             <p class="mt-1 text-sm text-red-600 flex items-center">
@@ -626,14 +639,14 @@
         const multipleImagesPreview = document.getElementById('multipleImagesPreview');
         const previewContainer = document.getElementById('previewContainer');
         const imageCount = document.getElementById('imageCount');
-        
+
         console.log('Elements found:', {
             input: !!multipleImagesInput,
             preview: !!multipleImagesPreview,
             container: !!previewContainer,
             count: !!imageCount
         });
-        
+
         let selectedFiles = [];
 
         if (multipleImagesInput) {
@@ -642,7 +655,7 @@
                 console.log('Change event triggered!');
                 const files = Array.from(e.target.files);
                 console.log('Files selected:', files.length, files);
-                
+
                 if (files.length > 25) {
                     alert('You can only upload up to 25 images at once.');
                     this.value = '';
@@ -653,7 +666,7 @@
                 console.log('Updating preview for', selectedFiles.length, 'files');
                 updateNewImagesPreview();
             });
-            
+
             // Also add a click listener to verify the input is being clicked
             multipleImagesInput.addEventListener('click', function() {
                 console.log('File input clicked!');
@@ -675,7 +688,7 @@
                     const div = document.createElement('div');
                     div.className = 'relative group';
                     div.setAttribute('data-index', index);
-                    
+
                     // Add loading placeholder
                     div.innerHTML = `
                         <div class="w-full h-24 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -709,7 +722,7 @@
         window.removeNewSelectedImage = function(index) {
             console.log('Removing image at index:', index);
             selectedFiles.splice(index, 1);
-            
+
             // Update the file input
             try {
                 const dt = new DataTransfer();
@@ -723,28 +736,28 @@
                     multipleImagesInput.value = '';
                 }
             }
-            
+
             updateNewImagesPreview();
         }
     });
 
     // Delete image functionality
     let imagesToDelete = [];
-    
+
     function deleteImage(imageUrl) {
         if (confirm('Are you sure you want to delete this image?')) {
             imagesToDelete.push(imageUrl);
-            
+
             // Update hidden input
             const deleteInput = document.getElementById('deleteImagesInput');
             deleteInput.value = JSON.stringify(imagesToDelete);
-            
+
             // Remove from DOM
             const imageElement = document.querySelector(`[data-image="${imageUrl}"]`);
             if (imageElement) {
                 imageElement.remove();
             }
-            
+
             // Update count
             const container = document.getElementById('existingImagesContainer');
             const remainingImages = container.querySelectorAll('.relative.group').length;

@@ -279,19 +279,41 @@
 </div>
 
 <script>
-function toggleFAQ(id) {
-    const element = document.getElementById(id);
-    const icon = document.getElementById(id + '-icon');
+    function toggleFAQ(activeId) {
 
-    if (element.classList.contains('hidden')) {
-        element.classList.remove('hidden');
-        icon.classList.remove('fa-chevron-down');
-        icon.classList.add('fa-chevron-up');
-    } else {
-        element.classList.add('hidden');
-        icon.classList.remove('fa-chevron-up');
-        icon.classList.add('fa-chevron-down');
+        // Get all FAQ content divs
+        const allFaqs = document.querySelectorAll('[id^="faq"]');
+        const allIcons = document.querySelectorAll('[id$="-icon"]');
+
+        // Close all FAQs except the clicked one
+        allFaqs.forEach(faq => {
+            if (faq.id !== activeId) {
+                faq.classList.add('hidden');
+            }
+        });
+
+        // Reset all icons except the clicked one
+        allIcons.forEach(icon => {
+            if (icon.id !== activeId + '-icon') {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        });
+
+        // Toggle clicked FAQ
+        const activeFaq = document.getElementById(activeId);
+        const activeIcon = document.getElementById(activeId + '-icon');
+
+        if (activeFaq.classList.contains('hidden')) {
+            activeFaq.classList.remove('hidden');
+            activeIcon.classList.remove('fa-chevron-down');
+            activeIcon.classList.add('fa-chevron-up');
+        } else {
+            activeFaq.classList.add('hidden');
+            activeIcon.classList.remove('fa-chevron-up');
+            activeIcon.classList.add('fa-chevron-down');
+        }
     }
-}
 </script>
+
 @endsection
