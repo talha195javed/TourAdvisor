@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { bookingsAPI } from '../services/api';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardNumberElement } from '@stripe/react-stripe-js';
 import StripePaymentFields from './StripePaymentFields';
@@ -13,6 +15,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 function BookingModal({ isOpen, onClose, packageData }) {
     const { t } = useTranslation();
+    const { isAuthenticated } = useAuth();
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
@@ -37,8 +40,6 @@ function BookingModal({ isOpen, onClose, packageData }) {
         number_of_children: 0,
         number_of_infants: 0,
         special_requests: '',
-        visa_required: false,
-        number_of_visas: 0,
     });
 
     const [passengers, setPassengers] = useState([
@@ -53,20 +54,19 @@ function BookingModal({ isOpen, onClose, packageData }) {
         }
     ]);
 
-    const [visaFiles, setVisaFiles] = useState({
-        passportImages: [],
-        applicantImages: [],
-        emiratesIdImages: [],
-    });
-
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        if (!isAuthenticated && paymentMethod === 'stripe') {
+            setPaymentMethod('later');
+        }
+    }, [isAuthenticated, paymentMethod]);
 
     // Navigation sections with completion status
     const sections = [
         { id: 'personal', label: 'Personal Info', icon: '👤' },
         { id: 'travel', label: 'Travel Details', icon: '✈️' },
         { id: 'passengers', label: 'Passengers', icon: '👥' },
-        { id: 'visa', label: 'Visa Services', icon: '📋' },
         { id: 'payment', label: 'Payment Method', icon: '💳' },
         { id: 'review', label: 'Review & Confirm', icon: '✅' },
     ];
@@ -146,20 +146,6 @@ function BookingModal({ isOpen, onClose, packageData }) {
                 });
                 break;
 
-            case 'visa':
-                if (formData.visa_required) {
-                    if (!formData.number_of_visas || formData.number_of_visas < 1) {
-                        newErrors.number_of_visas = 'Number of visas is required';
-                    }
-                    if (visaFiles.passportImages.length === 0) {
-                        newErrors.passportImages = 'Passport images are required';
-                    }
-                    if (visaFiles.applicantImages.length === 0) {
-                        newErrors.applicantImages = 'Applicant photos are required';
-                    }
-                }
-                break;
-
             case 'payment':
                 if (!paymentMethod) {
                     newErrors.paymentMethod = 'Please select a payment method';
@@ -190,12 +176,6 @@ function BookingModal({ isOpen, onClose, packageData }) {
                 ...prev,
                 [name]: value,
                 return_date: returnDate.toISOString().split('T')[0]
-            }));
-        } else if (name === 'visa_required') {
-            setFormData(prev => ({
-                ...prev,
-                [name]: newValue,
-                number_of_visas: newValue ? 1 : 0
             }));
         } else if (name === 'number_of_adults' || name === 'number_of_children') {
             const adults = name === 'number_of_adults' ? parseInt(newValue) : parseInt(formData.number_of_adults);
@@ -262,29 +242,12 @@ function BookingModal({ isOpen, onClose, packageData }) {
             };
             return updated;
         });
-    };
-
-    const handleFileChange = (e, fileType) => {
-        const files = Array.from(e.target.files);
-        setVisaFiles(prev => ({
-            ...prev,
-            [fileType]: [...prev[fileType], ...files]
-        }));
-
-        // Clear file errors when files are added
-        if (errors[fileType]) {
+        if (errors[field]) {
             setErrors(prev => ({
                 ...prev,
-                [fileType]: null
+                [field]: null
             }));
         }
-    };
-
-    const removeFile = (fileType, index) => {
-        setVisaFiles(prev => ({
-            ...prev,
-            [fileType]: prev[fileType].filter((_, i) => i !== index)
-        }));
     };
 
     const calculateTotal = () => {
@@ -294,14 +257,7 @@ function BookingModal({ isOpen, onClose, packageData }) {
         const price = parseFloat(packageData.price) || 0;
         const packageTotal = (adults * price) + (children * price * 0.5);
 
-        let visaTotal = 0;
-        if (formData.visa_required && packageData.visa_price) {
-            const numberOfVisas = parseInt(formData.number_of_visas) || 0;
-            const visaPrice = parseFloat(packageData.visa_price) || 0;
-            visaTotal = numberOfVisas * visaPrice;
-        }
-
-        return packageTotal + visaTotal;
+        return packageTotal;
     };
 
     const handleSubmit = async (e) => {
@@ -310,6 +266,8 @@ function BookingModal({ isOpen, onClose, packageData }) {
         if (!validateCurrentSection()) {
             return;
         }
+
+        const effectivePaymentMethod = !isAuthenticated && paymentMethod === 'stripe' ? 'later' : paymentMethod;
 
         setLoading(true);
         setError(null);
@@ -335,25 +293,9 @@ function BookingModal({ isOpen, onClose, packageData }) {
             formDataToSend.append('passengers', JSON.stringify(passengers));
 
             // Add payment method information
-            const paymentTiming = paymentMethod === 'stripe' ? 'now' : (paymentMethod === 'later' ? 'later' : 'now');
-            formDataToSend.append('payment_method_type', paymentMethod);
+            const paymentTiming = effectivePaymentMethod === 'stripe' ? 'now' : (effectivePaymentMethod === 'later' ? 'later' : 'now');
+            formDataToSend.append('payment_method_type', effectivePaymentMethod);
             formDataToSend.append('payment_timing', paymentTiming);
-
-            // Add visa data
-            formDataToSend.append('visa_required', formData.visa_required ? '1' : '0');
-            if (formData.visa_required) {
-                formDataToSend.append('number_of_visas', parseInt(formData.number_of_visas));
-
-                visaFiles.passportImages.forEach((file) => {
-                    formDataToSend.append('passport_images[]', file);
-                });
-                visaFiles.applicantImages.forEach((file) => {
-                    formDataToSend.append('applicant_images[]', file);
-                });
-                visaFiles.emiratesIdImages.forEach((file) => {
-                    formDataToSend.append('emirates_id_images[]', file);
-                });
-            }
 
             const response = await bookingsAPI.create(formDataToSend);
 
@@ -363,7 +305,7 @@ function BookingModal({ isOpen, onClose, packageData }) {
                 setBookingId(booking.id);
 
                 // If payment method is Stripe, process payment directly
-                if (paymentMethod === 'stripe') {
+                if (effectivePaymentMethod === 'stripe') {
                     await processStripePayment(booking);
                 } else {
                     // For cash/personal/later, show success immediately
@@ -499,8 +441,6 @@ function BookingModal({ isOpen, onClose, packageData }) {
             number_of_children: 0,
             number_of_infants: 0,
             special_requests: '',
-            visa_required: false,
-            number_of_visas: 0,
         });
         setPassengers([
             {
@@ -513,11 +453,6 @@ function BookingModal({ isOpen, onClose, packageData }) {
                 passport_expiration: '',
             }
         ]);
-        setVisaFiles({
-            passportImages: [],
-            applicantImages: [],
-            emiratesIdImages: [],
-        });
         setErrors({});
         setError(null);
         setSuccess(false);
@@ -633,6 +568,20 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         <span className="font-medium">{error}</span>
+                                    </div>
+                                )}
+
+                                {!isAuthenticated && (
+                                    <div className="mb-6 bg-amber-50 border-2 border-amber-200 rounded-2xl px-6 py-4 shadow-lg">
+                                        <p className="text-amber-900 font-semibold">
+                                            Sign in is recommended to keep your bookings in your account.
+                                        </p>
+                                        <p className="text-amber-800 mt-1 text-sm">
+                                            <Link to="/login" className="font-bold underline">Login</Link>
+                                            {' '}or{' '}
+                                            <Link to="/signup" className="font-bold underline">Sign up</Link>
+                                            {' '}to view bookings later.
+                                        </p>
                                     </div>
                                 )}
 
@@ -788,25 +737,6 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                     </SectionBox>
                                 )}
 
-                                {/* Visa Services Section */}
-                                {activeSection === 'visa' && packageData?.visa_price && (
-                                    <SectionBox
-                                        title="Visa Services"
-                                        icon="📋"
-                                        description="Optional visa processing"
-                                    >
-                                        <VisaSection
-                                            formData={formData}
-                                            onChange={handleChange}
-                                            packageData={packageData}
-                                            visaFiles={visaFiles}
-                                            onFileChange={handleFileChange}
-                                            onRemoveFile={removeFile}
-                                            errors={errors}
-                                        />
-                                    </SectionBox>
-                                )}
-
                                 {/* Payment Method Section */}
                                 {activeSection === 'payment' && (
                                     <SectionBox
@@ -815,16 +745,18 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                         description="Choose how you want to pay"
                                     >
                                         <div className="space-y-4">
-                                            <PaymentMethodOption
-                                                id="stripe"
-                                                title="Pay Now with Card"
-                                                description="Secure payment via Stripe - Complete payment now"
-                                                icon="💳"
-                                                selected={paymentMethod === 'stripe'}
-                                                onSelect={() => setPaymentMethod('stripe')}
-                                                badge="Recommended"
-                                                badgeColor="green"
-                                            />
+                                            {isAuthenticated && (
+                                                <PaymentMethodOption
+                                                    id="stripe"
+                                                    title="Pay Now with Card"
+                                                    description="Secure payment via Stripe - Complete payment now"
+                                                    icon="💳"
+                                                    selected={paymentMethod === 'stripe'}
+                                                    onSelect={() => setPaymentMethod('stripe')}
+                                                    badge="Recommended"
+                                                    badgeColor="green"
+                                                />
+                                            )}
                                             <PaymentMethodOption
                                                 id="cash"
                                                 title="Cash Payment"
@@ -860,36 +792,6 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                                 {errors.paymentMethod}
                                             </p>
                                         )}
-                                    </SectionBox>
-                                )}
-
-                                {/* Debug Info */}
-                                {activeSection === 'stripe-payment' && !clientSecret && (
-                                    <div className="bg-yellow-50 border-2 border-yellow-300 rounded-2xl p-6 mb-6">
-                                        <h4 className="text-lg font-bold text-yellow-800 mb-2">⚠️ Debug Information</h4>
-                                        <p className="text-yellow-700">Active Section: {activeSection}</p>
-                                        <p className="text-yellow-700">Client Secret: {clientSecret ? 'Present' : 'Missing'}</p>
-                                        <p className="text-yellow-700">Booking ID: {bookingId}</p>
-                                        <p className="text-yellow-700 mt-2">Waiting for payment intent...</p>
-                                    </div>
-                                )}
-
-                                {/* Stripe Payment Section */}
-                                {activeSection === 'stripe-payment' && clientSecret && (
-                                    <SectionBox
-                                        title="Complete Payment"
-                                        icon="🔒"
-                                        description="Enter your card details to complete the booking"
-                                    >
-                                        <Elements stripe={stripePromise} options={{ clientSecret }}>
-                                            <StripePaymentForm
-                                                clientSecret={clientSecret}
-                                                amount={calculateTotal()}
-                                                onSuccess={handlePaymentSuccess}
-                                                onError={handlePaymentError}
-                                                bookingId={bookingId}
-                                            />
-                                        </Elements>
                                     </SectionBox>
                                 )}
 
@@ -938,7 +840,7 @@ function BookingModal({ isOpen, onClose, packageData }) {
                                             />
 
                                             {/* Show Stripe Payment Form if Stripe is selected */}
-                                            {paymentMethod === 'stripe' && (
+                                            {isAuthenticated && paymentMethod === 'stripe' && (
                                                 <div className="mt-6">
                                                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 mb-4">
                                                         <h4 className="text-lg font-bold text-slate-800 mb-2 flex items-center">
@@ -1146,7 +1048,7 @@ const InputField = ({ label, type = 'text', name, value, onChange, error, requir
 
 // Passenger Card Component
 const PassengerCard = ({ passenger, index, onChange, errors }) => (
-    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-3xl p-6 hover:shadow-lg transition-all">
+    <div className="bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex items-center justify-between mb-4">
             <h5 className="text-lg font-bold text-slate-800 flex items-center">
         <span className="bg-amber-500 text-white rounded-2xl w-8 h-8 flex items-center justify-center mr-3 text-sm font-black">
@@ -1213,144 +1115,6 @@ const PassengerCard = ({ passenger, index, onChange, errors }) => (
                 min={new Date().toISOString().split('T')[0]}
             />
         </div>
-    </div>
-);
-
-// Visa Section Component
-const VisaSection = ({ formData, onChange, packageData, visaFiles, onFileChange, onRemoveFile, errors }) => (
-    <div className="space-y-6">
-        <div className="flex items-center justify-between p-4 bg-indigo-50 border-2 border-indigo-200 rounded-2xl">
-            <div>
-                <h5 className="font-bold text-indigo-800">Visa Processing Service</h5>
-                <p className="text-indigo-600 text-sm">${parseFloat(packageData.visa_price).toFixed(2)} per person</p>
-            </div>
-            <label className="flex items-center cursor-pointer">
-                <div className="relative">
-                    <input
-                        type="checkbox"
-                        id="visa_required"
-                        name="visa_required"
-                        checked={formData.visa_required}
-                        onChange={onChange}
-                        className="sr-only"
-                    />
-                    <div className={`block w-14 h-8 rounded-full transition-all ${
-                        formData.visa_required ? 'bg-indigo-500' : 'bg-slate-300'
-                    }`}></div>
-                    <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${
-                        formData.visa_required ? 'transform translate-x-6' : ''
-                    }`}></div>
-                </div>
-                <span className="ml-3 text-slate-700 font-medium">Require Visa</span>
-            </label>
-        </div>
-
-        {formData.visa_required && (
-            <div className="space-y-6 animate-slideDown">
-                <InputField
-                    label="Number of Visas Required"
-                    type="number"
-                    name="number_of_visas"
-                    value={formData.number_of_visas}
-                    onChange={onChange}
-                    error={errors.number_of_visas}
-                    min="1"
-                    required
-                />
-
-                <FileUploadSection
-                    title="Passport Images"
-                    fileType="passportImages"
-                    files={visaFiles.passportImages}
-                    onFileChange={onFileChange}
-                    onRemoveFile={onRemoveFile}
-                    error={errors.passportImages}
-                    icon="📄"
-                />
-
-                <FileUploadSection
-                    title="Applicant Photos"
-                    fileType="applicantImages"
-                    files={visaFiles.applicantImages}
-                    onFileChange={onFileChange}
-                    onRemoveFile={onRemoveFile}
-                    error={errors.applicantImages}
-                    icon="📷"
-                />
-
-                <FileUploadSection
-                    title="Emirates ID Images"
-                    fileType="emiratesIdImages"
-                    files={visaFiles.emiratesIdImages}
-                    onFileChange={onFileChange}
-                    onRemoveFile={onRemoveFile}
-                    error={errors.emiratesIdImages}
-                    icon="🆔"
-                />
-            </div>
-        )}
-    </div>
-);
-
-// File Upload Component
-const FileUploadSection = ({ title, fileType, files, onFileChange, onRemoveFile, error, icon }) => (
-    <div>
-        <label className="block text-sm font-bold text-slate-700 mb-3">
-            <span className="mr-2">{icon}</span>
-            {title} <span className="text-red-500 text-sm font-normal">* (JPEG, JPG, PNG - 5MB max per file)</span>
-        </label>
-        <div className={`border-2 border-dashed rounded-2xl p-6 transition-all ${
-            error ? 'border-red-300 bg-red-50' : 'border-indigo-300 bg-indigo-50/50 hover:border-indigo-500'
-        }`}>
-            <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => onFileChange(e, fileType)}
-                className="hidden"
-                id={fileType}
-            />
-            <label htmlFor={fileType} className="cursor-pointer flex flex-col items-center">
-                <svg className="h-12 w-12 text-indigo-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <span className="text-sm text-slate-600 font-medium">Click to upload {title.toLowerCase()}</span>
-                <span className="text-xs text-slate-500 mt-1">Drag & drop files here or click to browse</span>
-            </label>
-        </div>
-
-        {error && (
-            <p className="mt-2 text-sm text-red-500 flex items-center">
-                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {error}
-            </p>
-        )}
-
-        {files.length > 0 && (
-            <div className="mt-4 space-y-2">
-                {files.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200">
-                        <div className="flex items-center flex-1">
-                            <svg className="h-5 w-5 text-indigo-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <span className="text-sm text-slate-700 truncate">{file.name}</span>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => onRemoveFile(fileType, index)}
-                            className="ml-2 text-red-500 hover:text-red-700 p-1 rounded-lg hover:bg-red-50 transition-colors"
-                        >
-                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                ))}
-            </div>
-        )}
     </div>
 );
 
@@ -1488,17 +1252,6 @@ const PricingSummary = ({ packageData, formData, calculateTotal }) => (
                     <span className="text-slate-700">Children ({formData.number_of_children})</span>
                     <span className="font-semibold text-slate-900">
             ${(formData.number_of_children * parseFloat(packageData?.price || 0) * 0.5).toFixed(2)}
-          </span>
-                </div>
-            )}
-
-            {formData.visa_required && packageData?.visa_price && (
-                <div className="flex justify-between items-center py-3 border-b border-blue-200 bg-indigo-50 rounded-xl px-4">
-          <span className="text-indigo-700 font-medium">
-            Visa Cost ({formData.number_of_visas} × ${parseFloat(packageData.visa_price).toFixed(2)})
-          </span>
-                    <span className="font-bold text-indigo-700">
-            ${(parseInt(formData.number_of_visas || 0) * parseFloat(packageData.visa_price)).toFixed(2)}
           </span>
                 </div>
             )}

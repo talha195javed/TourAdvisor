@@ -371,8 +371,8 @@ Route::get('/hotels', function () {
     return response()->json($hotels);
 });
 
-// Create booking from frontend (requires authentication)
-Route::middleware('auth:sanctum')->post('/bookings', function (Request $request) {
+// Create booking from frontend
+Route::post('/bookings', function (Request $request) {
     $validated = $request->validate([
         'package_id' => 'required|exists:packages,id',
         'customer_name' => 'required|string|max:255',
@@ -391,7 +391,7 @@ Route::middleware('auth:sanctum')->post('/bookings', function (Request $request)
         'passport_images.*' => 'nullable|image|max:5120',
         'applicant_images.*' => 'nullable|image|max:5120',
         'emirates_id_images.*' => 'nullable|image|max:5120',
-        'payment_method_type' => 'nullable|string|in:stripe,cash,personal',
+        'payment_method_type' => 'nullable|string|in:stripe,cash,personal,later',
         'payment_timing' => 'nullable|string|in:now,later',
     ]);
 
@@ -407,8 +407,8 @@ Route::middleware('auth:sanctum')->post('/bookings', function (Request $request)
     $totalAmount = ($adults * $package->price) + ($children * $package->price * 0.5);
     
     // Calculate visa amount if required
-    $visaRequired = $request->input('visa_required', false);
-    $numberOfVisas = $request->input('number_of_visas', 0);
+    $visaRequired = (bool) $request->input('visa_required', false);
+    $numberOfVisas = (int) $request->input('number_of_visas', 0);
     $totalVisaAmount = 0;
     $visaPricePerPerson = 0;
     
@@ -460,7 +460,7 @@ Route::middleware('auth:sanctum')->post('/bookings', function (Request $request)
         }
     }
     
-    // Get authenticated client
+    // Get authenticated client (optional for guest bookings)
     $client = $request->user();
     
     // Determine payment status and method
@@ -468,6 +468,14 @@ Route::middleware('auth:sanctum')->post('/bookings', function (Request $request)
     $paymentTiming = $request->input('payment_timing', 'later');
     $paymentStatus = 'pending';
     $canEditBeforePayment = true;
+
+    // Guests cannot use Stripe (Stripe routes require auth)
+    if (!$client && $paymentMethodType === 'stripe') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Authentication required for card payments.',
+        ], 422);
+    }
     
     // If payment method is cash or personal and timing is now, mark as pending but allow completion
     if (in_array($paymentMethodType, ['cash', 'personal']) && $paymentTiming === 'now') {
@@ -479,7 +487,7 @@ Route::middleware('auth:sanctum')->post('/bookings', function (Request $request)
     $booking = \App\Models\Booking::create([
         'booking_reference' => $bookingReference,
         'package_id' => $validated['package_id'],
-        'client_id' => $client->id,
+        'client_id' => $client?->id,
         'customer_name' => $validated['customer_name'],
         'customer_email' => $validated['customer_email'],
         'customer_phone' => $validated['customer_phone'],

@@ -7,14 +7,14 @@ function PackageCard({ package: pkg }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div 
+    <div
       className="group relative bg-white rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Gradient Border Effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-transparent to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-      
+
       {/* Card Content */}
       <div className="relative bg-white rounded-3xl overflow-hidden m-[1px]">
         {/* Image Section */}
@@ -24,10 +24,10 @@ function PackageCard({ package: pkg }) {
             alt={pkg.title}
             className={`w-full h-full object-cover transition-all duration-700 ${isHovered ? 'scale-110 blur-[1px]' : 'scale-100'}`}
           />
-          
+
           {/* Overlay Gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-          
+
           {/* Category Badge */}
           {pkg.category && (
             <div className="absolute top-4 left-4 rtl:left-auto rtl:right-4">
@@ -128,7 +128,7 @@ function PackageCard({ package: pkg }) {
               to={`/packages/${pkg.id}`}
               className="group/cta relative inline-flex items-center gap-2 overflow-hidden bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105"
             >
-              <span className="relative z-10">{t('bookNow')}</span>
+                <span>{t('viewDetails')}</span>
               <svg className="w-4 h-4 relative z-10 group-hover/cta:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
